@@ -801,9 +801,11 @@
           <select id="gradingGwSelect"></select>
         </div>
         <button class="btn btn-darkpurple" id="sortGradingBtn" type="button">🔀 Sort by GW Total</button>
+        <button class="btn btn-cyan" id="importGwFromFplBtn" type="button">🔄 Import GW from FPL Sync</button>
         <button class="btn btn-green" id="exportGradingCsvBtn" type="button">⬇️ Export Grading CSV</button>
         <button class="btn btn-teal" id="screenshotGradingBtn" type="button">📸 Screenshot</button>
       </div>
+      <p class="hint" id="gradingImportStatus"></p>
 
       <div class="table-wrap">
         <table class="ledger grading-table">
@@ -912,6 +914,39 @@
     </div>
 
     <div class="panel">
+      <div class="panel-header"><h2>⚡ Automatic Sync via GitHub Actions</h2></div>
+      <p class="panel-desc">Alternative to the proxy above: a GitHub Action in this site's own repo fetches FPL data server-side (no browser CORS issue at all — Actions runners aren't browsers) on a schedule, and writes a snapshot file the app can load directly. Set this up once; after that "Run GitHub Action Now" or the schedule keeps it fresh with no proxy dependency.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="ghaOwner">Site Repo Owner</label>
+          <input type="text" id="ghaOwner" placeholder="e.g. yourusername">
+        </div>
+        <div class="field">
+          <label for="ghaRepo">Site Repo Name</label>
+          <input type="text" id="ghaRepo" placeholder="e.g. fpl-ledger-tracker">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="ghaBranch">Branch</label>
+          <input type="text" id="ghaBranch" value="main">
+        </div>
+        <div class="field">
+          <label for="ghaToken">Personal Access Token (scoped to this repo: Contents + Actions, Read and write)</label>
+          <input type="password" id="ghaToken" placeholder="ghp_… or github_pat_…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="fpl-sync-actions no-print">
+        <button class="btn btn-darkpurple" id="ghaPushConfigBtn" type="button">📤 Push League/Manager Config</button>
+        <button class="btn btn-cyan" id="ghaTriggerBtn" type="button">⚡ Run GitHub Action Now</button>
+        <button class="btn btn-teal" id="ghaLoadSnapshotBtn" type="button">📥 Load Latest Snapshot</button>
+      </div>
+      <p class="hint" id="ghaSyncStatus">Not set up yet — see README for the one-time install steps, then fill in the fields above.</p>
+    </div>
+
+    <div class="panel">
       <div class="panel-header"><h2>🔗 Match Managers</h2></div>
       <p class="panel-desc">Links each real FPL entry to a manager in this tracker so synced data lands in the right row. Exact name matches link automatically on every sync.</p>
       <div class="table-wrap">
@@ -942,10 +977,11 @@
               <th>Manager</th>
               <th>Team</th>
               <th>GW Points</th>
+              <th>Transfer Cost</th>
               <th>Total Points</th>
             </tr>
           </thead>
-          <tbody id="fplStandingsBody"><tr><td colspan="5" class="empty-row">Run a sync to see standings here.</td></tr></tbody>
+          <tbody id="fplStandingsBody"><tr><td colspan="6" class="empty-row">Run a sync to see standings here.</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -1119,7 +1155,8 @@
         autoSyncEnabled: false,
         lastSyncedAt: null,
         lastSyncSummary: "",
-        log: []
+        log: [],
+        actionsRepo: { owner: "", repo: "", branch: "main" }
       }
     };
     st.payments[dan.id] = blankPayments();
@@ -1143,9 +1180,11 @@
         autoSyncEnabled: false,
         lastSyncedAt: null,
         lastSyncSummary: "",
-        log: []
+        log: [],
+        actionsRepo: { owner: "", repo: "", branch: "main" }
       };
     }
+    if (!st.fplSync.actionsRepo) st.fplSync.actionsRepo = { owner: "", repo: "", branch: "main" };
     if (st.managers) {
       st.managers.forEach(function (m) {
         ensureManagerFields(m);
@@ -2756,20 +2795,24 @@
     }).join("");
   }
 
-  function renderFplStandings(results) {
+  function renderFplStandings(results, transferCostByEntry) {
     lastFplStandings = results || [];
+    var costs = transferCostByEntry || {};
     var tbody = $("fplStandingsBody");
     if (tbody) {
       if (lastFplStandings.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Run a sync to see standings here.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Run a sync to see standings here.</td></tr>';
       } else {
         tbody.innerHTML = lastFplStandings.map(function (row) {
+          var cost = costs[row.entry];
+          var costCell = (cost === undefined || cost === null) ? '<span class="text-muted">—</span>' : (cost > 0 ? ("-" + cost) : "0");
           return (
             "<tr>" +
               '<td class="cell-pos">' + row.rank + "</td>" +
               "<td><strong>" + escapeHtml(row.player_name) + "</strong></td>" +
               "<td>" + escapeHtml(row.entry_name) + "</td>" +
               "<td>" + row.event_total + "</td>" +
+              "<td>" + costCell + "</td>" +
               '<td class="cell-amount">' + row.total + "</td>" +
             "</tr>"
           );
@@ -2841,17 +2884,23 @@
       $("fplStandingsUpdated").textContent = "Updated " + formatTimestamp(new Date().toISOString());
 
       var linked = state.managers.filter(function (m) { return m.fplEntryId; });
+      var transferCostByEntry = {};
       for (var i = 0; i < linked.length; i++) {
         var m = linked[i];
         setSyncStatus("Syncing " + (i + 1) + " of " + linked.length + ": " + m.name + "…");
         try {
           var hist = await fplFetch("entry/" + m.fplEntryId + "/history/");
           applyHistoryToManager(m, hist, gwMonthMap, results, currentMonth);
+          if (currentEvent) {
+            var curRow = (hist.current || []).filter(function (r) { return r.event === currentEvent.id; })[0];
+            if (curRow) transferCostByEntry[m.fplEntryId] = curRow.event_transfers_cost || 0;
+          }
         } catch (mErr) {
           logSyncEvent("Couldn't sync " + m.name + ": " + mErr.message, false);
         }
         await sleep(200);
       }
+      renderFplStandings(results, transferCostByEntry);
 
       state.fplSync.lastSyncedAt = new Date().toISOString();
       state.fplSync.lastSyncSummary = "Synced " + linked.length + " linked manager(s).";
@@ -2877,6 +2926,189 @@
       fplAutoSyncTimer = setInterval(function () { runFplSync(true); }, 40 * 60 * 1000);
     }
   }
+
+  /* ---------- GitHub Actions FPL sync (proxy-free) ---------- */
+  var GH_ACTIONS_TOKEN_KEY = "fplLedgerGithubActionsToken";
+
+  function readGhaFields() {
+    return {
+      owner: $("ghaOwner").value.trim(),
+      repo: $("ghaRepo").value.trim(),
+      branch: $("ghaBranch").value.trim() || "main",
+      token: $("ghaToken").value.trim()
+    };
+  }
+
+  function saveGhaFields(f) {
+    state.fplSync.actionsRepo = { owner: f.owner, repo: f.repo, branch: f.branch };
+    persist();
+    try { localStorage.setItem(GH_ACTIONS_TOKEN_KEY, f.token); } catch (e) {}
+  }
+
+  function applySnapshotData(snap) {
+    if (snap.currentEventId) state.params.currentGw = snap.currentEventId;
+    if (snap.leagueName) {
+      state.fplSync.leagueName = snap.leagueName;
+      $("fplLeagueNameInput").value = snap.leagueName;
+    }
+    var results = snap.standings || [];
+    autoMatchManagers(results);
+
+    var linked = state.managers.filter(function (m) { return m.fplEntryId; });
+    var transferCostByEntry = {};
+    linked.forEach(function (m) {
+      var hist = snap.managers && snap.managers[String(m.fplEntryId)];
+      if (!hist) return;
+      applyHistoryToManager(m, hist, snap.gwMonthMap || {}, results, snap.currentMonth);
+      if (snap.currentEventId) {
+        var curRow = (hist.current || []).filter(function (r) { return r.event === snap.currentEventId; })[0];
+        if (curRow) transferCostByEntry[m.fplEntryId] = curRow.event_transfers_cost || 0;
+      }
+    });
+
+    renderFplStandings(results, transferCostByEntry);
+    $("fplStandingsUpdated").textContent = "Updated " + formatTimestamp(snap.generatedAt || new Date().toISOString()) + " (GitHub Action)";
+    state.fplSync.lastSyncedAt = snap.generatedAt || new Date().toISOString();
+    state.fplSync.lastSyncSummary = "Loaded GitHub Action snapshot — " + linked.length + " linked manager(s).";
+    persist();
+    renderAll();
+    renderGradingTable();
+    renderPerformanceTable();
+    setSyncStatus("Last synced " + formatTimestamp(state.fplSync.lastSyncedAt) + " — " + state.fplSync.lastSyncSummary);
+    logSyncEvent("Loaded GitHub Action snapshot (" + linked.length + " manager(s)).", true);
+    if ((snap.errors || []).length) {
+      logSyncEvent("Snapshot had " + snap.errors.length + " issue(s): " + snap.errors.join(" | "), false);
+    }
+  }
+
+  $("ghaPushConfigBtn").addEventListener("click", function () {
+    var f = readGhaFields();
+    if (!f.owner || !f.repo || !f.token) { toast("Fill in the site repo owner, name, and token first."); return; }
+    saveGhaFields(f);
+
+    var linked = state.managers.filter(function (m) { return m.fplEntryId; });
+    var config = {
+      leagueId: (state.fplSync.leagueId || "").trim(),
+      managers: linked.map(function (m) { return { id: m.id, name: m.name, fplEntryId: m.fplEntryId }; })
+    };
+    if (!config.leagueId) { toast("Enter a League ID above first."); return; }
+
+    $("ghaSyncStatus").textContent = "Pushing config to GitHub…";
+    var path = "data/fpl-sync-config.json";
+    fetch(ghContentsUrl(f.owner, f.repo, path, f.branch), { headers: ghHeaders(f.token) })
+      .then(function (res) {
+        if (res.status === 404) return null;
+        if (!res.ok) return res.json().then(function (j) { throw new Error(j.message || ("HTTP " + res.status)); });
+        return res.json();
+      })
+      .then(function (existing) {
+        var body = {
+          message: "Update FPL sync config — " + new Date().toISOString(),
+          content: utf8ToBase64(JSON.stringify(config, null, 2)),
+          branch: f.branch
+        };
+        if (existing && existing.sha) body.sha = existing.sha;
+        return fetch(ghContentsUrl(f.owner, f.repo, path), { method: "PUT", headers: ghHeaders(f.token), body: JSON.stringify(body) });
+      })
+      .then(function (res) { return res.json().then(function (j) { if (!res.ok) throw new Error(j.message || ("HTTP " + res.status)); return j; }); })
+      .then(function () {
+        $("ghaSyncStatus").textContent = "Config pushed (" + linked.length + " linked manager(s)). Now click \"Run GitHub Action Now.\"";
+        logSyncEvent("Pushed FPL sync config to GitHub (" + linked.length + " manager(s)).", true);
+        toast("Config pushed to GitHub.");
+      })
+      .catch(function (err) {
+        $("ghaSyncStatus").textContent = "Couldn't push config — " + err.message;
+        toast("Push failed.");
+      });
+  });
+
+  $("ghaTriggerBtn").addEventListener("click", function () {
+    var f = readGhaFields();
+    if (!f.owner || !f.repo || !f.token) { toast("Fill in the site repo owner, name, and token first."); return; }
+    saveGhaFields(f);
+
+    $("ghaSyncStatus").textContent = "Triggering GitHub Action…";
+    var url = "https://api.github.com/repos/" + encodeURIComponent(f.owner) + "/" + encodeURIComponent(f.repo) + "/actions/workflows/fpl-sync.yml/dispatches";
+    fetch(url, {
+      method: "POST",
+      headers: ghHeaders(f.token),
+      body: JSON.stringify({ ref: f.branch })
+    }).then(function (res) {
+      if (res.status === 204) return true;
+      return res.json().then(function (j) { throw new Error(j.message || ("HTTP " + res.status)); });
+    }).then(function () {
+      $("ghaSyncStatus").textContent = "Triggered — the Action usually takes 15-40 seconds. Wait a bit, then click \"Load Latest Snapshot.\"";
+      logSyncEvent("Triggered GitHub Action sync.", true);
+      toast("GitHub Action triggered.");
+    }).catch(function (err) {
+      $("ghaSyncStatus").textContent = "Couldn't trigger the Action — " + err.message + ". Check the token has \"Actions: Read and write\" permission, and that fpl-sync.yml is on the default branch.";
+      toast("Trigger failed.");
+    });
+  });
+
+  $("ghaLoadSnapshotBtn").addEventListener("click", function () {
+    var f = readGhaFields();
+    saveGhaFields(f);
+    $("ghaSyncStatus").textContent = "Loading latest snapshot…";
+    fetch("./data/fpl-snapshot.json?ts=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status + " — has the Action run at least once yet?");
+        return res.json();
+      })
+      .then(function (snap) {
+        applySnapshotData(snap);
+        $("ghaSyncStatus").textContent = "Loaded snapshot generated " + formatTimestamp(snap.generatedAt || "");
+        toast("Snapshot loaded.");
+      })
+      .catch(function (err) {
+        $("ghaSyncStatus").textContent = "Couldn't load snapshot — " + err.message;
+        toast("Load failed.");
+      });
+  });
+
+  /* ---------- import a single gameweek's grading data from FPL sync ---------- */
+  function importGwFromFplSync() {
+    var gw = selectedGradingGW;
+    var linked = state.managers.filter(function (m) { return m.fplEntryId; });
+    if (linked.length === 0) {
+      $("gradingImportStatus").textContent = "No managers are linked to an FPL Team ID yet — link them on the FPL Sync page first.";
+      toast("No linked managers to import.");
+      return;
+    }
+    $("gradingImportStatus").textContent = "Importing GW" + gw + " for " + linked.length + " linked manager(s)…";
+
+    (async function () {
+      var okCount = 0, missCount = 0, failCount = 0;
+      for (var i = 0; i < linked.length; i++) {
+        var m = linked[i];
+        try {
+          var hist = await fplFetch("entry/" + m.fplEntryId + "/history/");
+          var row = (hist.current || []).filter(function (r) { return r.event === gw; })[0];
+          if (row) {
+            ensureGradingFor(m.id);
+            state.grading[m.id][gw].points = row.points;
+            state.grading[m.id][gw].transferCost = row.event_transfers_cost || 0;
+            okCount++;
+          } else {
+            missCount++;
+          }
+        } catch (err) {
+          failCount++;
+        }
+        await sleep(200);
+      }
+      persist();
+      renderGradingTable();
+      var summary = "Imported GW" + gw + " for " + okCount + " manager(s)" +
+        (missCount ? (", " + missCount + " had no data for that GW") : "") +
+        (failCount ? (", " + failCount + " failed") : "") + ".";
+      $("gradingImportStatus").textContent = summary;
+      logSyncEvent(summary, failCount === 0);
+      toast(summary);
+    })();
+  }
+
+  $("importGwFromFplBtn").addEventListener("click", importGwFromFplSync);
 
   $("fplSyncNowBtn").addEventListener("click", function () {
     state.fplSync.leagueId = $("fplLeagueIdInput").value.trim();
@@ -2999,6 +3231,11 @@
     $("ghBranch").value = (state.githubSync && state.githubSync.branch) || "main";
     $("ghPath").value = (state.githubSync && state.githubSync.path) || "data/fpl-ledger-data.json";
     try { $("ghToken").value = localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) {}
+    var ar = state.fplSync.actionsRepo || {};
+    $("ghaOwner").value = ar.owner || "";
+    $("ghaRepo").value = ar.repo || "";
+    $("ghaBranch").value = ar.branch || "main";
+    try { $("ghaToken").value = localStorage.getItem(GH_ACTIONS_TOKEN_KEY) || ""; } catch (e) {}
     if (state.fplSync.lastSyncedAt) {
       setSyncStatus("Last synced " + formatTimestamp(state.fplSync.lastSyncedAt) + (state.fplSync.lastSyncSummary ? " — " + state.fplSync.lastSyncSummary : ""));
     }
