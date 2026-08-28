@@ -1,4 +1,120 @@
 {
   "leagueId": "1459370",
-  "managers": []
+  "managers": [
+    {
+      "id": "m_31vsg3e",
+      "name": "Brian Lutaaya",
+      "fplEntryId": 6679148
+    },
+    {
+      "id": "m_9o9i1ts",
+      "name": "Indani",
+      "fplEntryId": 6629671
+    },
+    {
+      "id": "m_lrdxcom",
+      "name": "Batabazi",
+      "fplEntryId": 5278796
+    },
+    {
+      "id": "m_92xcj62",
+      "name": "Eric",
+      "fplEntryId": 3391361
+    },
+    {
+      "id": "m_uptpir9",
+      "name": "Francis",
+      "fplEntryId": 6738254
+    },
+    {
+      "id": "m_ba10b5z",
+      "name": "Frank",
+      "fplEntryId": 6594959
+    },
+    {
+      "id": "m_zg3yzk7",
+      "name": "Fura",
+      "fplEntryId": 6561110
+    },
+    {
+      "id": "m_mueuux9",
+      "name": "Haruna",
+      "fplEntryId": 7794335
+    },
+    {
+      "id": "m_bqzqp21",
+      "name": "Ivvan",
+      "fplEntryId": 7971410
+    },
+    {
+      "id": "m_7qobjyt",
+      "name": "Jan",
+      "fplEntryId": 6643792
+    },
+    {
+      "id": "m_zmndzz6",
+      "name": "Jason Emmanuel",
+      "fplEntryId": 784126
+    },
+    {
+      "id": "m_qp5syp7",
+      "name": "Jephason",
+      "fplEntryId": 4021691
+    },
+    {
+      "id": "m_53ilv6z",
+      "name": "JONATHAN KIBBS",
+      "fplEntryId": 6661830
+    },
+    {
+      "id": "m_gjj7pg0",
+      "name": "Lakshya Shelar",
+      "fplEntryId": 6820392
+    },
+    {
+      "id": "m_52s4ogg",
+      "name": "Milan Losic",
+      "fplEntryId": 6773598
+    },
+    {
+      "id": "m_nsqihv9",
+      "name": "Musa",
+      "fplEntryId": 6762882
+    },
+    {
+      "id": "m_15nvvpn",
+      "name": "Opio",
+      "fplEntryId": 8014708
+    },
+    {
+      "id": "m_gz8o7tq",
+      "name": "Pavel Laton",
+      "fplEntryId": 3360020
+    },
+    {
+      "id": "m_slgfo97",
+      "name": "K R",
+      "fplEntryId": 804897
+    },
+    {
+      "id": "m_4ozykdi",
+      "name": "Rupesh",
+      "fplEntryId": 6885885
+    },
+    {
+      "id": "m_wf7ss80",
+      "name": "Stefan Jovanovic",
+      "fplEntryId": 228783
+    },
+    {
+      "id": "m_kln13lk",
+      "name": "Stefan Kōji",
+      "fplEntryId": 4662332
+    },
+    {
+      "id": "m_extncry",
+      "name": "Za ke",
+      "fplEntryId": 2818022
+    }
+  ]
 }
