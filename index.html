@@ -1,0 +1,3065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FPL Ledger Tracker</title>
+<style>
+  :root {
+    --purple-dark: #2b0e2e;
+    --purple-darker: #1a0a1f;
+    --cyan: #22d3ee;
+    --cyan-dark: #0891b2;
+    --green: #16a34a;
+    --blue: #3b82f6;
+    --pink: #db2777;
+    --pink-strong: #e11d48;
+    --orange: #f97316;
+    --teal: #0d9488;
+    --gray-dark: #4b5563;
+    --purple-accent: #6d28d9;
+    --purple-table-head: #3c1361;
+    --bg: #f1f2f6;
+    --card-bg: #ffffff;
+    --border-color: #e6e6eb;
+    --text-dark: #16121a;
+    --text-gray: #6b7280;
+    --text-muted: #9ca3af;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(20,10,25,0.08), 0 1px 2px rgba(20,10,25,0.06);
+  }
+
+  * { box-sizing: border-box; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    line-height: 1.4;
+  }
+
+  button, input, select, textarea { font-family: inherit; }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 3px solid #8b5cf6;
+    outline-offset: 2px;
+  }
+
+  /* ---------------- Header ---------------- */
+  .app-header {
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-darker));
+    border-top: 4px solid #dc2626;
+    padding: 18px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .logo-badge {
+    width: 42px; height: 42px; min-width: 42px;
+    background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .brand h1 { margin: 0; font-size: 25px; letter-spacing: 0.4px; font-weight: 800; }
+  .brand h1 .brand-fpl { color: #ffffff; }
+  .brand h1 .brand-rest { color: var(--cyan); }
+  .subtitle { margin: 3px 0 0; color: #cdb9d6; font-size: 12.5px; max-width: 620px; }
+  .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .btn {
+    border: none; border-radius: 7px; padding: 9px 15px;
+    font-size: 12.8px; font-weight: 700; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: filter .15s ease, transform .08s ease;
+    color: #fff; white-space: nowrap;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:active { transform: translateY(1px); }
+  .btn-green { background: var(--green); }
+  .btn-purple { background: #5b21b6; }
+  .btn-orange { background: var(--orange); }
+  .btn-teal { background: var(--teal); }
+  .btn-gray { background: var(--gray-dark); }
+  .btn-darkpurple { background: var(--purple-table-head); }
+  .btn-cyan { background: var(--cyan-dark); }
+  .btn-block { width: 100%; justify-content: center; margin-top: 6px; }
+  .btn-link {
+    background: none; color: var(--text-gray); font-weight: 600;
+    padding: 4px 0; text-decoration: underline; font-size: 12px; box-shadow: none;
+  }
+  .btn-link:hover { filter: none; color: var(--text-dark); }
+
+  /* ---------------- Stats row ---------------- */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px; padding: 18px 26px 4px;
+  }
+  .stat-card {
+    background: var(--card-bg); border-radius: 8px; padding: 14px 18px;
+    box-shadow: var(--shadow); border-left: 4px solid var(--blue);
+  }
+  .stat-card.accent-blue { border-left-color: var(--blue); }
+  .stat-card.accent-cyan { border-left-color: var(--cyan-dark); }
+  .stat-card.accent-green { border-left-color: var(--green); }
+  .stat-card.accent-pink { border-left-color: var(--pink); }
+  .stat-card .label {
+    font-size: 10.8px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--text-gray); font-weight: 700;
+  }
+  .stat-card .value { font-size: 21px; font-weight: 800; margin-top: 5px; }
+
+  /* ---------------- Layout ---------------- */
+  .main-grid {
+    display: grid; grid-template-columns: minmax(300px, 400px) 1fr;
+    gap: 20px; padding: 16px 26px 24px; align-items: start;
+  }
+  @media (max-width: 980px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .panel {
+    background: var(--card-bg); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+  }
+  .panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; padding-bottom: 10px; border-bottom: 2px solid #f2ecf8; margin-bottom: 14px;
+  }
+  .panel-header h2 {
+    margin: 0; font-size: 15px; color: var(--purple-accent);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-desc { font-size: 12.3px; color: var(--text-gray); margin: -6px 0 14px; }
+  .icon-swatch {
+    display: inline-block; width: 13px; height: 13px;
+    background: #f5a623; border-radius: 3px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 12.3px; color: #374151;
+    margin-bottom: 5px; font-weight: 700;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 9px 10px; border: 1px solid #d7d7de;
+    border-radius: 6px; font-size: 13.3px; background: #fff; color: var(--text-dark);
+  }
+  .field textarea { resize: vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+  }
+  .inline-form { display: flex; gap: 8px; }
+  .inline-form input { flex: 1; }
+  .hint { font-size: 11.5px; color: var(--text-muted); margin-top: 10px; }
+
+  /* ---------------- Mini stats (GW summary) ---------------- */
+  .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+  .mini-stat {
+    background: #f8f8fb; border: 1px solid #eee0f5; border-radius: 8px;
+    padding: 10px 6px; text-align: center;
+  }
+  .mini-stat.accent { background: #ecfdf5; border-color: #a7f3d0; }
+  .mini-label { font-size: 10.5px; color: var(--text-gray); font-weight: 800; letter-spacing: .3px; }
+  .mini-value { font-size: 14.5px; font-weight: 800; margin-top: 4px; }
+
+  /* ---------------- Tables ---------------- */
+  .table-wrap { overflow-x: auto; }
+  table.ledger { width: 100%; border-collapse: collapse; font-size: 13.3px; }
+  table.ledger thead th {
+    background: var(--purple-table-head); color: #fff; padding: 10px 12px;
+    text-align: left; font-size: 11.3px; text-transform: uppercase; letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  table.ledger thead th:first-child { border-top-left-radius: 6px; }
+  table.ledger thead th:last-child { border-top-right-radius: 6px; }
+  table.ledger td { padding: 10px 12px; border-bottom: 1px solid #f1f1f4; vertical-align: middle; }
+  table.ledger tbody tr:hover { background: #fbf9fd; }
+  .cell-amount { font-weight: 700; white-space: nowrap; }
+  .empty-row { text-align: center; color: var(--text-muted); padding: 28px 12px !important; font-style: italic; }
+
+  .mgr-name-row { display: flex; align-items: center; gap: 8px; }
+  .pill-add {
+    background: var(--green); color: #fff; border: none; border-radius: 20px;
+    padding: 2px 10px; font-size: 10.8px; font-weight: 800; cursor: pointer;
+  }
+  .pill-add:hover { filter: brightness(1.1); }
+  .progress-track {
+    width: 140px; height: 6px; background: #f0e6f7; border-radius: 3px;
+    overflow: hidden; margin-top: 7px;
+  }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple-accent), var(--cyan)); }
+  .progress-label { font-size: 10.5px; color: var(--text-muted); display: block; margin-top: 3px; }
+
+  .toggle-paid {
+    border: none; border-radius: 6px; padding: 7px 14px; font-weight: 800;
+    font-size: 11.8px; cursor: pointer; color: #fff; letter-spacing: .3px;
+  }
+  .toggle-paid.unpaid { background: var(--pink-strong); }
+  .toggle-paid.paid { background: var(--green); }
+  .toggle-paid:hover { filter: brightness(1.08); }
+
+  .method-select { padding: 6px 8px; border-radius: 5px; border: 1px solid #d7d7de; font-size: 12px; min-width: 170px; }
+
+  .btn-remove {
+    background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca;
+    border-radius: 6px; padding: 6px 10px; font-size: 11.8px; cursor: pointer; font-weight: 700;
+  }
+  .btn-remove:hover { background: #fecaca; }
+
+  .text-muted { color: var(--text-muted); font-style: italic; }
+  .status-active { color: var(--green); font-weight: 800; }
+  .status-none { color: var(--text-muted); font-style: italic; }
+
+  .legend { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 14px; font-size: 12.3px; color: #4b5563; }
+  .legend .hint { flex-basis: 100%; margin-top: 4px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
+  .dot-green { background: var(--green); }
+  .dot-pink { background: var(--pink-strong); }
+
+  .badge {
+    background: #f3e8ff; color: #7c3aed; font-size: 10.8px; font-weight: 800;
+    padding: 5px 10px; border-radius: 20px; white-space: nowrap;
+  }
+
+  .gw-picker { background: #faf7fd; border: 1px solid #eee0f5; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; }
+  .gw-picker label { margin-bottom: 6px; }
+  .ledger-actions-row { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+
+  /* ---------------- Advance panel ---------------- */
+  .advance-grid { display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 760px) { .advance-grid { grid-template-columns: 1fr; } }
+  .advance-form { background: #faf7fd; border: 1px solid #eee0f5; border-radius: 8px; padding: 16px; }
+  .advance-form h3 { margin: 0 0 14px; font-size: 13.3px; color: var(--purple-accent); }
+  .reserves-breakdown {
+    background: #f5f1fb; border: 1px solid #e3d5f2; border-radius: 8px;
+    padding: 12px 16px; margin-bottom: 16px;
+  }
+  .reserves-breakdown h4 { margin: 0 0 8px; font-size: 12.5px; color: var(--purple-accent); }
+  .reserves-breakdown ul { margin: 0; padding-left: 18px; font-size: 12.3px; color: #4b3a55; }
+  .reserves-breakdown li { margin-bottom: 4px; }
+  .hidden { display: none !important; }
+
+  /* ---------------- Footer / toasts ---------------- */
+  .app-footer {
+    text-align: center; padding: 16px; color: var(--text-muted);
+    font-size: 11.8px; border-top: 1px solid var(--border-color); margin-top: 4px;
+  }
+
+  #toast-container {
+    position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px; max-width: 320px;
+  }
+  .toast {
+    background: #201625; color: #fff; padding: 11px 16px; border-radius: 8px;
+    font-size: 12.8px; box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    animation: toastIn .22s ease, toastOut .35s ease 3s forwards;
+  }
+  @keyframes toastIn { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(4px); } }
+
+  /* ---------------- Login gate ---------------- */
+  .login-gate {
+    position: fixed; inset: 0; z-index: 10000;
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple-darker));
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    padding: 36px 34px; width: 100%; max-width: 360px;
+    text-align: center; border-top: 4px solid var(--cyan-dark);
+  }
+  .login-logo {
+    width: 54px; height: 54px; margin: 0 auto 14px;
+    background: var(--purple-dark); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
+  .login-card h1 { font-size: 21px; margin: 0 0 4px; }
+  .login-card h1 .brand-fpl { color: var(--purple-dark); }
+  .login-card h1 .brand-rest { color: var(--cyan-dark); }
+  .login-subtitle { color: var(--text-gray); font-size: 12.5px; margin: 0 0 22px; }
+  .login-card .field { text-align: left; }
+  .login-error {
+    color: var(--pink-strong); background: #fef1f4; border: 1px solid #fbd2dd;
+    border-radius: 6px; padding: 8px 10px; font-size: 12.3px; margin: 6px 0 14px;
+  }
+
+  /* ---------------- Page tabs ---------------- */
+  .page-tabs { display: flex; gap: 10px; padding: 16px 26px 0; }
+  .tab-btn {
+    background: #fff; border: 1px solid var(--border-color); color: var(--text-gray);
+    padding: 10px 20px; border-radius: 8px 8px 0 0; font-size: 13.3px; font-weight: 700;
+    cursor: pointer; border-bottom: none; position: relative; top: 1px;
+  }
+  .tab-btn.active {
+    background: var(--card-bg); color: var(--purple-accent);
+    border-bottom: 3px solid var(--cyan-dark); box-shadow: var(--shadow);
+  }
+  .tab-btn:hover:not(.active) { background: #f7f3fb; }
+
+  /* ---------------- Grading page ---------------- */
+  #gradingPage { padding: 16px 26px 24px; }
+  .grading-controls { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .cell-pos { font-weight: 800; color: var(--purple-accent); width: 40px; }
+  .grade-input {
+    width: 84px; padding: 7px 8px; border: 1px solid #d7d7de; border-radius: 6px; font-size: 13px;
+  }
+  .grade-input:focus { outline: none; border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+  .prize-cell { display: flex; align-items: center; gap: 8px; }
+  .prize-amount { width: 100px; font-weight: 800; }
+  .prize-color {
+    width: 30px; height: 30px; padding: 2px; border: 1px solid #d7d7de; border-radius: 6px;
+    cursor: pointer; background: #fff;
+  }
+
+  /* ---------------- Edit buttons / actions ---------------- */
+  .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-edit {
+    background: #e0eefe; color: #1d4ed8; border: 1px solid #bfdbfe;
+    border-radius: 6px; padding: 6px 10px; font-size: 11.8px; cursor: pointer; font-weight: 700;
+  }
+  .btn-edit:hover { background: #cfe2fd; }
+  .status-expired { color: var(--orange); font-weight: 800; }
+  .expire-note { font-size: 10.8px; color: var(--text-muted); margin-top: 6px; display: block; }
+  .checkbox-row { display: flex; align-items: center; gap: 7px; font-weight: 400 !important; }
+  .checkbox-row input[type="checkbox"] { width: auto; }
+
+  /* ---------------- Modals ---------------- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 10500; background: rgba(20,10,25,0.55);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-box {
+    background: #fff; border-radius: var(--radius); box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto;
+    padding: 22px 24px; border-top: 4px solid var(--cyan-dark);
+  }
+  .modal-box h3 { margin: 0 0 4px; font-size: 15.5px; color: var(--purple-accent); }
+  .modal-sub { font-size: 12px; color: var(--text-gray); margin: 0 0 16px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+  .modal-actions-split { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+
+  /* ---------------- Notifications panel ---------------- */
+  .notif-grid { display: grid; grid-template-columns: minmax(240px, 320px) 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 760px) { .notif-grid { grid-template-columns: 1fr; } }
+  .notif-form { background: #faf7fd; border: 1px solid #eee0f5; border-radius: 8px; padding: 16px; }
+  .notif-form h3 { margin: 0 0 14px; font-size: 13.3px; color: var(--purple-accent); }
+  .manager-checklist {
+    max-height: 150px; overflow-y: auto; border: 1px solid #d7d7de; border-radius: 6px;
+    padding: 8px 10px; background: #fff;
+  }
+  .manager-checklist label {
+    display: flex; align-items: center; gap: 7px; font-size: 12.8px; font-weight: 500;
+    color: var(--text-dark); padding: 3px 0; margin: 0;
+  }
+  .manager-checklist label input { width: auto; }
+  .checklist-toolbar { display: flex; gap: 12px; margin: 6px 0 8px; }
+  .checklist-toolbar button {
+    background: none; border: none; color: var(--purple-accent); font-size: 11px;
+    font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;
+  }
+  .notif-type-auto { background: #ecfdf5; color: #047857; }
+  .notif-type-bulk { background: #eff6ff; color: #1d4ed8; }
+  .notif-type-tag {
+    display: inline-block; font-size: 10px; font-weight: 800; padding: 3px 8px;
+    border-radius: 20px; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap;
+  }
+  .notif-msg { max-width: 260px; white-space: normal; font-size: 12.5px; }
+  .notif-meta { font-size: 11px; color: var(--text-muted); }
+  .send-link {
+    font-size: 11px; font-weight: 700; color: var(--cyan-dark); text-decoration: none;
+    white-space: nowrap;
+  }
+  .send-link:hover { text-decoration: underline; }
+
+  /* ---------------- Performance page ---------------- */
+  #performancePage { padding: 16px 26px 24px; }
+  .perf-filter-panel {
+    background: #faf7fd; border: 1px solid #eee0f5; border-radius: 8px;
+    box-shadow: none; padding: 16px; margin: 0 0 16px;
+  }
+  .perf-filter-panel h3 { margin: 0 0 12px; font-size: 13.3px; color: var(--purple-accent); }
+  .perf-filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 700px) { .perf-filter-grid { grid-template-columns: 1fr; } }
+  .chip-pill {
+    background: #f3f4f6; color: #4b5563; border: 1px solid #d7d7de; border-radius: 20px;
+    padding: 4px 10px; font-size: 10.5px; font-weight: 800; cursor: pointer; letter-spacing: .2px;
+  }
+  .chip-pill:hover { filter: brightness(1.05); }
+  .chip-pill.active { background: var(--purple-accent); color: #fff; border-color: var(--purple-accent); }
+  .pos-change-up { color: var(--green); font-weight: 800; }
+  .pos-change-down { color: var(--pink-strong); font-weight: 800; }
+  .pos-change-none { color: var(--text-muted); font-style: italic; }
+
+  /* ---------------- FPL sync page ---------------- */
+  .fpl-sync-warning {
+    background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+    border-radius: 8px; padding: 12px 14px; font-size: 12.3px; margin-bottom: 16px; line-height: 1.55;
+  }
+  .fpl-sync-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin: 4px 0 10px; }
+  .fpl-auto-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #374151; }
+
+  /* ---------------- Print ---------------- */
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .panel { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    .reserves-breakdown { display: block !important; }
+    select { border: none; background: transparent; padding: 2px 0; }
+  }
+</style>
+</head>
+<body>
+
+  <div id="loginGate" class="login-gate no-print">
+    <div class="login-card">
+      <div class="login-logo">⚽</div>
+      <h1><span class="brand-fpl">FPL</span> <span class="brand-rest">LEDGER TRACKER</span></h1>
+      <p class="login-subtitle">Sign in to access the ledger</p>
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginUsername">Username</label>
+          <input type="text" id="loginUsername" autocomplete="username" autofocus required>
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" autocomplete="current-password" required>
+        </div>
+        <p id="loginError" class="login-error hidden" role="alert">Incorrect username or password.</p>
+        <button type="submit" class="btn btn-cyan btn-block">🔐 Log In</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="appRoot" class="hidden">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo-badge">⚽</div>
+      <div>
+        <h1><span class="brand-fpl">FPL</span> <span class="brand-rest">LEDGER TRACKER</span></h1>
+        <p class="subtitle">Comprehensive League Financial Management, Payment Pipeline Verification &amp; Dynamic Multi-Horizon Allocations</p>
+      </div>
+    </div>
+    <div class="header-actions no-print">
+      <button class="btn btn-green" id="exportCsvBtn">⬆️ Export CSV</button>
+      <button class="btn btn-purple" id="saveConfigBtn">💾 Save Config JSON</button>
+      <button class="btn btn-orange" id="loadConfigBtn">📂 Load Config</button>
+      <button class="btn btn-teal" id="saveToFolderBtn">📁 Save to Folder</button>
+      <button class="btn btn-gray" id="printReportBtn">🖨️ Print Report</button>
+    </div>
+  </header>
+
+  <div class="page-tabs no-print">
+    <button class="tab-btn active" id="tabLedgerBtn" type="button">💰 Ledger Tracker</button>
+    <button class="tab-btn" id="tabGradingBtn" type="button">🏆 Gameweek Grading</button>
+    <button class="tab-btn" id="tabPerformanceBtn" type="button">📈 Performance</button>
+    <button class="tab-btn" id="tabFplSyncBtn" type="button">🔄 FPL Sync</button>
+  </div>
+
+  <div id="ledgerPage">
+
+  <section class="stats-row">
+    <div class="stat-card accent-blue">
+      <div class="label">Total Collected Pool</div>
+      <div class="value" id="statCollectedPool">0 USh</div>
+    </div>
+    <div class="stat-card accent-cyan">
+      <div class="label">Active Managers Registered</div>
+      <div class="value" id="statActiveManagers">0</div>
+    </div>
+    <div class="stat-card accent-green">
+      <div class="label">Baseline Weekly Fee</div>
+      <div class="value" id="statWeeklyFee">0 USh</div>
+    </div>
+    <div class="stat-card accent-pink">
+      <div class="label">Total Banked Advance Reserves</div>
+      <div class="value" id="statAdvanceReserves">0 USh</div>
+    </div>
+  </section>
+
+  <main class="main-grid">
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <div class="panel">
+        <div class="panel-header"><h2>⚙️ Baseline Parameters</h2></div>
+        <div class="field">
+          <label for="baselineWeeklyFeeInput">Standard Weekly Entry Fee (USh)</label>
+          <input type="number" id="baselineWeeklyFeeInput" min="0" step="100">
+        </div>
+        <div class="field">
+          <label for="incrementStackInput">Plus-Button Manual Increment Stack Value (USh)</label>
+          <input type="number" id="incrementStackInput" min="0" step="100">
+        </div>
+        <div class="field">
+          <label for="currentGwInput">Current Gameweek (used for advance expiry)</label>
+          <select id="currentGwInput"></select>
+        </div>
+        <button class="btn btn-link no-print" id="resetDataBtn" type="button">↺ Reset all data to defaults</button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>☁️ Cloud Backup (via GitHub)</h2></div>
+        <p class="panel-desc">Save this tracker's data as a JSON file in a GitHub repo so it's accessible from any device — not just this browser. Uses GitHub's own API directly from this page, no other service involved.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="ghOwner">GitHub Username</label>
+            <input type="text" id="ghOwner" placeholder="e.g. yourusername">
+          </div>
+          <div class="field">
+            <label for="ghRepo">Repo Name (a small private repo works well)</label>
+            <input type="text" id="ghRepo" placeholder="e.g. fpl-ledger-data">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="ghBranch">Branch</label>
+            <input type="text" id="ghBranch" value="main">
+          </div>
+          <div class="field">
+            <label for="ghPath">File Path in Repo</label>
+            <input type="text" id="ghPath" value="data/fpl-ledger-data.json">
+          </div>
+        </div>
+        <div class="field">
+          <label for="ghToken">GitHub Personal Access Token (fine-grained, scoped to just this repo)</label>
+          <input type="password" id="ghToken" placeholder="ghp_… or github_pat_…" autocomplete="off">
+          <span class="expire-note">Stored only in this browser's local storage, kept separate from the exported/saved config file. Never shared with anyone but GitHub. See README for how to create one.</span>
+        </div>
+        <div class="grading-controls no-print" style="margin-top:0;">
+          <button class="btn btn-cyan" id="cloudSaveBtn" type="button">⬆️ Save to GitHub</button>
+          <button class="btn btn-teal" id="cloudLoadBtn" type="button">⬇️ Load from GitHub</button>
+        </div>
+        <p class="hint" id="cloudSyncStatus">Not synced yet.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>📋 Bulk Import Managers</h2></div>
+        <p class="panel-desc">Input multiple names split across alternate text lines below to instantly add them to the ledger roster.</p>
+
+        <div class="field no-print">
+          <label for="newManagerName">Quick Add Single Manager</label>
+          <div class="inline-form">
+            <input type="text" id="newManagerName" placeholder="e.g. Sarah">
+            <button class="btn btn-green" id="addManagerBtn" type="button">+ Add</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="bulkImportText">Bulk Names (one per line)</label>
+          <textarea id="bulkImportText" rows="4" placeholder="One name per line"></textarea>
+        </div>
+        <button class="btn btn-darkpurple btn-block" id="bulkImportBtn" type="button">⚡ Execute Bulk Realignment</button>
+        <p class="hint no-print">To remove a manager, use the 🗑 Remove button on their row in the Ledger Matrix panel.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><h2>📊 Gameweek Total Summary</h2></div>
+        <p class="panel-desc">Track structural cash and mobile money collections for any single Gameweek independent milestone framework.</p>
+        <div class="field">
+          <label for="summaryGwSelect">Select Gameweek</label>
+          <select id="summaryGwSelect"></select>
+        </div>
+        <div class="field">
+          <label for="sponsorshipInput">🎗️ Sponsorship (this Gameweek)</label>
+          <input type="number" id="sponsorshipInput" min="0" step="100" placeholder="0">
+        </div>
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <div class="mini-label">💵 CASH</div>
+            <div class="mini-value" id="summaryCash">0 USh</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-label">📱 MM</div>
+            <div class="mini-value" id="summaryMM">0 USh</div>
+          </div>
+          <div class="mini-stat accent">
+            <div class="mini-label">Σ TOTAL</div>
+            <div class="mini-value" id="summaryTotal">0 USh</div>
+          </div>
+        </div>
+        <p class="hint">Weekly Total = Cash + Mobile Money + Sponsorship.</p>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-col">
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2><span class="icon-swatch"></span> Interactive Gameweek Payment Ledger Matrix</h2>
+          <span class="badge">GW1 – GW38 Tracker Matrix</span>
+        </div>
+
+        <div class="gw-picker no-print">
+          <label for="ledgerGwSelect">Select Gameweek to View / Manage</label>
+          <select id="ledgerGwSelect"></select>
+        </div>
+
+        <div class="ledger-actions-row no-print">
+          <button class="btn btn-teal" id="screenshotLedgerBtn" type="button">📸 Screenshot</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="ledger">
+            <thead>
+              <tr>
+                <th>Manager Demographics</th>
+                <th>Cumulative Paid</th>
+                <th>Gameweek Status</th>
+                <th>Payment Method</th>
+                <th class="no-print">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+
+        <div class="legend">
+          <span><i class="dot dot-green"></i> Paid (✓)</span>
+          <span><i class="dot dot-pink"></i> Unpaid (✕)</span>
+          <span class="hint">Click a manager's status button to toggle Paid/Unpaid for the selected gameweek. Use the dropdown beside it to set the transaction format.</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>💰 Money in Bank &amp; Advance Deposit Pipelines</h2>
+          <button class="btn btn-darkpurple no-print" id="vaultReservesBtn" type="button">Vault Liquidity Reserves</button>
+        </div>
+        <p class="panel-desc">Explicitly input custom prepayment parameters across selected horizon ranges to force sync systemic entries.</p>
+
+        <div id="reservesBreakdown" class="reserves-breakdown hidden">
+          <h4>Reserves Breakdown</h4>
+          <ul id="reservesList"></ul>
+        </div>
+
+        <div class="advance-grid">
+          <div class="advance-form no-print">
+            <h3>📌 Input New Advance Prepayment</h3>
+            <div class="field">
+              <label for="advanceManagerSelect">Select Target Manager</label>
+              <select id="advanceManagerSelect"></select>
+            </div>
+            <div class="field">
+              <label for="advanceAmount">Total Upfront Amount Deposited (USh)</label>
+              <input type="number" id="advanceAmount" min="0" step="100">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="advanceFromGw">From Gameweek</label>
+                <select id="advanceFromGw"></select>
+              </div>
+              <div class="field">
+                <label for="advanceToGw">To Gameweek</label>
+                <select id="advanceToGw"></select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="advanceMethod">Payment Method / Format via</label>
+              <select id="advanceMethod">
+                <option value="CASH">CASH</option>
+                <option value="MM">MOBILE MONEY (MM)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="checkbox-row"><input type="checkbox" id="advanceAutoExpire"> Auto-expire at end of allocated Gameweek range</label>
+              <span class="expire-note">When enabled, the advance is flagged "Expired" once the Current Gameweek (Baseline Parameters) passes the "To Gameweek".</span>
+            </div>
+            <button class="btn btn-cyan btn-block" id="commitAdvanceBtn" type="button">🔒 Commit &amp; Sync Ledger Range</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="ledger">
+              <thead>
+                <tr>
+                  <th>Manager Profile</th>
+                  <th>Configured Advance Range</th>
+                  <th>Computed Prepayment Pool</th>
+                  <th>Status Index Reference</th>
+                  <th class="no-print">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="advanceBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h2>🔔 Notifications</h2>
+          <span class="badge" id="notifCountBadge">0 sent</span>
+        </div>
+        <p class="panel-desc">Managers are automatically notified whenever their gameweek subscription is marked PAID. You can also send bulk messages via SMS, Email, or WhatsApp (to individual managers or WhatsApp groups) below — every message is logged so you have a record of what went out and to whom.</p>
+
+        <div class="notif-grid">
+          <div class="notif-form no-print">
+            <h3>📣 Send Bulk Message</h3>
+            <div class="field">
+              <label for="notifChannelSelect">Send Via</label>
+              <select id="notifChannelSelect">
+                <option value="SMS">SMS (Text Message)</option>
+                <option value="Email">Email</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="In-App">In-App Note Only</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Recipients — Managers</label>
+              <div class="checklist-toolbar">
+                <button type="button" id="notifSelectAllBtn">Select all</button>
+                <button type="button" id="notifSelectNoneBtn">Clear</button>
+              </div>
+              <div class="manager-checklist" id="notifManagerChecklist"></div>
+            </div>
+            <div class="field hidden" id="notifGroupSection">
+              <label>Recipients — WhatsApp Groups</label>
+              <div class="checklist-toolbar">
+                <button type="button" id="notifGroupSelectAllBtn">Select all</button>
+                <button type="button" id="notifGroupSelectNoneBtn">Clear</button>
+              </div>
+              <div class="manager-checklist" id="notifGroupChecklist"></div>
+            </div>
+            <div class="field">
+              <label for="notifMessageText">Message</label>
+              <textarea id="notifMessageText" rows="4" placeholder="e.g. Reminder: GW12 payment is due by Friday."></textarea>
+            </div>
+            <button class="btn btn-cyan btn-block" id="sendBulkNotifBtn" type="button">📨 Send &amp; Log Message</button>
+            <p class="hint">This app can't dispatch messages on its own — it logs the message here and gives you a one-tap "Open" link. For SMS/Email/WhatsApp direct chats this pre-fills the message; for WhatsApp groups it copies the message to your clipboard and opens the group so you can paste &amp; send.</p>
+
+            <div class="reserves-breakdown" style="margin-top:16px;">
+              <h4>💬 WhatsApp Groups</h4>
+              <div class="field-row">
+                <div class="field" style="margin-bottom:8px;">
+                  <input type="text" id="newGroupName" placeholder="Group name e.g. GW Payments">
+                </div>
+                <div class="field" style="margin-bottom:8px;">
+                  <input type="text" id="newGroupLink" placeholder="Invite link (chat.whatsapp.com/...)">
+                </div>
+              </div>
+              <button class="btn btn-teal btn-block" id="addGroupBtn" type="button" style="margin-top:0;">+ Add WhatsApp Group</button>
+              <ul id="groupManageList" style="margin-top:12px;"></ul>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="ledger">
+              <thead>
+                <tr>
+                  <th>Recipient</th>
+                  <th>Message</th>
+                  <th>Type</th>
+                  <th>Channel</th>
+                  <th>Sent At</th>
+                  <th class="no-print">Send</th>
+                </tr>
+              </thead>
+              <tbody id="notificationsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  </div><!-- /#ledgerPage -->
+
+  <div id="gradingPage" class="hidden">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>🏆 Gameweek Performance Grading</h2>
+        <span class="badge">GW1 – GW38</span>
+      </div>
+      <p class="panel-desc">Score each manager's gameweek, subtract their transfer cost, then rank the table by who came out on top.</p>
+
+      <div class="grading-controls no-print">
+        <div class="field" style="max-width:240px;margin-bottom:0;">
+          <label for="gradingGwSelect">Select Gameweek to Grade</label>
+          <select id="gradingGwSelect"></select>
+        </div>
+        <button class="btn btn-darkpurple" id="sortGradingBtn" type="button">🔀 Sort by GW Total</button>
+        <button class="btn btn-green" id="exportGradingCsvBtn" type="button">⬇️ Export Grading CSV</button>
+        <button class="btn btn-teal" id="screenshotGradingBtn" type="button">📸 Screenshot</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger grading-table">
+          <thead>
+            <tr>
+              <th>POS</th>
+              <th>Manager</th>
+              <th>GW Points</th>
+              <th>Transfer Cost</th>
+              <th>GW Total</th>
+              <th>Prize</th>
+            </tr>
+          </thead>
+          <tbody id="gradingBody"></tbody>
+        </table>
+      </div>
+      <p class="hint">GW Total = GW Points − Transfer Cost. Enter points as they're confirmed, then click Sort to rank the table. Pick a colour swatch next to each prize to make it stand out.</p>
+    </div>
+  </div>
+
+  <div id="performancePage" class="hidden">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>📈 Manager Performance Tracker</h2>
+        <span class="badge">Aug – May Monthly Overview</span>
+      </div>
+      <p class="panel-desc">Track each manager's overall league position, transfers used, and chips played, month by month. Use the filters below to narrow the roster down.</p>
+
+      <div class="grading-controls no-print">
+        <div class="field" style="max-width:200px;margin-bottom:0;">
+          <label for="perfMonthSelect">Select Month</label>
+          <select id="perfMonthSelect"></select>
+        </div>
+        <button class="btn btn-green" id="exportPerfCsvBtn" type="button">⬇️ Export CSV (All Months)</button>
+      </div>
+
+      <div class="panel perf-filter-panel no-print">
+        <h3>🔍 Filter Managers</h3>
+        <div class="perf-filter-grid">
+          <div class="field" style="margin-bottom:0;">
+            <label for="perfFilterTransfers">Transfers Used ≥ (this month)</label>
+            <input type="number" id="perfFilterTransfers" min="0" placeholder="Any">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="perfFilterChips">Chips Used ≥ (this month)</label>
+            <input type="number" id="perfFilterChips" min="0" placeholder="Any">
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label for="perfFilterFT">Free Transfers Available ≥</label>
+            <input type="number" id="perfFilterFT" min="0" placeholder="Any">
+          </div>
+        </div>
+        <button class="btn-link" id="clearPerfFiltersBtn" type="button" style="margin-top:10px;">✕ Clear filters</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>Manager</th>
+              <th>Position (this month)</th>
+              <th>Change vs Previous Month</th>
+              <th>Transfers Used</th>
+              <th>Chips Used</th>
+              <th>Free Transfers Available</th>
+            </tr>
+          </thead>
+          <tbody id="performanceBody"></tbody>
+        </table>
+      </div>
+      <p class="hint">Position = overall league rank at the end of the month (lower is better; the change column compares it to the most recent earlier month with a recorded position). Click a chip pill to toggle whether it was played that month. Free Transfers Available is a running total, not tied to a single month.</p>
+    </div>
+  </div>
+
+  <div id="fplSyncPage" class="hidden">
+    <div class="panel">
+      <div class="panel-header"><h2>🔄 FPL Mini-League Sync</h2></div>
+      <p class="panel-desc">Pulls standings, gameweek points, transfer costs, and chip usage from the official FPL site for this league, and writes them straight into the Grading and Performance pages.</p>
+
+      <div class="fpl-sync-warning">
+        ⚠️ The official FPL API doesn't allow browser pages to call it directly (a security rule on their end, not a setting here), so this goes through a public CORS proxy to reach it. That proxy is a third-party service outside anyone's control — if a sync fails, it's almost always the proxy being briefly down, not a fault in this file. The proxy URL below can be swapped for another if needed. Also: "auto-sync" only runs while this browser tab stays open, the same as any webpage — it can't run in the background once the tab or browser is closed.
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="fplLeagueIdInput">League ID / Code</label>
+          <input type="text" id="fplLeagueIdInput" placeholder="e.g. 1459370">
+        </div>
+        <div class="field">
+          <label for="fplLeagueNameInput">League Name</label>
+          <input type="text" id="fplLeagueNameInput" placeholder="e.g. Kabanana Season 4 - 2026/27">
+        </div>
+      </div>
+      <div class="field">
+        <label for="fplProxyUrlInput">CORS Proxy URL (only change this if syncing stops working)</label>
+        <input type="text" id="fplProxyUrlInput">
+      </div>
+
+      <div class="fpl-sync-actions no-print">
+        <button class="btn btn-cyan" id="fplSyncNowBtn" type="button">🔄 Sync Now</button>
+        <label class="fpl-auto-toggle">
+          <input type="checkbox" id="fplAutoSyncToggle"> Auto-sync every 40 minutes while this tab is open
+        </label>
+      </div>
+      <p class="hint" id="fplSyncStatus">Not synced yet.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><h2>🔗 Match Managers</h2></div>
+      <p class="panel-desc">Links each real FPL entry to a manager in this tracker so synced data lands in the right row. Exact name matches link automatically on every sync.</p>
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>FPL Manager</th>
+              <th>FPL Team</th>
+              <th>Linked App Manager</th>
+            </tr>
+          </thead>
+          <tbody id="fplMatchBody"><tr><td colspan="3" class="empty-row">Run a sync to see FPL managers here.</td></tr></tbody>
+        </table>
+      </div>
+      <button class="btn btn-darkpurple no-print" id="fplImportUnmatchedBtn" type="button">➕ Import All Unmatched as New Managers</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>🏆 Live League Standings</h2>
+        <span class="badge" id="fplStandingsUpdated">Not synced yet</span>
+      </div>
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Manager</th>
+              <th>Team</th>
+              <th>GW Points</th>
+              <th>Total Points</th>
+            </tr>
+          </thead>
+          <tbody id="fplStandingsBody"><tr><td colspan="5" class="empty-row">Run a sync to see standings here.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header"><h2>📝 Sync Log</h2></div>
+      <div class="table-wrap">
+        <table class="ledger">
+          <thead><tr><th>Time</th><th>Event</th></tr></thead>
+          <tbody id="fplSyncLogBody"><tr><td colspan="2" class="empty-row">No sync activity yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer no-print">
+    FPL Ledger Tracker — data auto-saves in this browser (local storage). Use <strong>Save to Folder</strong> to keep a portable backup file wherever you like.
+    <br><button class="btn-link" id="logoutBtn" type="button">Log Out</button>
+  </footer>
+
+
+  </div><!-- /#appRoot -->
+
+  <div id="managerEditModal" class="modal-overlay hidden no-print">
+    <div class="modal-box">
+      <h3>✏️ Edit Manager Details</h3>
+      <p class="modal-sub">Update contact and roster information for this manager.</p>
+      <div class="field">
+        <label for="editMgrName">Name</label>
+        <input type="text" id="editMgrName">
+      </div>
+      <div class="field">
+        <label for="editMgrTeam">Team Name</label>
+        <input type="text" id="editMgrTeam" placeholder="e.g. Salah's Ghost">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="editMgrPhone">Phone Number</label>
+          <input type="tel" id="editMgrPhone" placeholder="e.g. +256700000000">
+        </div>
+        <div class="field">
+          <label for="editMgrWhatsapp">WhatsApp Number</label>
+          <input type="tel" id="editMgrWhatsapp" placeholder="Leave blank to use phone number">
+        </div>
+      </div>
+      <div class="field">
+        <label for="editMgrEmail">Email</label>
+        <input type="email" id="editMgrEmail" placeholder="e.g. name@email.com">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-link" id="cancelMgrEditBtn" type="button">Cancel</button>
+        <button class="btn btn-cyan" id="saveMgrEditBtn" type="button">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="advanceEditModal" class="modal-overlay hidden no-print">
+    <div class="modal-box">
+      <h3>✏️ Edit Advance Prepayment</h3>
+      <p class="modal-sub" id="advanceEditSubtitle">Update the synced advance for this manager.</p>
+      <div class="field">
+        <label for="editAdvAmount">Total Upfront Amount Deposited (USh)</label>
+        <input type="number" id="editAdvAmount" min="0" step="100">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="editAdvFromGw">From Gameweek</label>
+          <select id="editAdvFromGw"></select>
+        </div>
+        <div class="field">
+          <label for="editAdvToGw">To Gameweek</label>
+          <select id="editAdvToGw"></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="editAdvMethod">Payment Method / Format via</label>
+        <select id="editAdvMethod">
+          <option value="CASH">CASH</option>
+          <option value="MM">MOBILE MONEY (MM)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="checkbox-row"><input type="checkbox" id="editAdvAutoExpire"> Auto-expire at end of allocated Gameweek range</label>
+        <span class="expire-note">Flags this advance "Expired" once Current Gameweek passes the "To Gameweek".</span>
+      </div>
+      <div class="modal-actions-split">
+        <button class="btn-remove" id="clearAdvEditBtn" type="button">🗑 Clear Advance</button>
+        <div class="modal-actions" style="margin-top:0;">
+          <button class="btn btn-link" id="cancelAdvEditBtn" type="button">Cancel</button>
+          <button class="btn btn-cyan" id="saveAdvEditBtn" type="button">💾 Save &amp; Re-sync</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="no-print" aria-live="polite"></div>
+  <input type="file" id="loadConfigInput" accept="application/json" style="display:none">
+
+<script>
+(function () {
+  "use strict";
+
+  var GW_COUNT = 38;
+  var STORAGE_KEY = "fplLedgerTrackerState";
+  var METHODS = [
+    { value: "CASH", label: "CASH" },
+    { value: "MM", label: "MOBILE MONEY (MM)" }
+  ];
+  var MONTHS = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May"];
+  var CHIPS = [
+    { value: "WC", label: "Wildcard" },
+    { value: "FH", label: "Free Hit" },
+    { value: "BB", label: "Bench Boost" },
+    { value: "TC", label: "Triple Captain" }
+  ];
+
+  var selectedLedgerGW = 1;
+  var selectedSummaryGW = 1;
+  var selectedGradingGW = 1;
+  var selectedPerfMonth = MONTHS[0];
+  var gradingSortOrder = {};
+  var lastFplStandings = [];
+  var fplAutoSyncTimer = null;
+  var firstRun = false;
+
+  /* ---------- state helpers ---------- */
+  function uid() { return "m_" + Math.random().toString(36).slice(2, 9); }
+
+  function freshManager(name) {
+    return { id: uid(), name: name, team: "", phone: "", email: "", whatsapp: "", manualAdjustments: 0, advance: null, fplEntryId: null };
+  }
+
+  function ensureManagerFields(m) {
+    if (m.team === undefined) m.team = "";
+    if (m.phone === undefined) m.phone = "";
+    if (m.email === undefined) m.email = "";
+    if (m.whatsapp === undefined) m.whatsapp = "";
+    if (m.fplEntryId === undefined) m.fplEntryId = null;
+    if (m.advance && m.advance.autoExpire === undefined) m.advance.autoExpire = false;
+    return m;
+  }
+
+  function blankPayments() {
+    var p = {};
+    for (var gw = 1; gw <= GW_COUNT; gw++) { p[gw] = { paid: false, method: "CASH" }; }
+    return p;
+  }
+
+  function blankPerformanceMonthly() {
+    var p = {};
+    MONTHS.forEach(function (mo) { p[mo] = { position: null, transfers: 0, chips: [] }; });
+    return p;
+  }
+
+  function defaultState() {
+    var dan = freshManager("Dan");
+    var st = {
+      params: { weeklyFee: 10000, incrementStack: 10000, currentGw: 1 },
+      managers: [dan],
+      payments: {},
+      grading: {},
+      performance: {},
+      sponsorship: {},
+      notifications: [],
+      whatsappGroups: [],
+      githubSync: { owner: "", repo: "", branch: "main", path: "data/fpl-ledger-data.json" },
+      fplSync: {
+        leagueId: "1459370",
+        leagueName: "Kabanana Season 4 - 2026/27",
+        proxyUrl: "https://api.allorigins.win/raw?url=",
+        autoSyncEnabled: false,
+        lastSyncedAt: null,
+        lastSyncSummary: "",
+        log: []
+      }
+    };
+    st.payments[dan.id] = blankPayments();
+    st.grading[dan.id] = blankGrading();
+    st.performance[dan.id] = { monthly: blankPerformanceMonthly(), freeTransfers: 0 };
+    return st;
+  }
+
+  function backfillState(st) {
+    if (!st.params) st.params = { weeklyFee: 10000, incrementStack: 10000 };
+    if (st.params.currentGw === undefined) st.params.currentGw = 1;
+    if (!st.notifications) st.notifications = [];
+    if (!st.whatsappGroups) st.whatsappGroups = [];
+    if (!st.githubSync) st.githubSync = { owner: "", repo: "", branch: "main", path: "data/fpl-ledger-data.json" };
+    if (!st.performance) st.performance = {};
+    if (!st.fplSync) {
+      st.fplSync = {
+        leagueId: "1459370",
+        leagueName: "Kabanana Season 4 - 2026/27",
+        proxyUrl: "https://api.allorigins.win/raw?url=",
+        autoSyncEnabled: false,
+        lastSyncedAt: null,
+        lastSyncSummary: "",
+        log: []
+      };
+    }
+    if (st.managers) {
+      st.managers.forEach(function (m) {
+        ensureManagerFields(m);
+        if (!st.performance[m.id]) {
+          st.performance[m.id] = { monthly: blankPerformanceMonthly(), freeTransfers: 0 };
+        } else {
+          if (!st.performance[m.id].monthly) st.performance[m.id].monthly = blankPerformanceMonthly();
+          MONTHS.forEach(function (mo) {
+            if (!st.performance[m.id].monthly[mo]) st.performance[m.id].monthly[mo] = { position: null, transfers: 0, chips: [] };
+          });
+          if (st.performance[m.id].freeTransfers === undefined) st.performance[m.id].freeTransfers = 0;
+        }
+      });
+    }
+    return st;
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.params && parsed.managers && parsed.payments) return backfillState(parsed);
+      }
+    } catch (e) { console.warn("Could not read saved data, starting fresh.", e); }
+    firstRun = true;
+    return defaultState();
+  }
+
+  var state = loadState();
+
+  function persist() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch (e) { console.error("Could not save data locally.", e); }
+  }
+
+  function ensurePaymentsFor(managerId) {
+    if (!state.payments[managerId]) state.payments[managerId] = {};
+    for (var gw = 1; gw <= GW_COUNT; gw++) {
+      if (!state.payments[managerId][gw]) state.payments[managerId][gw] = { paid: false, method: "CASH" };
+    }
+  }
+
+  function ensurePerformanceFor(managerId) {
+    if (!state.performance) state.performance = {};
+    if (!state.performance[managerId]) {
+      state.performance[managerId] = { monthly: blankPerformanceMonthly(), freeTransfers: 0 };
+      return;
+    }
+    var perf = state.performance[managerId];
+    if (!perf.monthly) perf.monthly = blankPerformanceMonthly();
+    MONTHS.forEach(function (mo) {
+      if (!perf.monthly[mo]) perf.monthly[mo] = { position: null, transfers: 0, chips: [] };
+    });
+    if (perf.freeTransfers === undefined) perf.freeTransfers = 0;
+  }
+
+  function blankGrading() {
+    var g = {};
+    for (var gw = 1; gw <= GW_COUNT; gw++) { g[gw] = { points: null, transferCost: 0, prize: 0, prizeColor: "#16a34a" }; }
+    return g;
+  }
+
+  function ensureGradingFor(managerId) {
+    if (!state.grading) state.grading = {};
+    if (!state.grading[managerId]) state.grading[managerId] = {};
+    for (var gw = 1; gw <= GW_COUNT; gw++) {
+      if (!state.grading[managerId][gw]) {
+        state.grading[managerId][gw] = { points: null, transferCost: 0, prize: 0, prizeColor: "#16a34a" };
+      }
+    }
+  }
+
+  /* ---------- utilities ---------- */
+  function escapeHtml(str) {
+    var d = document.createElement("div");
+    d.textContent = String(str);
+    return d.innerHTML;
+  }
+
+  function formatTimestamp(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
+  }
+
+  function formatUSh(n) {
+    n = Number(n) || 0;
+    return n.toLocaleString("en-US") + " USh";
+  }
+
+  function csvEscape(val) {
+    var s = String(val);
+    if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+    return s;
+  }
+
+  function truncateText(ctx, text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    var truncated = text;
+    while (truncated.length > 1 && ctx.measureText(truncated + "…").width > maxWidth) {
+      truncated = truncated.slice(0, -1);
+    }
+    return truncated + "…";
+  }
+
+  function downloadFile(filename, content, mime) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadCanvasAsPng(canvas, filename) {
+    canvas.toBlob(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, "image/png");
+  }
+
+  function toast(msg) {
+    var container = document.getElementById("toast-container");
+    var el = document.createElement("div");
+    el.className = "toast";
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(function () { el.remove(); }, 3400);
+  }
+
+  function $(id) { return document.getElementById(id); }
+
+  /* ---------- computed values ---------- */
+  function paidCountFor(manager) {
+    var payments = state.payments[manager.id] || {};
+    var c = 0;
+    for (var gw = 1; gw <= GW_COUNT; gw++) { if (payments[gw] && payments[gw].paid) c++; }
+    return c;
+  }
+
+  function cumulativePaid(manager) {
+    return paidCountFor(manager) * state.params.weeklyFee + (manager.manualAdjustments || 0);
+  }
+
+  function totalCollectedPool() {
+    var sum = 0;
+    state.managers.forEach(function (m) { sum += cumulativePaid(m); });
+    return sum;
+  }
+
+  function totalAdvanceReserves() {
+    var sum = 0;
+    state.managers.forEach(function (m) { if (m.advance) sum += Number(m.advance.amount) || 0; });
+    return sum;
+  }
+
+  function sponsorshipFor(gw) {
+    return (state.sponsorship && state.sponsorship[gw]) || 0;
+  }
+
+  function managerNameOf(id) {
+    var m = state.managers.filter(function (x) { return x.id === id; })[0];
+    return m ? m.name : "that manager";
+  }
+
+  function gwTotalFor(managerId, gw) {
+    ensureGradingFor(managerId);
+    var g = state.grading[managerId][gw];
+    if (g.points === null || g.points === undefined || g.points === "") return null;
+    return (Number(g.points) || 0) - (Number(g.transferCost) || 0);
+  }
+
+  function getGradingDisplayOrder(gw) {
+    var order = gradingSortOrder[gw];
+    if (!order) return state.managers.slice();
+    var byId = {};
+    state.managers.forEach(function (m) { byId[m.id] = m; });
+    var ordered = order.map(function (id) { return byId[id]; }).filter(Boolean);
+    var seen = {};
+    ordered.forEach(function (m) { seen[m.id] = true; });
+    state.managers.forEach(function (m) { if (!seen[m.id]) ordered.push(m); });
+    return ordered;
+  }
+
+  /* ---------- render ---------- */
+  function populateGwSelect(selectEl, selectedValue) {
+    selectEl.innerHTML = "";
+    for (var gw = 1; gw <= GW_COUNT; gw++) {
+      var opt = document.createElement("option");
+      opt.value = gw;
+      opt.textContent = "Gameweek " + gw;
+      selectEl.appendChild(opt);
+    }
+    if (selectedValue) selectEl.value = selectedValue;
+  }
+
+  function populateManagerSelect(selectEl) {
+    var prev = selectEl.value;
+    if (state.managers.length === 0) {
+      selectEl.innerHTML = '<option value="">No managers yet — add one first</option>';
+      return;
+    }
+    selectEl.innerHTML = state.managers.map(function (m) {
+      return '<option value="' + m.id + '">' + escapeHtml(m.name) + "</option>";
+    }).join("");
+    if (state.managers.some(function (m) { return m.id === prev; })) selectEl.value = prev;
+  }
+
+  function renderStats() {
+    $("statCollectedPool").textContent = formatUSh(totalCollectedPool());
+    $("statActiveManagers").textContent = state.managers.length;
+    $("statWeeklyFee").textContent = formatUSh(state.params.weeklyFee);
+    $("statAdvanceReserves").textContent = formatUSh(totalAdvanceReserves());
+  }
+
+  function renderLedgerMatrix() {
+    var tbody = $("ledgerBody");
+    if (state.managers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No managers yet. Add one from the panel on the left to get started.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.managers.map(function (m) {
+      ensurePaymentsFor(m.id);
+      var p = state.payments[m.id][selectedLedgerGW];
+      var paidCount = paidCountFor(m);
+      var pct = ((paidCount / GW_COUNT) * 100).toFixed(1);
+      var methodOptions = METHODS.map(function (opt) {
+        return '<option value="' + opt.value + '"' + (opt.value === p.method ? " selected" : "") + ">" + opt.label + "</option>";
+      }).join("");
+      return (
+        "<tr>" +
+          "<td>" +
+            '<div class="mgr-name-row"><strong>' + escapeHtml(m.name) + '</strong>' +
+              '<button class="pill-add no-print" data-action="quickadd" data-id="' + m.id + '" title="Add manual increment">+' + state.params.incrementStack.toLocaleString() + "</button>" +
+            "</div>" +
+            '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+            '<span class="progress-label">' + paidCount + "/" + GW_COUNT + " GWs paid</span>" +
+          "</td>" +
+          '<td class="cell-amount">' + formatUSh(cumulativePaid(m)) + "</td>" +
+          "<td>" +
+            '<button class="toggle-paid ' + (p.paid ? "paid" : "unpaid") + '" data-action="toggle" data-id="' + m.id + '">' +
+              (p.paid ? "✓ PAID" : "✕ UNPAID") +
+            "</button>" +
+          "</td>" +
+          "<td>" +
+            '<select class="method-select" data-action="method" data-id="' + m.id + '">' + methodOptions + "</select>" +
+          "</td>" +
+          '<td class="no-print"><div class="actions-cell">' +
+            '<button class="btn-edit" data-action="editmgr" data-id="' + m.id + '">✏️ Edit</button>' +
+            '<button class="btn-remove" data-action="remove" data-id="' + m.id + '">🗑 Remove</button>' +
+          '</div></td>' +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  function screenshotLedgerMatrix() {
+    var gw = selectedLedgerGW;
+    if (state.managers.length === 0) { toast("Add some managers first."); return; }
+
+    var cols = { manager: 240, cumulative: 150, status: 130, method: 200 };
+    var width = cols.manager + cols.cumulative + cols.status + cols.method;
+    var headerH = 84, colHeadH = 34, rowH = 34, footerH = 26;
+    var height = headerH + colHeadH + (state.managers.length * rowH) + footerH;
+
+    var dpr = window.devicePixelRatio || 1;
+    var canvas = document.createElement("canvas");
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    var FONT = "-apple-system, Segoe UI, Roboto, Arial, sans-serif";
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    var grad = ctx.createLinearGradient(0, 0, width, headerH);
+    grad.addColorStop(0, "#2b0e2e");
+    grad.addColorStop(1, "#1a0a1f");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, headerH);
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(0, 0, width, 4);
+
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
+    ctx.font = "800 22px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("FPL ", 20, 38);
+    var fplWidth = ctx.measureText("FPL ").width;
+    ctx.fillStyle = "#22d3ee";
+    ctx.fillText("LEDGER TRACKER", 20 + fplWidth, 38);
+
+    ctx.font = "600 14px " + FONT;
+    ctx.fillStyle = "#cdb9d6";
+    ctx.fillText("Gameweek " + gw + " Payment Status", 20, 62);
+
+    var y = headerH;
+    ctx.fillStyle = "#3c1361";
+    ctx.fillRect(0, y, width, colHeadH);
+    ctx.font = "800 11px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "middle";
+
+    var hx = 0;
+    function headCell(text, cw, align) {
+      ctx.textAlign = align;
+      ctx.fillText(text, align === "left" ? hx + 12 : hx + cw / 2, y + colHeadH / 2);
+      hx += cw;
+    }
+    headCell("MANAGER", cols.manager, "left");
+    headCell("CUMULATIVE PAID", cols.cumulative, "center");
+    headCell("GW STATUS", cols.status, "center");
+    headCell("METHOD", cols.method, "center");
+
+    y += colHeadH;
+    state.managers.forEach(function (m, idx) {
+      ensurePaymentsFor(m.id);
+      var p = state.payments[m.id][gw];
+
+      ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#faf7fd";
+      ctx.fillRect(0, y, width, rowH);
+
+      var cx = 0;
+      ctx.textAlign = "left";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(truncateText(ctx, m.name, cols.manager - 20), cx + 12, y + rowH / 2);
+      cx += cols.manager;
+
+      ctx.textAlign = "center";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(formatUSh(cumulativePaid(m)), cx + cols.cumulative / 2, y + rowH / 2);
+      cx += cols.cumulative;
+
+      ctx.font = "800 12px " + FONT;
+      ctx.fillStyle = p.paid ? "#16a34a" : "#e11d48";
+      ctx.fillText(p.paid ? "✓ PAID" : "✕ UNPAID", cx + cols.status / 2, y + rowH / 2);
+      cx += cols.status;
+
+      ctx.font = "400 12.5px " + FONT;
+      ctx.fillStyle = "#374151";
+      ctx.fillText(p.method === "MM" ? "MOBILE MONEY (MM)" : "CASH", cx + cols.method / 2, y + rowH / 2);
+
+      y += rowH;
+    });
+
+    ctx.fillStyle = "#f1f2f6";
+    ctx.fillRect(0, y, width, footerH);
+    ctx.font = "600 10.5px " + FONT;
+    ctx.fillStyle = "#9ca3af";
+    ctx.textAlign = "center";
+    ctx.fillText("FPL Ledger Tracker — Gameweek " + gw, width / 2, y + footerH / 2);
+
+    downloadCanvasAsPng(canvas, "fpl-gameweek-" + gw + "-ledger.png");
+    toast("Screenshot saved as an image.");
+  }
+
+  function renderGwSummary() {
+    var cash = 0, mm = 0;
+    state.managers.forEach(function (m) {
+      ensurePaymentsFor(m.id);
+      var p = state.payments[m.id][selectedSummaryGW];
+      if (p.paid) {
+        if (p.method === "CASH") cash += state.params.weeklyFee;
+        else if (p.method === "MM") mm += state.params.weeklyFee;
+      }
+    });
+    var sponsor = sponsorshipFor(selectedSummaryGW);
+    $("summaryCash").textContent = formatUSh(cash);
+    $("summaryMM").textContent = formatUSh(mm);
+    $("summaryTotal").textContent = formatUSh(cash + mm + sponsor);
+    $("sponsorshipInput").value = sponsor || "";
+  }
+
+  function isAdvanceExpired(m) {
+    return !!(m.advance && m.advance.autoExpire && Number(state.params.currentGw) > Number(m.advance.to));
+  }
+
+  function renderAdvanceTable() {
+    var tbody = $("advanceBody");
+    if (state.managers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No managers yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = state.managers.map(function (m) {
+      var range = m.advance ? ("GW" + m.advance.from + " – GW" + m.advance.to) : '<span class="text-muted">None Scheduled</span>';
+      var pool = m.advance ? formatUSh(m.advance.amount) : formatUSh(0);
+      var expired = isAdvanceExpired(m);
+      var status = !m.advance ? '<span class="status-none">No Advance</span>' :
+        (expired ? '<span class="status-expired">⏳ Expired</span>' : '<span class="status-active">Advance Active</span>');
+      var editBtn = '<button class="btn-edit" data-action="editadv" data-id="' + m.id + '">✏️ Edit</button>';
+      return (
+        "<tr>" +
+          "<td>" + escapeHtml(m.name) + "</td>" +
+          "<td>" + range + "</td>" +
+          '<td class="cell-amount">' + pool + "</td>" +
+          "<td>" + status + "</td>" +
+          '<td class="no-print">' + editBtn + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  function renderReservesBreakdown() {
+    var list = $("reservesList");
+    var withAdvance = state.managers.filter(function (m) { return !!m.advance; });
+    if (withAdvance.length === 0) {
+      list.innerHTML = "<li>No advance reserves banked yet.</li>";
+      return;
+    }
+    list.innerHTML = withAdvance.map(function (m) {
+      return "<li>" + escapeHtml(m.name) + ": " + formatUSh(m.advance.amount) +
+        " (GW" + m.advance.from + "–GW" + m.advance.to + ", " + m.advance.method + ")</li>";
+    }).join("");
+  }
+
+  function renderGradingTable() {
+    var tbody = $("gradingBody");
+    if (!tbody) return;
+    var order = getGradingDisplayOrder(selectedGradingGW);
+    if (order.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = order.map(function (m, idx) {
+      ensureGradingFor(m.id);
+      var g = state.grading[m.id][selectedGradingGW];
+      var total = gwTotalFor(m.id, selectedGradingGW);
+      return (
+        "<tr>" +
+          '<td class="cell-pos">' + (idx + 1) + "</td>" +
+          "<td><strong>" + escapeHtml(m.name) + "</strong></td>" +
+          '<td><input type="number" class="grade-input" data-field="points" data-id="' + m.id + '" value="' + (g.points === null ? "" : g.points) + '" placeholder="–"></td>' +
+          '<td><input type="number" class="grade-input" min="0" data-field="transferCost" data-id="' + m.id + '" value="' + (g.transferCost || 0) + '"></td>' +
+          '<td class="cell-amount">' + (total === null ? "–" : total) + "</td>" +
+          '<td class="prize-cell">' +
+            '<input type="number" class="grade-input prize-amount" min="0" step="100" data-field="prize" data-id="' + m.id + '" value="' + (g.prize || "") + '" placeholder="0" style="color:' + g.prizeColor + '">' +
+            '<input type="color" class="prize-color" data-field="prizeColor" data-id="' + m.id + '" value="' + g.prizeColor + '" title="Prize colour for ' + escapeHtml(m.name) + '">' +
+          "</td>" +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  function screenshotGradingTable() {
+    var gw = selectedGradingGW;
+    var order = getGradingDisplayOrder(gw);
+    if (order.length === 0) { toast("Add some managers first."); return; }
+
+    var cols = { pos: 56, manager: 210, pts: 90, transfers: 104, total: 96, prize: 164 };
+    var width = cols.pos + cols.manager + cols.pts + cols.transfers + cols.total + cols.prize;
+    var headerH = 84, colHeadH = 34, rowH = 34, footerH = 26;
+    var height = headerH + colHeadH + (order.length * rowH) + footerH;
+
+    var dpr = window.devicePixelRatio || 1;
+    var canvas = document.createElement("canvas");
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    var FONT = "-apple-system, Segoe UI, Roboto, Arial, sans-serif";
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    var grad = ctx.createLinearGradient(0, 0, width, headerH);
+    grad.addColorStop(0, "#2b0e2e");
+    grad.addColorStop(1, "#1a0a1f");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, headerH);
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(0, 0, width, 4);
+
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
+    ctx.font = "800 22px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("FPL ", 20, 38);
+    var fplWidth = ctx.measureText("FPL ").width;
+    ctx.fillStyle = "#22d3ee";
+    ctx.fillText("LEDGER TRACKER", 20 + fplWidth, 38);
+
+    ctx.font = "600 14px " + FONT;
+    ctx.fillStyle = "#cdb9d6";
+    ctx.fillText("Gameweek " + gw + " Results", 20, 62);
+
+    var y = headerH;
+    ctx.fillStyle = "#3c1361";
+    ctx.fillRect(0, y, width, colHeadH);
+    ctx.font = "800 11px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "middle";
+
+    var hx = 0;
+    function headCell(text, cw, align) {
+      ctx.textAlign = align;
+      ctx.fillText(text, align === "left" ? hx + 12 : hx + cw / 2, y + colHeadH / 2);
+      hx += cw;
+    }
+    headCell("POS", cols.pos, "center");
+    headCell("MANAGER", cols.manager, "left");
+    headCell("GW PTS", cols.pts, "center");
+    headCell("TRANSFERS", cols.transfers, "center");
+    headCell("GW TOTAL", cols.total, "center");
+    headCell("PRIZE", cols.prize, "center");
+
+    y += colHeadH;
+    order.forEach(function (m, idx) {
+      ensureGradingFor(m.id);
+      var g = state.grading[m.id][gw];
+      var total = gwTotalFor(m.id, gw);
+
+      ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#faf7fd";
+      ctx.fillRect(0, y, width, rowH);
+
+      var cx = 0;
+      ctx.textAlign = "center";
+      ctx.font = "800 13px " + FONT;
+      ctx.fillStyle = "#6d28d9";
+      ctx.fillText(String(idx + 1), cx + cols.pos / 2, y + rowH / 2);
+      cx += cols.pos;
+
+      ctx.textAlign = "left";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(truncateText(ctx, m.name, cols.manager - 20), cx + 12, y + rowH / 2);
+      cx += cols.manager;
+
+      ctx.textAlign = "center";
+      ctx.font = "400 13px " + FONT;
+      ctx.fillStyle = "#374151";
+      ctx.fillText(g.points === null ? "–" : String(g.points), cx + cols.pts / 2, y + rowH / 2);
+      cx += cols.pts;
+
+      ctx.fillText(String(g.transferCost || 0), cx + cols.transfers / 2, y + rowH / 2);
+      cx += cols.transfers;
+
+      ctx.font = "800 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(total === null ? "–" : String(total), cx + cols.total / 2, y + rowH / 2);
+      cx += cols.total;
+
+      ctx.font = "800 13px " + FONT;
+      ctx.fillStyle = g.prize ? (g.prizeColor || "#16a34a") : "#c9c9d1";
+      ctx.fillText(g.prize ? formatUSh(g.prize) : "—", cx + cols.prize / 2, y + rowH / 2);
+
+      y += rowH;
+    });
+
+    ctx.fillStyle = "#f1f2f6";
+    ctx.fillRect(0, y, width, footerH);
+    ctx.font = "600 10.5px " + FONT;
+    ctx.fillStyle = "#9ca3af";
+    ctx.textAlign = "center";
+    ctx.fillText("FPL Ledger Tracker — Gameweek " + gw, width / 2, y + footerH / 2);
+
+    downloadCanvasAsPng(canvas, "fpl-gameweek-" + gw + "-results.png");
+    toast("Screenshot saved as an image.");
+  }
+
+  function renderAll() {
+    renderStats();
+    renderLedgerMatrix();
+    renderGwSummary();
+    renderAdvanceTable();
+    renderReservesBreakdown();
+    renderGradingTable();
+    renderPerformanceTable();
+    renderNotifications();
+    populateManagerSelect($("advanceManagerSelect"));
+    populateManagerChecklist();
+    renderWhatsappGroups();
+    $("baselineWeeklyFeeInput").value = state.params.weeklyFee;
+    $("incrementStackInput").value = state.params.incrementStack;
+    $("currentGwInput").value = state.params.currentGw || 1;
+  }
+
+  /* ---------- ledger table interactions (event delegation) ---------- */
+  $("ledgerBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn) return;
+    var id = btn.getAttribute("data-id");
+    var action = btn.getAttribute("data-action");
+    if (action === "toggle") togglePaid(id);
+    else if (action === "quickadd") quickAddIncrement(id);
+    else if (action === "remove") removeManager(id);
+    else if (action === "editmgr") openManagerEditModal(id);
+  });
+
+  $("ledgerBody").addEventListener("change", function (e) {
+    if (e.target && e.target.getAttribute("data-action") === "method") {
+      setMethod(e.target.getAttribute("data-id"), e.target.value);
+    }
+  });
+
+  function togglePaid(managerId) {
+    ensurePaymentsFor(managerId);
+    var p = state.payments[managerId][selectedLedgerGW];
+    p.paid = !p.paid;
+    if (p.paid) {
+      var mgr = state.managers.filter(function (x) { return x.id === managerId; })[0];
+      var msg = "Hi " + (mgr ? mgr.name : "") + ", your Gameweek " + selectedLedgerGW + " payment (" +
+        formatUSh(state.params.weeklyFee) + " via " + p.method + ") has been marked as PAID. Thank you!";
+      addManagerNotification(managerId, msg, "System", "Payment Confirmation");
+    }
+    persist();
+    renderAll();
+    toast("Gameweek " + selectedLedgerGW + " marked " + (p.paid ? "PAID" : "UNPAID") + " for " + managerNameOf(managerId) + ".");
+  }
+
+  function setMethod(managerId, method) {
+    ensurePaymentsFor(managerId);
+    state.payments[managerId][selectedLedgerGW].method = method;
+    persist();
+    renderAll();
+  }
+
+  function quickAddIncrement(managerId) {
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m) return;
+    m.manualAdjustments = (m.manualAdjustments || 0) + (Number(state.params.incrementStack) || 0);
+    persist();
+    renderAll();
+    toast("Added " + formatUSh(state.params.incrementStack) + " manual increment to " + m.name + ".");
+  }
+
+  function removeManager(managerId) {
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m) return;
+    if (!confirm("Remove " + m.name + " from the ledger? This deletes their entire payment and grading history and can't be undone.")) return;
+    state.managers = state.managers.filter(function (x) { return x.id !== managerId; });
+    delete state.payments[managerId];
+    delete state.grading[managerId];
+    if (state.performance) delete state.performance[managerId];
+    persist();
+    renderAll();
+    toast(m.name + " was removed from the ledger.");
+  }
+
+  /* ---------- add manager ---------- */
+  $("addManagerBtn").addEventListener("click", function () {
+    var input = $("newManagerName");
+    var name = input.value.trim();
+    if (!name) { toast("Enter a name first."); return; }
+    if (state.managers.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); })) {
+      toast(name + " is already on the roster.");
+      return;
+    }
+    var m = freshManager(name);
+    state.managers.push(m);
+    ensurePaymentsFor(m.id);
+    ensurePerformanceFor(m.id);
+    input.value = "";
+    persist();
+    renderAll();
+    toast(name + " added to the ledger.");
+  });
+  $("newManagerName").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); $("addManagerBtn").click(); }
+  });
+
+  /* ---------- bulk import ---------- */
+  $("bulkImportBtn").addEventListener("click", function () {
+    var raw = $("bulkImportText").value;
+    var names = raw.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+    if (names.length === 0) { toast("Enter at least one name, one per line."); return; }
+    var added = 0;
+    names.forEach(function (name) {
+      if (!state.managers.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); })) {
+        var m = freshManager(name);
+        state.managers.push(m);
+        ensurePaymentsFor(m.id);
+        ensurePerformanceFor(m.id);
+        added++;
+      }
+    });
+    persist();
+    renderAll();
+    var skipped = names.length - added;
+    toast(added + " manager(s) added" + (skipped > 0 ? (", " + skipped + " duplicate(s) skipped") : "") + ".");
+  });
+
+  /* ---------- baseline params ---------- */
+  $("baselineWeeklyFeeInput").addEventListener("change", function (e) {
+    state.params.weeklyFee = Math.max(0, Number(e.target.value) || 0);
+    persist();
+    renderAll();
+  });
+  $("incrementStackInput").addEventListener("change", function (e) {
+    state.params.incrementStack = Math.max(0, Number(e.target.value) || 0);
+    persist();
+    renderAll();
+  });
+  $("currentGwInput").addEventListener("change", function (e) {
+    state.params.currentGw = Number(e.target.value) || 1;
+    persist();
+    renderAll();
+  });
+
+  /* ---------- gameweek dropdowns ---------- */
+  $("ledgerGwSelect").addEventListener("change", function (e) {
+    selectedLedgerGW = Number(e.target.value);
+    renderLedgerMatrix();
+  });
+  $("screenshotLedgerBtn").addEventListener("click", screenshotLedgerMatrix);
+  $("summaryGwSelect").addEventListener("change", function (e) {
+    selectedSummaryGW = Number(e.target.value);
+    renderGwSummary();
+  });
+  $("sponsorshipInput").addEventListener("change", function (e) {
+    if (!state.sponsorship) state.sponsorship = {};
+    state.sponsorship[selectedSummaryGW] = Math.max(0, Number(e.target.value) || 0);
+    persist();
+    renderGwSummary();
+  });
+
+  /* ---------- advance prepayment ---------- */
+  $("commitAdvanceBtn").addEventListener("click", function () {
+    var managerId = $("advanceManagerSelect").value;
+    var amount = Number($("advanceAmount").value);
+    var from = Number($("advanceFromGw").value);
+    var to = Number($("advanceToGw").value);
+    var method = $("advanceMethod").value;
+    var autoExpire = $("advanceAutoExpire").checked;
+
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m) { toast("Select a manager first."); return; }
+    if (!amount || amount <= 0) { toast("Enter a valid deposit amount."); return; }
+    if (to < from) { toast('"To Gameweek" must come after "From Gameweek".'); return; }
+
+    m.advance = { amount: amount, from: from, to: to, method: method, autoExpire: autoExpire };
+    ensurePaymentsFor(managerId);
+    for (var gw = from; gw <= to; gw++) {
+      state.payments[managerId][gw] = { paid: true, method: method };
+    }
+    persist();
+    renderAll();
+    toast("Advance committed for " + m.name + ": GW" + from + "-GW" + to + " synced as paid via " + method + ".");
+  });
+
+  $("vaultReservesBtn").addEventListener("click", function () {
+    $("reservesBreakdown").classList.toggle("hidden");
+  });
+
+  $("advanceBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn) return;
+    if (btn.getAttribute("data-action") === "editadv") openAdvanceEditModal(btn.getAttribute("data-id"));
+  });
+
+  /* ---------- export / save / load / print ---------- */
+  $("exportCsvBtn").addEventListener("click", function () {
+    var header = ["Manager", "Team", "Phone", "Email", "Cumulative Paid (USh)"];
+    for (var gw = 1; gw <= GW_COUNT; gw++) { header.push("GW" + gw + " Status", "GW" + gw + " Method"); }
+    header.push("Advance Range", "Advance Amount (USh)", "Advance Method", "Advance Auto-Expire", "Advance Status");
+    var rows = [header];
+    state.managers.forEach(function (m) {
+      ensurePaymentsFor(m.id);
+      ensureManagerFields(m);
+      var row = [m.name, m.team || "", m.phone || "", m.email || "", cumulativePaid(m)];
+      for (var g = 1; g <= GW_COUNT; g++) {
+        var p = state.payments[m.id][g];
+        row.push(p.paid ? "PAID" : "UNPAID", p.method);
+      }
+      row.push(
+        m.advance ? ("GW" + m.advance.from + "-GW" + m.advance.to) : "None",
+        m.advance ? m.advance.amount : 0,
+        m.advance ? m.advance.method : "",
+        m.advance ? (m.advance.autoExpire ? "Yes" : "No") : "",
+        m.advance ? (isAdvanceExpired(m) ? "Expired" : "Active") : ""
+      );
+      rows.push(row);
+    });
+    var csv = rows.map(function (r) { return r.map(csvEscape).join(","); }).join("\n");
+    downloadFile("fpl-ledger-export.csv", csv, "text/csv");
+    toast("CSV export downloaded.");
+  });
+
+  $("saveConfigBtn").addEventListener("click", function () {
+    downloadFile("fpl-ledger-config.json", JSON.stringify(state, null, 2), "application/json");
+    toast("Configuration saved as JSON.");
+  });
+
+  $("loadConfigBtn").addEventListener("click", function () { $("loadConfigInput").click(); });
+
+  $("loadConfigInput").addEventListener("change", function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      try {
+        var parsed = JSON.parse(ev.target.result);
+        if (!parsed.managers || !parsed.payments || !parsed.params) throw new Error("bad structure");
+        if (!confirm("Loading this file will replace all current data in the tracker. Continue?")) return;
+        state = backfillState(parsed);
+        state.managers.forEach(function (m) { ensurePaymentsFor(m.id); ensurePerformanceFor(m.id); });
+        persist();
+        renderAll();
+        toast("Configuration loaded successfully.");
+      } catch (err) {
+        toast("Could not load that file — it doesn't look like a valid FPL Ledger Tracker config.");
+      }
+      e.target.value = "";
+    };
+    reader.readAsText(file);
+  });
+
+  $("saveToFolderBtn").addEventListener("click", function () {
+    var data = JSON.stringify(state, null, 2);
+    if (window.showSaveFilePicker) {
+      window.showSaveFilePicker({
+        suggestedName: "fpl-ledger-data.json",
+        types: [{ description: "JSON File", accept: { "application/json": [".json"] } }]
+      }).then(function (handle) {
+        return handle.createWritable().then(function (writable) {
+          return writable.write(data).then(function () { return writable.close(); });
+        });
+      }).then(function () {
+        toast("Saved to your chosen location.");
+      }).catch(function (err) {
+        if (err && err.name !== "AbortError") toast("Save was cancelled or failed.");
+      });
+    } else {
+      downloadFile("fpl-ledger-data.json", data, "application/json");
+      toast("Your browser can't open a folder picker, so this saved to your default Downloads folder instead.");
+    }
+  });
+
+  $("printReportBtn").addEventListener("click", function () { window.print(); });
+
+  $("resetDataBtn").addEventListener("click", function () {
+    if (!confirm("Reset all data back to the starting default? This cannot be undone.")) return;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    state = defaultState();
+    selectedLedgerGW = 1;
+    selectedSummaryGW = 1;
+    selectedGradingGW = 1;
+    gradingSortOrder = {};
+    initSelectsAndForm(true);
+    persist();
+    renderAll();
+    toast("All data has been reset.");
+  });
+
+  /* ---------- cloud backup (GitHub Contents API, no other service) ---------- */
+  var GH_TOKEN_KEY = "fplLedgerGithubToken";
+
+  function ghHeaders(token) {
+    return {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json"
+    };
+  }
+
+  function ghContentsUrl(owner, repo, path, branch) {
+    var encodedPath = path.split("/").map(encodeURIComponent).join("/");
+    var url = "https://api.github.com/repos/" + encodeURIComponent(owner) + "/" + encodeURIComponent(repo) + "/contents/" + encodedPath;
+    if (branch) url += "?ref=" + encodeURIComponent(branch);
+    return url;
+  }
+
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function base64ToUtf8(b64) {
+    return decodeURIComponent(escape(atob(String(b64 || "").replace(/\n/g, ""))));
+  }
+
+  function readGithubConnectionFields() {
+    return {
+      owner: $("ghOwner").value.trim(),
+      repo: $("ghRepo").value.trim(),
+      branch: $("ghBranch").value.trim() || "main",
+      path: $("ghPath").value.trim() || "data/fpl-ledger-data.json",
+      token: $("ghToken").value.trim()
+    };
+  }
+
+  function saveGithubConnectionFields(conn) {
+    state.githubSync = { owner: conn.owner, repo: conn.repo, branch: conn.branch, path: conn.path };
+    persist();
+    try { localStorage.setItem(GH_TOKEN_KEY, conn.token); } catch (e) {}
+  }
+
+  $("cloudSaveBtn").addEventListener("click", function () {
+    var conn = readGithubConnectionFields();
+    if (!conn.owner || !conn.repo || !conn.token) { toast("Fill in GitHub username, repo, and token first."); return; }
+    saveGithubConnectionFields(conn);
+
+    $("cloudSyncStatus").textContent = "Saving to GitHub…";
+    fetch(ghContentsUrl(conn.owner, conn.repo, conn.path, conn.branch), { headers: ghHeaders(conn.token) })
+      .then(function (res) {
+        if (res.status === 404) return null;
+        if (!res.ok) return res.json().then(function (j) { throw new Error(j.message || ("HTTP " + res.status)); });
+        return res.json();
+      })
+      .then(function (existing) {
+        var body = {
+          message: "Update FPL Ledger Tracker data — " + new Date().toISOString(),
+          content: utf8ToBase64(JSON.stringify(state, null, 2)),
+          branch: conn.branch
+        };
+        if (existing && existing.sha) body.sha = existing.sha;
+        return fetch(ghContentsUrl(conn.owner, conn.repo, conn.path), {
+          method: "PUT",
+          headers: ghHeaders(conn.token),
+          body: JSON.stringify(body)
+        });
+      })
+      .then(function (res) {
+        return res.json().then(function (j) {
+          if (!res.ok) throw new Error(j.message || ("HTTP " + res.status));
+          return j;
+        });
+      })
+      .then(function () {
+        $("cloudSyncStatus").textContent = "Saved to GitHub at " + formatTimestamp(new Date().toISOString()) + ". Anyone with this token/repo can load it from another device.";
+        toast("Saved to GitHub.");
+      })
+      .catch(function (err) {
+        $("cloudSyncStatus").textContent = "Couldn't save to GitHub — " + err.message;
+        toast("Cloud save failed.");
+      });
+  });
+
+  $("cloudLoadBtn").addEventListener("click", function () {
+    var conn = readGithubConnectionFields();
+    if (!conn.owner || !conn.repo || !conn.token) { toast("Fill in GitHub username, repo, and token first."); return; }
+    if (!confirm("Loading will replace all data currently in this browser with the version saved on GitHub. Continue?")) return;
+    saveGithubConnectionFields(conn);
+
+    $("cloudSyncStatus").textContent = "Loading from GitHub…";
+    fetch(ghContentsUrl(conn.owner, conn.repo, conn.path, conn.branch), { headers: ghHeaders(conn.token) })
+      .then(function (res) {
+        return res.json().then(function (j) {
+          if (!res.ok) throw new Error(j.message || ("HTTP " + res.status));
+          return j;
+        });
+      })
+      .then(function (json) {
+        var loaded = JSON.parse(base64ToUtf8(json.content));
+        state = backfillState(loaded);
+        state.githubSync = { owner: conn.owner, repo: conn.repo, branch: conn.branch, path: conn.path };
+        selectedLedgerGW = 1;
+        selectedSummaryGW = 1;
+        selectedGradingGW = 1;
+        gradingSortOrder = {};
+        persist();
+        initSelectsAndForm(false);
+        renderAll();
+        $("cloudSyncStatus").textContent = "Loaded from GitHub.";
+        toast("Loaded from GitHub.");
+      })
+      .catch(function (err) {
+        $("cloudSyncStatus").textContent = "Couldn't load from GitHub — " + err.message + (err.message && err.message.indexOf("Not Found") !== -1 ? " (nothing saved there yet — try Save first.)" : "");
+        toast("Cloud load failed.");
+      });
+  });
+
+  /* ---------- gameweek grading page ---------- */
+  $("gradingGwSelect").addEventListener("change", function (e) {
+    selectedGradingGW = Number(e.target.value);
+    renderGradingTable();
+  });
+
+  $("sortGradingBtn").addEventListener("click", function () {
+    var gw = selectedGradingGW;
+    var sorted = state.managers.slice().sort(function (a, b) {
+      var ta = gwTotalFor(a.id, gw);
+      var tb = gwTotalFor(b.id, gw);
+      if (ta === null && tb === null) return 0;
+      if (ta === null) return 1;
+      if (tb === null) return -1;
+      return tb - ta;
+    });
+    gradingSortOrder[gw] = sorted.map(function (m) { return m.id; });
+    renderGradingTable();
+    toast("Sorted Gameweek " + gw + " by GW Total, highest first.");
+  });
+
+  $("gradingBody").addEventListener("change", function (e) {
+    var field = e.target.getAttribute("data-field");
+    var id = e.target.getAttribute("data-id");
+    if (!field || !id) return;
+    ensureGradingFor(id);
+    var g = state.grading[id][selectedGradingGW];
+    if (field === "points") {
+      g.points = e.target.value === "" ? null : Number(e.target.value);
+    } else if (field === "transferCost") {
+      g.transferCost = Number(e.target.value) || 0;
+    } else if (field === "prize") {
+      g.prize = Number(e.target.value) || 0;
+    } else if (field === "prizeColor") {
+      g.prizeColor = e.target.value;
+    }
+    persist();
+    renderGradingTable();
+  });
+
+  $("exportGradingCsvBtn").addEventListener("click", function () {
+    var gw = selectedGradingGW;
+    var order = getGradingDisplayOrder(gw);
+    if (order.length === 0) { toast("Add some managers first."); return; }
+    var rows = [["POS", "Manager", "GW Points", "Transfer Cost", "GW Total", "Prize (USh)"]];
+    order.forEach(function (m, idx) {
+      ensureGradingFor(m.id);
+      var g = state.grading[m.id][gw];
+      var total = gwTotalFor(m.id, gw);
+      rows.push([
+        idx + 1,
+        m.name,
+        g.points === null ? "" : g.points,
+        g.transferCost || 0,
+        total === null ? "" : total,
+        g.prize || 0
+      ]);
+    });
+    var csv = rows.map(function (r) { return r.map(csvEscape).join(","); }).join("\n");
+    downloadFile("fpl-gameweek-" + gw + "-grading.csv", csv, "text/csv");
+    toast("Gameweek " + gw + " grading exported as CSV.");
+  });
+
+  $("screenshotGradingBtn").addEventListener("click", screenshotGradingTable);
+
+  /* ---------- manager edit modal ---------- */
+  var editingManagerId = null;
+
+  function openManagerEditModal(managerId) {
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m) return;
+    ensureManagerFields(m);
+    editingManagerId = managerId;
+    $("editMgrName").value = m.name || "";
+    $("editMgrTeam").value = m.team || "";
+    $("editMgrPhone").value = m.phone || "";
+    $("editMgrWhatsapp").value = m.whatsapp || "";
+    $("editMgrEmail").value = m.email || "";
+    $("managerEditModal").classList.remove("hidden");
+    $("editMgrName").focus();
+  }
+
+  function closeManagerEditModal() {
+    $("managerEditModal").classList.add("hidden");
+    editingManagerId = null;
+  }
+
+  $("cancelMgrEditBtn").addEventListener("click", closeManagerEditModal);
+  $("managerEditModal").addEventListener("click", function (e) {
+    if (e.target === $("managerEditModal")) closeManagerEditModal();
+  });
+
+  $("saveMgrEditBtn").addEventListener("click", function () {
+    if (!editingManagerId) return;
+    var m = state.managers.filter(function (x) { return x.id === editingManagerId; })[0];
+    if (!m) return;
+    var name = $("editMgrName").value.trim();
+    if (!name) { toast("Name can't be empty."); return; }
+    m.name = name;
+    m.team = $("editMgrTeam").value.trim();
+    m.phone = $("editMgrPhone").value.trim();
+    m.whatsapp = $("editMgrWhatsapp").value.trim();
+    m.email = $("editMgrEmail").value.trim();
+    persist();
+    renderAll();
+    toast(m.name + "'s details were updated.");
+    closeManagerEditModal();
+  });
+
+  /* ---------- advance edit modal ---------- */
+  var editingAdvanceManagerId = null;
+
+  function openAdvanceEditModal(managerId) {
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m) return;
+    editingAdvanceManagerId = managerId;
+    $("advanceEditSubtitle").textContent = "Update the synced advance for " + m.name + ".";
+    var adv = m.advance || { amount: 0, from: 1, to: 4, method: "CASH", autoExpire: false };
+    populateGwSelect($("editAdvFromGw"), adv.from);
+    populateGwSelect($("editAdvToGw"), adv.to);
+    $("editAdvAmount").value = adv.amount || "";
+    $("editAdvMethod").value = adv.method || "CASH";
+    $("editAdvAutoExpire").checked = !!adv.autoExpire;
+    $("advanceEditModal").classList.remove("hidden");
+    $("editAdvAmount").focus();
+  }
+
+  function closeAdvanceEditModal() {
+    $("advanceEditModal").classList.add("hidden");
+    editingAdvanceManagerId = null;
+  }
+
+  $("cancelAdvEditBtn").addEventListener("click", closeAdvanceEditModal);
+  $("advanceEditModal").addEventListener("click", function (e) {
+    if (e.target === $("advanceEditModal")) closeAdvanceEditModal();
+  });
+
+  $("saveAdvEditBtn").addEventListener("click", function () {
+    if (!editingAdvanceManagerId) return;
+    var m = state.managers.filter(function (x) { return x.id === editingAdvanceManagerId; })[0];
+    if (!m) return;
+    var amount = Number($("editAdvAmount").value);
+    var from = Number($("editAdvFromGw").value);
+    var to = Number($("editAdvToGw").value);
+    var method = $("editAdvMethod").value;
+    var autoExpire = $("editAdvAutoExpire").checked;
+    if (!amount || amount <= 0) { toast("Enter a valid deposit amount."); return; }
+    if (to < from) { toast('"To Gameweek" must come after "From Gameweek".'); return; }
+
+    m.advance = { amount: amount, from: from, to: to, method: method, autoExpire: autoExpire };
+    ensurePaymentsFor(m.id);
+    for (var gw = from; gw <= to; gw++) {
+      state.payments[m.id][gw] = { paid: true, method: method };
+    }
+    persist();
+    renderAll();
+    toast("Advance updated for " + m.name + ": GW" + from + "-GW" + to + " re-synced via " + method + ".");
+    closeAdvanceEditModal();
+  });
+
+  $("clearAdvEditBtn").addEventListener("click", function () {
+    if (!editingAdvanceManagerId) return;
+    var m = state.managers.filter(function (x) { return x.id === editingAdvanceManagerId; })[0];
+    if (!m) return;
+    if (!confirm("Clear the advance for " + m.name + "? This does not undo the gameweeks already marked paid.")) return;
+    m.advance = null;
+    persist();
+    renderAll();
+    toast("Advance cleared for " + m.name + ".");
+    closeAdvanceEditModal();
+  });
+
+  /* ---------- notifications ---------- */
+  function addNotification(recipientType, recipientId, recipientName, message, channel, type) {
+    if (!state.notifications) state.notifications = [];
+    state.notifications.unshift({
+      id: "n_" + Math.random().toString(36).slice(2, 9),
+      recipientType: recipientType, // "manager" | "group"
+      recipientId: recipientId,
+      recipientName: recipientName,
+      message: message,
+      channel: channel,
+      type: type,
+      sentAt: new Date().toISOString()
+    });
+    if (state.notifications.length > 500) state.notifications.length = 500;
+  }
+
+  function addManagerNotification(managerId, message, channel, type) {
+    var mgr = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    addNotification("manager", managerId, mgr ? mgr.name : "Unknown", message, channel, type);
+  }
+
+  function addGroupNotification(groupId, message, channel, type) {
+    var grp = (state.whatsappGroups || []).filter(function (x) { return x.id === groupId; })[0];
+    addNotification("group", groupId, grp ? grp.name : "Unknown Group", message, channel, type);
+  }
+
+  function formatSentAt(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " +
+        d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return iso; }
+  }
+
+  function digitsOnly(s) { return String(s || "").replace(/[^0-9]/g, ""); }
+
+  function sendLinkFor(n) {
+    if (n.recipientType === "group") {
+      var grp = (state.whatsappGroups || []).filter(function (x) { return x.id === n.recipientId; })[0];
+      if (!grp || !grp.inviteLink) return '<span class="text-muted">Group link removed</span>';
+      return '<button class="send-link" style="background:none;border:none;cursor:pointer;padding:0;" data-action="opengroup" data-link="' + escapeHtml(grp.inviteLink) + '" data-msg="' + escapeHtml(n.message) + '">💬 Copy &amp; Open Group</button>';
+    }
+    var mgr = state.managers.filter(function (x) { return x.id === n.recipientId; })[0];
+    if (n.channel === "WhatsApp") {
+      var waNum = mgr ? (mgr.whatsapp || mgr.phone) : "";
+      if (waNum) {
+        return '<a class="send-link" href="https://wa.me/' + digitsOnly(waNum) + '?text=' + encodeURIComponent(n.message) + '" target="_blank" rel="noopener">💬 Open WhatsApp</a>';
+      }
+      return '<span class="text-muted">No WhatsApp number on file</span>';
+    }
+    if (n.channel === "SMS" && mgr && mgr.phone) {
+      return '<a class="send-link" href="sms:' + encodeURIComponent(mgr.phone) + '?body=' + encodeURIComponent(n.message) + '" target="_blank" rel="noopener">📱 Open SMS</a>';
+    }
+    if (n.channel === "Email" && mgr && mgr.email) {
+      return '<a class="send-link" href="mailto:' + encodeURIComponent(mgr.email) + '?subject=' + encodeURIComponent("FPL League Update") + '&body=' + encodeURIComponent(n.message) + '" target="_blank" rel="noopener">✉️ Open Email</a>';
+    }
+    if (n.channel === "SMS" || n.channel === "Email") {
+      return '<span class="text-muted">No ' + n.channel.toLowerCase() + ' on file</span>';
+    }
+    return '<span class="text-muted">—</span>';
+  }
+
+  function renderNotifications() {
+    var tbody = $("notificationsBody");
+    var list = state.notifications || [];
+    $("notifCountBadge").textContent = list.length + " sent";
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No notifications yet. Mark a gameweek PAID or send a bulk message to get started.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(function (n) {
+      var tagClass = n.type === "Bulk" ? "notif-type-bulk" : "notif-type-auto";
+      var name = n.recipientName || n.managerName || "Unknown";
+      return (
+        "<tr>" +
+          "<td>" + escapeHtml(name) + (n.recipientType === "group" ? ' <span class="notif-type-tag notif-type-bulk">GROUP</span>' : "") + "</td>" +
+          '<td class="notif-msg">' + escapeHtml(n.message) + "</td>" +
+          '<td><span class="notif-type-tag ' + tagClass + '">' + escapeHtml(n.type) + "</span></td>" +
+          "<td>" + escapeHtml(n.channel) + "</td>" +
+          '<td class="notif-meta">' + formatSentAt(n.sentAt) + "</td>" +
+          '<td class="no-print">' + sendLinkFor(n) + "</td>" +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  $("notificationsBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || btn.getAttribute("data-action") !== "opengroup") return;
+    var link = btn.getAttribute("data-link");
+    var msg = btn.getAttribute("data-msg");
+    var copied = false;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(msg).then(function () { copied = true; }).catch(function () {});
+    }
+    window.open(link, "_blank", "noopener");
+    toast(copied || (navigator.clipboard && navigator.clipboard.writeText) ?
+      "Message copied — paste it into the WhatsApp group chat that just opened." :
+      "Opened the group chat. Copy the message from the table and paste it in.");
+  });
+
+  function populateManagerChecklist() {
+    var wrap = $("notifManagerChecklist");
+    if (state.managers.length === 0) {
+      wrap.innerHTML = '<span class="text-muted">No managers yet.</span>';
+      return;
+    }
+    var prevChecked = {};
+    wrap.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { prevChecked[cb.value] = cb.checked; });
+    wrap.innerHTML = state.managers.map(function (m) {
+      var checked = prevChecked[m.id] ? " checked" : "";
+      return '<label><input type="checkbox" value="' + m.id + '"' + checked + '> ' + escapeHtml(m.name) + "</label>";
+    }).join("");
+  }
+
+  /* ---------- WhatsApp groups ---------- */
+  function populateGroupChecklist() {
+    var wrap = $("notifGroupChecklist");
+    var groups = state.whatsappGroups || [];
+    if (groups.length === 0) {
+      wrap.innerHTML = '<span class="text-muted">No WhatsApp groups added yet — add one below.</span>';
+      return;
+    }
+    var prevChecked = {};
+    wrap.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { prevChecked[cb.value] = cb.checked; });
+    wrap.innerHTML = groups.map(function (g) {
+      var checked = prevChecked[g.id] ? " checked" : "";
+      return '<label><input type="checkbox" value="' + g.id + '"' + checked + '> ' + escapeHtml(g.name) + "</label>";
+    }).join("");
+  }
+
+  function renderGroupManageList() {
+    var wrap = $("groupManageList");
+    var groups = state.whatsappGroups || [];
+    if (groups.length === 0) {
+      wrap.innerHTML = '<li class="text-muted">No WhatsApp groups yet.</li>';
+      return;
+    }
+    wrap.innerHTML = groups.map(function (g) {
+      return "<li>" + escapeHtml(g.name) +
+        ' — <a href="' + escapeHtml(g.inviteLink) + '" target="_blank" rel="noopener">invite link</a>' +
+        ' &nbsp;<button class="btn-remove" style="padding:2px 8px;font-size:10.5px;" data-action="removegroup" data-id="' + g.id + '">🗑</button>' +
+        "</li>";
+    }).join("");
+  }
+
+  function renderWhatsappGroups() {
+    populateGroupChecklist();
+    renderGroupManageList();
+  }
+
+  $("addGroupBtn").addEventListener("click", function () {
+    var name = $("newGroupName").value.trim();
+    var link = $("newGroupLink").value.trim();
+    if (!name) { toast("Enter a group name."); return; }
+    if (!link || (link.indexOf("chat.whatsapp.com") === -1 && link.indexOf("http") !== 0)) {
+      toast("Enter a valid WhatsApp group invite link (from Group Info → Invite via Link)."); return;
+    }
+    if (!state.whatsappGroups) state.whatsappGroups = [];
+    state.whatsappGroups.push({ id: "g_" + Math.random().toString(36).slice(2, 9), name: name, inviteLink: link });
+    $("newGroupName").value = "";
+    $("newGroupLink").value = "";
+    persist();
+    renderWhatsappGroups();
+    toast(name + " added as a WhatsApp group.");
+  });
+
+  $("groupManageList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || btn.getAttribute("data-action") !== "removegroup") return;
+    var id = btn.getAttribute("data-id");
+    var grp = (state.whatsappGroups || []).filter(function (g) { return g.id === id; })[0];
+    if (!grp) return;
+    if (!confirm("Remove the WhatsApp group \"" + grp.name + "\"?")) return;
+    state.whatsappGroups = state.whatsappGroups.filter(function (g) { return g.id !== id; });
+    persist();
+    renderWhatsappGroups();
+    toast(grp.name + " removed.");
+  });
+
+  $("notifSelectAllBtn").addEventListener("click", function () {
+    $("notifManagerChecklist").querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = true; });
+  });
+  $("notifSelectNoneBtn").addEventListener("click", function () {
+    $("notifManagerChecklist").querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+  });
+  $("notifGroupSelectAllBtn").addEventListener("click", function () {
+    $("notifGroupChecklist").querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = true; });
+  });
+  $("notifGroupSelectNoneBtn").addEventListener("click", function () {
+    $("notifGroupChecklist").querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.checked = false; });
+  });
+
+  $("notifChannelSelect").addEventListener("change", function (e) {
+    $("notifGroupSection").classList.toggle("hidden", e.target.value !== "WhatsApp");
+  });
+
+  $("sendBulkNotifBtn").addEventListener("click", function () {
+    var checkedMgrs = Array.prototype.slice.call($("notifManagerChecklist").querySelectorAll('input[type="checkbox"]:checked'));
+    var channel = $("notifChannelSelect").value;
+    var checkedGroups = channel === "WhatsApp" ?
+      Array.prototype.slice.call($("notifGroupChecklist").querySelectorAll('input[type="checkbox"]:checked')) : [];
+    var message = $("notifMessageText").value.trim();
+    if (checkedMgrs.length === 0 && checkedGroups.length === 0) { toast("Select at least one manager or WhatsApp group."); return; }
+    if (!message) { toast("Write a message first."); return; }
+    checkedMgrs.forEach(function (cb) { addManagerNotification(cb.value, message, channel, "Bulk"); });
+    checkedGroups.forEach(function (cb) { addGroupNotification(cb.value, message, channel, "Bulk"); });
+    persist();
+    renderAll();
+    var parts = [];
+    if (checkedMgrs.length) parts.push(checkedMgrs.length + " manager(s)");
+    if (checkedGroups.length) parts.push(checkedGroups.length + " group(s)");
+    toast("Message logged for " + parts.join(" and ") + " via " + channel + ".");
+    $("notifMessageText").value = "";
+  });
+
+  /* ---------- performance page ---------- */
+  function populateMonthSelect(selectEl, selectedValue) {
+    selectEl.innerHTML = "";
+    MONTHS.forEach(function (mo) {
+      var opt = document.createElement("option");
+      opt.value = mo;
+      opt.textContent = mo;
+      selectEl.appendChild(opt);
+    });
+    if (selectedValue) selectEl.value = selectedValue;
+  }
+
+  function prevMonthPosition(managerId, month) {
+    var idx = MONTHS.indexOf(month);
+    var perf = state.performance && state.performance[managerId];
+    if (!perf) return null;
+    for (var i = idx - 1; i >= 0; i--) {
+      var rec = perf.monthly[MONTHS[i]];
+      if (rec && rec.position !== null && rec.position !== undefined && rec.position !== "") return Number(rec.position);
+    }
+    return null;
+  }
+
+  function passesPerfFilters(managerId) {
+    ensurePerformanceFor(managerId);
+    var perf = state.performance[managerId];
+    var rec = perf.monthly[selectedPerfMonth];
+    var minT = $("perfFilterTransfers").value;
+    var minC = $("perfFilterChips").value;
+    var minFT = $("perfFilterFT").value;
+    if (minT !== "" && (Number(rec.transfers) || 0) < Number(minT)) return false;
+    if (minC !== "" && (rec.chips ? rec.chips.length : 0) < Number(minC)) return false;
+    if (minFT !== "" && (Number(perf.freeTransfers) || 0) < Number(minFT)) return false;
+    return true;
+  }
+
+  function renderPerformanceTable() {
+    var tbody = $("performanceBody");
+    if (!tbody) return;
+    if (state.managers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
+      return;
+    }
+    var rows = state.managers.filter(function (m) { return passesPerfFilters(m.id); });
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers match the current filters.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(function (m) {
+      ensurePerformanceFor(m.id);
+      var perf = state.performance[m.id];
+      var rec = perf.monthly[selectedPerfMonth];
+      var prevPos = prevMonthPosition(m.id, selectedPerfMonth);
+      var changeHtml = '<span class="pos-change-none">–</span>';
+      if (rec.position !== null && rec.position !== "" && prevPos !== null) {
+        var delta = prevPos - Number(rec.position);
+        if (delta > 0) changeHtml = '<span class="pos-change-up">▲ ' + delta + '</span>';
+        else if (delta < 0) changeHtml = '<span class="pos-change-down">▼ ' + Math.abs(delta) + '</span>';
+        else changeHtml = '<span class="pos-change-none">— No Change</span>';
+      }
+      var chipsHtml = '<div class="actions-cell">' + CHIPS.map(function (c) {
+        var active = rec.chips && rec.chips.indexOf(c.value) !== -1;
+        return '<button class="chip-pill' + (active ? " active" : "") + '" data-action="togglechip" data-id="' + m.id + '" data-chip="' + c.value + '" title="' + c.label + '">' + c.value + '</button>';
+      }).join("") + '</div>';
+      return (
+        "<tr>" +
+          "<td><strong>" + escapeHtml(m.name) + "</strong></td>" +
+          '<td><input type="number" class="grade-input" min="1" data-field="position" data-id="' + m.id + '" value="' + (rec.position === null || rec.position === undefined ? "" : rec.position) + '" placeholder="–"></td>' +
+          "<td>" + changeHtml + "</td>" +
+          '<td><input type="number" class="grade-input" min="0" data-field="transfers" data-id="' + m.id + '" value="' + (rec.transfers || 0) + '"></td>' +
+          "<td>" + chipsHtml + "</td>" +
+          '<td><input type="number" class="grade-input" min="0" data-field="freeTransfers" data-id="' + m.id + '" value="' + (perf.freeTransfers || 0) + '"></td>' +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  $("perfMonthSelect").addEventListener("change", function (e) {
+    selectedPerfMonth = e.target.value;
+    renderPerformanceTable();
+  });
+
+  $("performanceBody").addEventListener("change", function (e) {
+    var field = e.target.getAttribute("data-field");
+    var id = e.target.getAttribute("data-id");
+    if (!field || !id) return;
+    ensurePerformanceFor(id);
+    var perf = state.performance[id];
+    var rec = perf.monthly[selectedPerfMonth];
+    if (field === "position") {
+      rec.position = e.target.value === "" ? null : Number(e.target.value);
+    } else if (field === "transfers") {
+      rec.transfers = Math.max(0, Number(e.target.value) || 0);
+    } else if (field === "freeTransfers") {
+      perf.freeTransfers = Math.max(0, Number(e.target.value) || 0);
+    }
+    persist();
+    renderPerformanceTable();
+  });
+
+  $("performanceBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || btn.getAttribute("data-action") !== "togglechip") return;
+    var id = btn.getAttribute("data-id");
+    var chip = btn.getAttribute("data-chip");
+    ensurePerformanceFor(id);
+    var rec = state.performance[id].monthly[selectedPerfMonth];
+    if (!rec.chips) rec.chips = [];
+    var idx = rec.chips.indexOf(chip);
+    if (idx === -1) rec.chips.push(chip); else rec.chips.splice(idx, 1);
+    persist();
+    renderPerformanceTable();
+  });
+
+  ["perfFilterTransfers", "perfFilterChips", "perfFilterFT"].forEach(function (id) {
+    $(id).addEventListener("input", renderPerformanceTable);
+  });
+
+  $("clearPerfFiltersBtn").addEventListener("click", function () {
+    $("perfFilterTransfers").value = "";
+    $("perfFilterChips").value = "";
+    $("perfFilterFT").value = "";
+    renderPerformanceTable();
+  });
+
+  $("exportPerfCsvBtn").addEventListener("click", function () {
+    if (state.managers.length === 0) { toast("Add some managers first."); return; }
+    var rows = [["Manager", "Month", "Position", "Position Change", "Transfers Used", "Chips Used", "Free Transfers Available"]];
+    state.managers.forEach(function (m) {
+      ensurePerformanceFor(m.id);
+      var perf = state.performance[m.id];
+      MONTHS.forEach(function (mo) {
+        var rec = perf.monthly[mo];
+        var prevPos = prevMonthPosition(m.id, mo);
+        var change = "";
+        if (rec.position !== null && rec.position !== undefined && rec.position !== "" && prevPos !== null) {
+          var delta = prevPos - Number(rec.position);
+          change = delta > 0 ? ("+" + delta) : String(delta);
+        }
+        rows.push([
+          m.name, mo,
+          rec.position === null || rec.position === undefined ? "" : rec.position,
+          change,
+          rec.transfers || 0,
+          (rec.chips || []).join("/"),
+          perf.freeTransfers || 0
+        ]);
+      });
+    });
+    var csv = rows.map(function (r) { return r.map(csvEscape).join(","); }).join("\n");
+    downloadFile("fpl-performance-export.csv", csv, "text/csv");
+    toast("Performance data exported as CSV.");
+  });
+
+  /* ---------- FPL mini-league sync ---------- */
+  function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+
+  function fplFetch(path) {
+    var target = "https://fantasy.premierleague.com/api/" + path;
+    var proxied = (state.fplSync.proxyUrl || "") + encodeURIComponent(target);
+    return fetch(proxied).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    });
+  }
+
+  function monthAbbrFromDate(isoDateStr) {
+    var names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return names[new Date(isoDateStr).getMonth()];
+  }
+
+  function mapChipName(rawName) {
+    var map = {
+      "wildcard": "WC",
+      "freehit": "FH", "free_hit": "FH",
+      "bboost": "BB", "bench_boost": "BB",
+      "3xc": "TC", "triple_captain": "TC"
+    };
+    return map[String(rawName).toLowerCase()] || null;
+  }
+
+  function buildGwMonthMap(events) {
+    var map = {};
+    (events || []).forEach(function (ev) {
+      if (ev.deadline_time) {
+        var abbr = monthAbbrFromDate(ev.deadline_time);
+        if (MONTHS.indexOf(abbr) !== -1) map[ev.id] = abbr;
+      }
+    });
+    return map;
+  }
+
+  function logSyncEvent(message, ok) {
+    if (!state.fplSync.log) state.fplSync.log = [];
+    state.fplSync.log.unshift({ time: new Date().toISOString(), message: message, ok: ok });
+    if (state.fplSync.log.length > 100) state.fplSync.log.length = 100;
+    renderSyncLog();
+  }
+
+  function renderSyncLog() {
+    var tbody = $("fplSyncLogBody");
+    if (!tbody) return;
+    var log = ((state.fplSync && state.fplSync.log) || []).slice(0, 30);
+    if (log.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="2" class="empty-row">No sync activity yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = log.map(function (e) {
+      return "<tr><td>" + formatTimestamp(e.time) + "</td><td class=\"" + (e.ok ? "status-active" : "status-expired") + "\">" + escapeHtml(e.message) + "</td></tr>";
+    }).join("");
+  }
+
+  function setSyncStatus(text) {
+    var el = $("fplSyncStatus");
+    if (el) el.textContent = text;
+  }
+
+  function autoMatchManagers(results) {
+    (results || []).forEach(function (row) {
+      var already = state.managers.filter(function (m) { return m.fplEntryId === row.entry; })[0];
+      if (already) return;
+      var byName = state.managers.filter(function (m) {
+        return !m.fplEntryId && m.name.toLowerCase() === String(row.player_name).toLowerCase();
+      })[0];
+      if (byName) byName.fplEntryId = row.entry;
+    });
+  }
+
+  function renderFplMatchTable() {
+    var tbody = $("fplMatchBody");
+    if (!tbody) return;
+    if (lastFplStandings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-row">Run a sync to see FPL managers here.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lastFplStandings.map(function (row) {
+      var options = '<option value="">— Not linked —</option>' + state.managers.map(function (m) {
+        var sel = m.fplEntryId === row.entry ? " selected" : "";
+        return '<option value="' + m.id + '"' + sel + '>' + escapeHtml(m.name) + "</option>";
+      }).join("");
+      return (
+        "<tr>" +
+          "<td>" + escapeHtml(row.player_name) + "</td>" +
+          "<td>" + escapeHtml(row.entry_name) + "</td>" +
+          '<td><select class="method-select fpl-match-select" data-entry="' + row.entry + '">' + options + "</select></td>" +
+        "</tr>"
+      );
+    }).join("");
+  }
+
+  function renderFplStandings(results) {
+    lastFplStandings = results || [];
+    var tbody = $("fplStandingsBody");
+    if (tbody) {
+      if (lastFplStandings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Run a sync to see standings here.</td></tr>';
+      } else {
+        tbody.innerHTML = lastFplStandings.map(function (row) {
+          return (
+            "<tr>" +
+              '<td class="cell-pos">' + row.rank + "</td>" +
+              "<td><strong>" + escapeHtml(row.player_name) + "</strong></td>" +
+              "<td>" + escapeHtml(row.entry_name) + "</td>" +
+              "<td>" + row.event_total + "</td>" +
+              '<td class="cell-amount">' + row.total + "</td>" +
+            "</tr>"
+          );
+        }).join("");
+      }
+    }
+    renderFplMatchTable();
+  }
+
+  function applyHistoryToManager(m, hist, gwMonthMap, standingsResults, currentMonth) {
+    ensurePaymentsFor(m.id);
+    ensureGradingFor(m.id);
+    (hist.current || []).forEach(function (row) {
+      var gw = row.event;
+      if (gw < 1 || gw > GW_COUNT) return;
+      state.grading[m.id][gw].points = row.points;
+      state.grading[m.id][gw].transferCost = row.event_transfers_cost || 0;
+    });
+
+    ensurePerformanceFor(m.id);
+    var perf = state.performance[m.id];
+
+    var transfersByMonth = {};
+    (hist.current || []).forEach(function (row) {
+      var mo = gwMonthMap[row.event];
+      if (!mo) return;
+      transfersByMonth[mo] = (transfersByMonth[mo] || 0) + (row.event_transfers || 0);
+    });
+    Object.keys(transfersByMonth).forEach(function (mo) {
+      perf.monthly[mo].transfers = transfersByMonth[mo];
+    });
+
+    (hist.chips || []).forEach(function (chip) {
+      var mo = gwMonthMap[chip.event];
+      var code = mapChipName(chip.name);
+      if (!mo || !code) return;
+      if (perf.monthly[mo].chips.indexOf(code) === -1) perf.monthly[mo].chips.push(code);
+    });
+
+    var standingRow = (standingsResults || []).filter(function (r) { return r.entry === m.fplEntryId; })[0];
+    if (standingRow && currentMonth) {
+      perf.monthly[currentMonth].position = standingRow.rank;
+    }
+  }
+
+  async function runFplSync(isAuto) {
+    var leagueId = (state.fplSync.leagueId || "").trim();
+    if (!leagueId) { toast("Enter a league ID first."); return; }
+    setSyncStatus("Syncing…");
+    logSyncEvent("Sync started" + (isAuto ? " (auto)" : "") + ".", true);
+
+    try {
+      var bootstrap = await fplFetch("bootstrap-static/");
+      var gwMonthMap = buildGwMonthMap(bootstrap.events || []);
+      var currentEvent = (bootstrap.events || []).filter(function (e) { return e.is_current; })[0]
+        || (bootstrap.events || []).filter(function (e) { return e.is_next; })[0];
+      if (currentEvent) state.params.currentGw = currentEvent.id;
+      var currentMonth = currentEvent ? gwMonthMap[currentEvent.id] : null;
+
+      var standingsData = await fplFetch("leagues-classic/" + leagueId + "/standings/");
+      if (!standingsData || !standingsData.standings || !standingsData.standings.results) {
+        throw new Error("Unexpected response shape from the standings endpoint.");
+      }
+      state.fplSync.leagueName = (standingsData.league && standingsData.league.name) || state.fplSync.leagueName;
+      $("fplLeagueNameInput").value = state.fplSync.leagueName;
+      var results = standingsData.standings.results;
+      autoMatchManagers(results);
+      renderFplStandings(results);
+      $("fplStandingsUpdated").textContent = "Updated " + formatTimestamp(new Date().toISOString());
+
+      var linked = state.managers.filter(function (m) { return m.fplEntryId; });
+      for (var i = 0; i < linked.length; i++) {
+        var m = linked[i];
+        setSyncStatus("Syncing " + (i + 1) + " of " + linked.length + ": " + m.name + "…");
+        try {
+          var hist = await fplFetch("entry/" + m.fplEntryId + "/history/");
+          applyHistoryToManager(m, hist, gwMonthMap, results, currentMonth);
+        } catch (mErr) {
+          logSyncEvent("Couldn't sync " + m.name + ": " + mErr.message, false);
+        }
+        await sleep(200);
+      }
+
+      state.fplSync.lastSyncedAt = new Date().toISOString();
+      state.fplSync.lastSyncSummary = "Synced " + linked.length + " linked manager(s).";
+      persist();
+      renderAll();
+      renderGradingTable();
+      renderPerformanceTable();
+      setSyncStatus("Last synced " + formatTimestamp(state.fplSync.lastSyncedAt) + " — " + state.fplSync.lastSyncSummary);
+      logSyncEvent("Sync complete — " + state.fplSync.lastSyncSummary, true);
+      if (!isAuto) toast("FPL sync complete.");
+    } catch (err) {
+      var msg = "Sync failed: " + (err && err.message ? err.message : "unknown error") + ". This is almost always the free CORS proxy being briefly unavailable, not a fault in this file — wait a moment and try again, or swap the proxy URL above.";
+      logSyncEvent(msg, false);
+      setSyncStatus("Sync failed — see log below.");
+      persist();
+      if (!isAuto) toast("FPL sync failed — see the log for details.");
+    }
+  }
+
+  function setupAutoSyncTimer() {
+    if (fplAutoSyncTimer) { clearInterval(fplAutoSyncTimer); fplAutoSyncTimer = null; }
+    if (state.fplSync.autoSyncEnabled) {
+      fplAutoSyncTimer = setInterval(function () { runFplSync(true); }, 40 * 60 * 1000);
+    }
+  }
+
+  $("fplSyncNowBtn").addEventListener("click", function () {
+    state.fplSync.leagueId = $("fplLeagueIdInput").value.trim();
+    state.fplSync.leagueName = $("fplLeagueNameInput").value.trim();
+    state.fplSync.proxyUrl = $("fplProxyUrlInput").value.trim();
+    persist();
+    runFplSync(false);
+  });
+
+  $("fplAutoSyncToggle").addEventListener("change", function (e) {
+    state.fplSync.autoSyncEnabled = e.target.checked;
+    persist();
+    setupAutoSyncTimer();
+    toast(e.target.checked ? "Auto-sync on — runs every 40 minutes while this tab stays open." : "Auto-sync turned off.");
+  });
+
+  $("fplImportUnmatchedBtn").addEventListener("click", function () {
+    if (lastFplStandings.length === 0) { toast("Run a sync first."); return; }
+    var added = 0;
+    lastFplStandings.forEach(function (row) {
+      var already = state.managers.filter(function (m) { return m.fplEntryId === row.entry; })[0];
+      if (already) return;
+      var m = freshManager(row.player_name);
+      m.fplEntryId = row.entry;
+      m.team = row.entry_name;
+      state.managers.push(m);
+      ensurePaymentsFor(m.id);
+      ensurePerformanceFor(m.id);
+      added++;
+    });
+    persist();
+    renderAll();
+    renderFplMatchTable();
+    toast(added + " manager(s) imported from the FPL league.");
+  });
+
+  $("fplMatchBody").addEventListener("change", function (e) {
+    if (!e.target.classList.contains("fpl-match-select")) return;
+    var entryId = Number(e.target.getAttribute("data-entry"));
+    var managerId = e.target.value;
+    state.managers.forEach(function (m) { if (m.fplEntryId === entryId) m.fplEntryId = null; });
+    if (managerId) {
+      var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+      if (m) m.fplEntryId = entryId;
+    }
+    persist();
+    toast("Manager link updated.");
+  });
+
+  /* ---------- page tabs ---------- */
+  function showLedgerPage() {
+    $("ledgerPage").classList.remove("hidden");
+    $("gradingPage").classList.add("hidden");
+    $("performancePage").classList.add("hidden");
+    $("fplSyncPage").classList.add("hidden");
+    $("tabLedgerBtn").classList.add("active");
+    $("tabGradingBtn").classList.remove("active");
+    $("tabPerformanceBtn").classList.remove("active");
+    $("tabFplSyncBtn").classList.remove("active");
+  }
+  function showGradingPage() {
+    $("gradingPage").classList.remove("hidden");
+    $("ledgerPage").classList.add("hidden");
+    $("performancePage").classList.add("hidden");
+    $("fplSyncPage").classList.add("hidden");
+    $("tabGradingBtn").classList.add("active");
+    $("tabLedgerBtn").classList.remove("active");
+    $("tabPerformanceBtn").classList.remove("active");
+    $("tabFplSyncBtn").classList.remove("active");
+    renderGradingTable();
+  }
+  function showPerformancePage() {
+    $("performancePage").classList.remove("hidden");
+    $("ledgerPage").classList.add("hidden");
+    $("gradingPage").classList.add("hidden");
+    $("fplSyncPage").classList.add("hidden");
+    $("tabPerformanceBtn").classList.add("active");
+    $("tabLedgerBtn").classList.remove("active");
+    $("tabGradingBtn").classList.remove("active");
+    $("tabFplSyncBtn").classList.remove("active");
+    renderPerformanceTable();
+  }
+  function showFplSyncPage() {
+    $("fplSyncPage").classList.remove("hidden");
+    $("ledgerPage").classList.add("hidden");
+    $("gradingPage").classList.add("hidden");
+    $("performancePage").classList.add("hidden");
+    $("tabFplSyncBtn").classList.add("active");
+    $("tabLedgerBtn").classList.remove("active");
+    $("tabGradingBtn").classList.remove("active");
+    $("tabPerformanceBtn").classList.remove("active");
+    renderFplStandings(lastFplStandings);
+    renderSyncLog();
+  }
+  $("tabLedgerBtn").addEventListener("click", showLedgerPage);
+  $("tabGradingBtn").addEventListener("click", showGradingPage);
+  $("tabPerformanceBtn").addEventListener("click", showPerformancePage);
+  $("tabFplSyncBtn").addEventListener("click", showFplSyncPage);
+
+  /* ---------- init ---------- */
+  function initSelectsAndForm(showDemoValues) {
+    populateGwSelect($("ledgerGwSelect"), selectedLedgerGW);
+    populateGwSelect($("summaryGwSelect"), selectedSummaryGW);
+    populateGwSelect($("advanceFromGw"), 1);
+    populateGwSelect($("advanceToGw"), 4);
+    populateGwSelect($("gradingGwSelect"), selectedGradingGW);
+    populateMonthSelect($("perfMonthSelect"), selectedPerfMonth);
+    $("newManagerName").value = "";
+    $("bulkImportText").value = showDemoValues ? "Dan" : "";
+    $("advanceAmount").value = showDemoValues ? 20000 : "";
+    $("advanceMethod").value = "CASH";
+    $("advanceAutoExpire").checked = false;
+    populateGwSelect($("currentGwInput"), state.params.currentGw || 1);
+    $("fplLeagueIdInput").value = state.fplSync.leagueId || "";
+    $("fplLeagueNameInput").value = state.fplSync.leagueName || "";
+    $("fplProxyUrlInput").value = state.fplSync.proxyUrl || "";
+    $("fplAutoSyncToggle").checked = !!state.fplSync.autoSyncEnabled;
+    $("ghOwner").value = (state.githubSync && state.githubSync.owner) || "";
+    $("ghRepo").value = (state.githubSync && state.githubSync.repo) || "";
+    $("ghBranch").value = (state.githubSync && state.githubSync.branch) || "main";
+    $("ghPath").value = (state.githubSync && state.githubSync.path) || "data/fpl-ledger-data.json";
+    try { $("ghToken").value = localStorage.getItem(GH_TOKEN_KEY) || ""; } catch (e) {}
+    if (state.fplSync.lastSyncedAt) {
+      setSyncStatus("Last synced " + formatTimestamp(state.fplSync.lastSyncedAt) + (state.fplSync.lastSyncSummary ? " — " + state.fplSync.lastSyncSummary : ""));
+    }
+    renderSyncLog();
+  }
+
+  state.managers.forEach(function (m) { ensurePaymentsFor(m.id); ensureManagerFields(m); ensurePerformanceFor(m.id); });
+  initSelectsAndForm(firstRun);
+  renderAll();
+  setupAutoSyncTimer();
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (!$("managerEditModal").classList.contains("hidden")) closeManagerEditModal();
+      if (!$("advanceEditModal").classList.contains("hidden")) closeAdvanceEditModal();
+    }
+  });
+
+  /* ---------- login gate ---------- */
+  // To change the login credentials, edit the two values below.
+  var AUTH_SESSION_KEY = "fplLedgerTrackerAuthed";
+  var LOGIN_USERNAME = "admin";
+  var LOGIN_PASSWORD = "701901335";
+
+  function showApp() {
+    $("loginGate").classList.add("hidden");
+    $("appRoot").classList.remove("hidden");
+  }
+  function showLoginGate() {
+    $("appRoot").classList.add("hidden");
+    $("loginGate").classList.remove("hidden");
+    $("loginError").classList.add("hidden");
+    $("loginForm").reset();
+    $("loginUsername").focus();
+  }
+
+  $("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var u = $("loginUsername").value.trim();
+    var p = $("loginPassword").value;
+    if (u === LOGIN_USERNAME && p === LOGIN_PASSWORD) {
+      try { sessionStorage.setItem(AUTH_SESSION_KEY, "yes"); } catch (err) {}
+      showApp();
+      toast("Welcome back!");
+    } else {
+      $("loginError").classList.remove("hidden");
+      $("loginPassword").value = "";
+      $("loginPassword").focus();
+    }
+  });
+
+  $("logoutBtn").addEventListener("click", function () {
+    try { sessionStorage.removeItem(AUTH_SESSION_KEY); } catch (err) {}
+    showLoginGate();
+  });
+
+  var alreadyAuthed = false;
+  try { alreadyAuthed = sessionStorage.getItem(AUTH_SESSION_KEY) === "yes"; } catch (err) {}
+  if (alreadyAuthed) { showApp(); } else { showLoginGate(); }
+
+})();
+</script>
+</body>
+</html>
