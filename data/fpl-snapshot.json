@@ -1,0 +1,13 @@
+{
+  "generatedAt": null,
+  "leagueId": "",
+  "leagueName": "",
+  "currentEventId": null,
+  "currentMonth": null,
+  "gwMonthMap": {},
+  "standings": [],
+  "managers": {},
+  "errors": [
+    "Not synced yet. Push your League/Manager config, then run the GitHub Action."
+  ]
+}
