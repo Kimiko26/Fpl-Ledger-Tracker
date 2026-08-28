@@ -1,0 +1,48 @@
+name: FPL Sync
+
+# Runs entirely on GitHub's servers (not a browser), so it never hits the
+# CORS restriction the official FPL API applies to browser pages. Fetches
+# league standings + each linked manager's history, and writes
+# data/fpl-snapshot.json, which the site then loads directly (same-origin,
+# no proxy needed).
+
+on:
+  schedule:
+    # Every 3 hours. Adjust the cron if you want it more/less frequent.
+    # GitHub may delay scheduled runs slightly during busy periods, and
+    # disables schedules on repos with no activity for 60+ days (just
+    # push anything, or click "Run workflow" manually, to reactivate it).
+    - cron: "0 */3 * * *"
+  workflow_dispatch: {}
+  # ^ lets you trigger it by hand from the Actions tab, and is also what
+  # the app's "Run GitHub Action Now" button calls via the API.
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run FPL sync script
+        run: node scripts/fpl-sync.js
+
+      - name: Commit snapshot if it changed
+        run: |
+          git config user.name "fpl-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/fpl-snapshot.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update FPL snapshot [skip ci]"
+            git push
+          fi
