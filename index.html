@@ -2902,6 +2902,11 @@
       }
       renderFplStandings(results, transferCostByEntry);
 
+      if (currentMonth && MONTHS.indexOf(currentMonth) !== -1) {
+        selectedPerfMonth = currentMonth;
+        if ($("perfMonthSelect")) $("perfMonthSelect").value = currentMonth;
+      }
+
       state.fplSync.lastSyncedAt = new Date().toISOString();
       state.fplSync.lastSyncSummary = "Synced " + linked.length + " linked manager(s).";
       persist();
@@ -2967,6 +2972,12 @@
     });
 
     renderFplStandings(results, transferCostByEntry);
+
+    if (snap.currentMonth && MONTHS.indexOf(snap.currentMonth) !== -1) {
+      selectedPerfMonth = snap.currentMonth;
+      if ($("perfMonthSelect")) $("perfMonthSelect").value = snap.currentMonth;
+    }
+
     $("fplStandingsUpdated").textContent = "Updated " + formatTimestamp(snap.generatedAt || new Date().toISOString()) + " (GitHub Action)";
     state.fplSync.lastSyncedAt = snap.generatedAt || new Date().toISOString();
     state.fplSync.lastSyncSummary = "Loaded GitHub Action snapshot — " + linked.length + " linked manager(s).";
