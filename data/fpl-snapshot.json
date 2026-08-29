@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-29T13:43:12.779Z",
+  "generatedAt": "2026-08-29T14:12:22.206Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 2,
@@ -49,23 +49,23 @@
       "club_badge_src": null,
       "entry": 228783,
       "entry_name": "666 #VFFR",
-      "event_total": 31,
+      "event_total": 32,
       "last_rank": 4,
       "player_name": "Stefan Jovanovic",
       "rank": 1,
       "rank_sort": 1,
-      "total": 97
+      "total": 98
     },
     {
       "club_badge_src": null,
       "entry": 6820392,
       "entry_name": "Lucky15",
-      "event_total": 44,
+      "event_total": 45,
       "last_rank": 9,
       "player_name": "Lakshya Shelar",
       "rank": 2,
       "rank_sort": 2,
-      "total": 97
+      "total": 98
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/3013611/fbbb1918-fea4-423b-a4d3-45dcdb985a55.png",
@@ -82,45 +82,45 @@
       "club_badge_src": null,
       "entry": 804897,
       "entry_name": "Kingdom Animalia",
-      "event_total": 27,
+      "event_total": 28,
       "last_rank": 4,
       "player_name": "K R",
       "rank": 4,
       "rank_sort": 4,
-      "total": 93
+      "total": 94
     },
     {
       "club_badge_src": null,
       "entry": 6773598,
       "entry_name": "Radnički Niš",
-      "event_total": 11,
+      "event_total": 13,
       "last_rank": 2,
       "player_name": "Milan Losic",
       "rank": 5,
       "rank_sort": 5,
-      "total": 89
+      "total": 91
     },
     {
       "club_badge_src": null,
       "entry": 5278796,
       "entry_name": "Datu256",
-      "event_total": 37,
+      "event_total": 38,
       "last_rank": 13,
       "player_name": "Dennis Batabazi",
       "rank": 6,
       "rank_sort": 6,
-      "total": 87
+      "total": 88
     },
     {
       "club_badge_src": null,
       "entry": 6885885,
       "entry_name": "Lucky 15 _2",
-      "event_total": 43,
+      "event_total": 44,
       "last_rank": 21,
       "player_name": "rupesh Shelar",
       "rank": 7,
       "rank_sort": 7,
-      "total": 83
+      "total": 84
     },
     {
       "club_badge_src": null,
@@ -134,26 +134,26 @@
       "total": 83
     },
     {
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
+      "entry": 6679148,
+      "entry_name": "kk2#RYC6",
+      "event_total": 17,
+      "last_rank": 4,
+      "player_name": "brian lutaaya",
+      "rank": 8,
+      "rank_sort": 9,
+      "total": 83
+    },
+    {
       "club_badge_src": null,
       "entry": 6762882,
       "entry_name": "6XCORE�",
       "event_total": 39,
       "last_rank": 17,
       "player_name": "Musa Abdulmajid",
-      "rank": 9,
-      "rank_sort": 9,
-      "total": 82
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
-      "entry": 6679148,
-      "entry_name": "kk2#RYC6",
-      "event_total": 15,
-      "last_rank": 4,
-      "player_name": "brian lutaaya",
       "rank": 10,
       "rank_sort": 10,
-      "total": 81
+      "total": 82
     },
     {
       "club_badge_src": null,
@@ -170,34 +170,34 @@
       "club_badge_src": null,
       "entry": 4021691,
       "entry_name": "Jeff256#GWHU",
-      "event_total": 33,
+      "event_total": 34,
       "last_rank": 20,
       "player_name": "Mugume Jephason",
       "rank": 12,
       "rank_sort": 12,
-      "total": 71
+      "total": 72
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6826187/e3bdd078-753b-44b4-b813-1a13dd999217.png",
       "entry": 2818022,
       "entry_name": "ABCDE  FC",
-      "event_total": 7,
+      "event_total": 8,
       "last_rank": 7,
       "player_name": "Za ke",
       "rank": 13,
       "rank_sort": 13,
-      "total": 69
+      "total": 70
     },
     {
       "club_badge_src": null,
       "entry": 6561110,
       "entry_name": "muruD7WK",
-      "event_total": 31,
+      "event_total": 32,
       "last_rank": 23,
       "player_name": "Arichia Fura",
       "rank": 14,
       "rank_sort": 14,
-      "total": 68
+      "total": 69
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
@@ -225,12 +225,12 @@
       "club_badge_src": null,
       "entry": 3391361,
       "entry_name": "Samskara#CQFU",
-      "event_total": 7,
+      "event_total": 8,
       "last_rank": 11,
       "player_name": "Eric Ssekamwa",
       "rank": 17,
       "rank_sort": 17,
-      "total": 61
+      "total": 62
     },
     {
       "club_badge_src": null,
@@ -258,12 +258,12 @@
       "club_badge_src": null,
       "entry": 6643792,
       "entry_name": "S. beans#MAKY",
-      "event_total": 3,
+      "event_total": 5,
       "last_rank": 12,
       "player_name": "Jan Smolka",
       "rank": 20,
       "rank_sort": 20,
-      "total": 56
+      "total": 58
     },
     {
       "club_badge_src": null,
@@ -280,23 +280,23 @@
       "club_badge_src": null,
       "entry": 6738254,
       "entry_name": "A’mad World",
-      "event_total": 10,
+      "event_total": 11,
       "last_rank": 17,
       "player_name": "Francis Drasta",
       "rank": 22,
       "rank_sort": 22,
-      "total": 53
+      "total": 54
     },
     {
       "club_badge_src": null,
       "entry": 7794335,
       "entry_name": "bogy.com",
-      "event_total": 11,
+      "event_total": 12,
       "last_rank": 15,
       "player_name": "HARUNA BOGGY",
       "rank": 23,
       "rank_sort": 23,
-      "total": 52
+      "total": 53
     },
     {
       "club_badge_src": null,
