@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T04:17:00.885Z",
+  "generatedAt": "2026-08-31T10:33:28.822Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 2,
@@ -112,7 +112,7 @@
       "total": 122
     },
     {
-      "club_badge_src": null,
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
       "entry": 228783,
       "entry_name": "666 #VFFR",
       "event_total": 53,
@@ -167,25 +167,14 @@
       "total": 114
     },
     {
-      "club_badge_src": null,
-      "entry": 5286761,
-      "entry_name": "Zingaro FC#QNM4",
-      "event_total": 61,
-      "last_rank": 0,
-      "player_name": "Ronald Ikaaba",
-      "rank": 12,
-      "rank_sort": 12,
-      "total": 113
-    },
-    {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
       "entry": 6679148,
       "entry_name": "kk2#RYC6",
       "event_total": 46,
       "last_rank": 4,
       "player_name": "brian lutaaya",
-      "rank": 13,
-      "rank_sort": 13,
+      "rank": 12,
+      "rank_sort": 12,
       "total": 112
     },
     {
@@ -195,20 +184,9 @@
       "event_total": 69,
       "last_rank": 21,
       "player_name": "rupesh Shelar",
-      "rank": 14,
-      "rank_sort": 14,
+      "rank": 13,
+      "rank_sort": 13,
       "total": 109
-    },
-    {
-      "club_badge_src": null,
-      "entry": 784126,
-      "entry_name": "Masaka city#Q484",
-      "event_total": 64,
-      "last_rank": 17,
-      "player_name": "Nasasira Emmanuel",
-      "rank": 15,
-      "rank_sort": 15,
-      "total": 107
     },
     {
       "club_badge_src": null,
@@ -217,8 +195,19 @@
       "event_total": 54,
       "last_rank": 12,
       "player_name": "Jan Smolka",
-      "rank": 15,
-      "rank_sort": 16,
+      "rank": 14,
+      "rank_sort": 14,
+      "total": 107
+    },
+    {
+      "club_badge_src": null,
+      "entry": 784126,
+      "entry_name": "Masaka city#Q484",
+      "event_total": 64,
+      "last_rank": 17,
+      "player_name": "Nasasira Emmanuel",
+      "rank": 14,
+      "rank_sort": 15,
       "total": 107
     },
     {
@@ -228,8 +217,8 @@
       "event_total": 64,
       "last_rank": 17,
       "player_name": "Musa Abdulmajid",
-      "rank": 17,
-      "rank_sort": 17,
+      "rank": 16,
+      "rank_sort": 16,
       "total": 107
     },
     {
@@ -239,8 +228,8 @@
       "event_total": 27,
       "last_rank": 3,
       "player_name": "JONATHAN KIBBS",
-      "rank": 18,
-      "rank_sort": 18,
+      "rank": 17,
+      "rank_sort": 17,
       "total": 101
     },
     {
@@ -250,8 +239,8 @@
       "event_total": 59,
       "last_rank": 15,
       "player_name": "HARUNA BOGGY",
-      "rank": 19,
-      "rank_sort": 19,
+      "rank": 18,
+      "rank_sort": 18,
       "total": 100
     },
     {
@@ -261,8 +250,8 @@
       "event_total": 43,
       "last_rank": 10,
       "player_name": "Denis Indani",
-      "rank": 20,
-      "rank_sort": 20,
+      "rank": 19,
+      "rank_sort": 19,
       "total": 98
     },
     {
@@ -272,8 +261,8 @@
       "event_total": 55,
       "last_rank": 23,
       "player_name": "Arichia Fura",
-      "rank": 21,
-      "rank_sort": 21,
+      "rank": 20,
+      "rank_sort": 20,
       "total": 92
     },
     {
@@ -283,8 +272,8 @@
       "event_total": 59,
       "last_rank": 24,
       "player_name": "Opiyo Melville",
-      "rank": 22,
-      "rank_sort": 22,
+      "rank": 21,
+      "rank_sort": 21,
       "total": 88
     },
     {
@@ -294,8 +283,8 @@
       "event_total": 44,
       "last_rank": 21,
       "player_name": "Stefan Kōji",
-      "rank": 23,
-      "rank_sort": 23,
+      "rank": 22,
+      "rank_sort": 22,
       "total": 84
     },
     {
@@ -305,8 +294,8 @@
       "event_total": 34,
       "last_rank": 14,
       "player_name": "KIGOZI FRANK",
-      "rank": 24,
-      "rank_sort": 24,
+      "rank": 23,
+      "rank_sort": 23,
       "total": 83
     }
   ],
