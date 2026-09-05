@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-05T17:11:43.002Z",
+  "generatedAt": "2026-09-05T20:02:24.455Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 3,
@@ -60,12 +60,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6826187/e3bdd078-753b-44b4-b813-1a13dd999217.png",
       "entry": 2818022,
       "entry_name": "ABCDE  FC",
-      "event_total": 11,
+      "event_total": 16,
       "last_rank": 1,
       "player_name": "Za ke",
       "rank": 2,
       "rank_sort": 2,
-      "total": 202
+      "total": 207
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
@@ -82,12 +82,23 @@
       "club_badge_src": null,
       "entry": 804897,
       "entry_name": "Kingdom Animalia",
-      "event_total": 38,
+      "event_total": 39,
       "last_rank": 3,
       "player_name": "K R",
       "rank": 4,
       "rank_sort": 4,
-      "total": 193
+      "total": 194
+    },
+    {
+      "club_badge_src": null,
+      "entry": 6885885,
+      "entry_name": "Lucky 15 _2",
+      "event_total": 51,
+      "last_rank": 10,
+      "player_name": "rupesh Shelar",
+      "rank": 5,
+      "rank_sort": 5,
+      "total": 177
     },
     {
       "club_badge_src": null,
@@ -96,20 +107,20 @@
       "event_total": 43,
       "last_rank": 8,
       "player_name": "Francis Drasta",
-      "rank": 5,
-      "rank_sort": 5,
+      "rank": 6,
+      "rank_sort": 6,
       "total": 174
     },
     {
       "club_badge_src": null,
-      "entry": 6885885,
-      "entry_name": "Lucky 15 _2",
-      "event_total": 44,
-      "last_rank": 10,
-      "player_name": "rupesh Shelar",
-      "rank": 6,
-      "rank_sort": 6,
-      "total": 170
+      "entry": 4021691,
+      "entry_name": "Jeff256#GWHU",
+      "event_total": 42,
+      "last_rank": 9,
+      "player_name": "Mugume Jephason",
+      "rank": 7,
+      "rank_sort": 7,
+      "total": 171
     },
     {
       "club_badge_src": null,
@@ -118,8 +129,8 @@
       "event_total": 21,
       "last_rank": 4,
       "player_name": "Milan Losic",
-      "rank": 7,
-      "rank_sort": 7,
+      "rank": 8,
+      "rank_sort": 8,
       "total": 165
     },
     {
@@ -129,20 +140,9 @@
       "event_total": 49,
       "last_rank": 13,
       "player_name": "Lakshya Shelar",
-      "rank": 8,
-      "rank_sort": 8,
-      "total": 165
-    },
-    {
-      "club_badge_src": null,
-      "entry": 4021691,
-      "entry_name": "Jeff256#GWHU",
-      "event_total": 35,
-      "last_rank": 9,
-      "player_name": "Mugume Jephason",
       "rank": 9,
       "rank_sort": 9,
-      "total": 164
+      "total": 165
     },
     {
       "club_badge_src": null,
@@ -157,22 +157,22 @@
     },
     {
       "club_badge_src": null,
-      "entry": 5278796,
-      "entry_name": "Datu256",
-      "event_total": 36,
-      "last_rank": 12,
-      "player_name": "Dennis Batabazi",
+      "entry": 784126,
+      "entry_name": "Masaka city#Q484",
+      "event_total": 47,
+      "last_rank": 19,
+      "player_name": "Nasasira Emmanuel",
       "rank": 11,
       "rank_sort": 11,
       "total": 160
     },
     {
       "club_badge_src": null,
-      "entry": 784126,
-      "entry_name": "Masaka city#Q484",
-      "event_total": 47,
-      "last_rank": 19,
-      "player_name": "Nasasira Emmanuel",
+      "entry": 5278796,
+      "entry_name": "Datu256",
+      "event_total": 36,
+      "last_rank": 12,
+      "player_name": "Dennis Batabazi",
       "rank": 11,
       "rank_sort": 12,
       "total": 160
@@ -214,12 +214,12 @@
       "club_badge_src": null,
       "entry": 6643792,
       "entry_name": "S. beans#MAKY",
-      "event_total": 33,
+      "event_total": 34,
       "last_rank": 15,
       "player_name": "Jan Smolka",
       "rank": 16,
       "rank_sort": 16,
-      "total": 153
+      "total": 154
     },
     {
       "club_badge_src": null,
@@ -291,23 +291,23 @@
       "club_badge_src": null,
       "entry": 8014708,
       "entry_name": "Red devils",
-      "event_total": 44,
+      "event_total": 43,
       "last_rank": 22,
       "player_name": "Opiyo Melville",
       "rank": 23,
       "rank_sort": 23,
-      "total": 113
+      "total": 112
     },
     {
       "club_badge_src": null,
       "entry": 9936722,
       "entry_name": "BIGBOY",
-      "event_total": 23,
+      "event_total": 24,
       "last_rank": 0,
       "player_name": "Tumwesige Joseph",
       "rank": 24,
       "rank_sort": 24,
-      "total": 23
+      "total": 24
     }
   ],
   "managers": {
