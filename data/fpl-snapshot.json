@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T10:47:31.638Z",
+  "generatedAt": "2026-09-08T16:11:18.740Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 3,
@@ -113,36 +113,25 @@
     },
     {
       "club_badge_src": null,
-      "entry": 6885885,
-      "entry_name": "Lucky 15 _2",
-      "event_total": 65,
-      "last_rank": 10,
-      "player_name": "rupesh Shelar",
-      "rank": 7,
-      "rank_sort": 7,
-      "total": 191
-    },
-    {
-      "club_badge_src": null,
       "entry": 6773598,
       "entry_name": "Radnički Niš",
       "event_total": 39,
       "last_rank": 4,
       "player_name": "Milan Losic",
-      "rank": 8,
-      "rank_sort": 8,
+      "rank": 7,
+      "rank_sort": 7,
       "total": 183
     },
     {
       "club_badge_src": null,
-      "entry": 6820392,
-      "entry_name": "Lucky15",
-      "event_total": 61,
-      "last_rank": 13,
-      "player_name": "Lakshya Shelar",
-      "rank": 9,
-      "rank_sort": 9,
-      "total": 177
+      "entry": 3391361,
+      "entry_name": "Samskara#CQFU",
+      "event_total": 39,
+      "last_rank": 7,
+      "player_name": "Eric Ssekamwa",
+      "rank": 8,
+      "rank_sort": 8,
+      "total": 173
     },
     {
       "club_badge_src": null,
@@ -151,8 +140,8 @@
       "event_total": 60,
       "last_rank": 19,
       "player_name": "Nasasira Emmanuel",
-      "rank": 10,
-      "rank_sort": 10,
+      "rank": 8,
+      "rank_sort": 9,
       "total": 173
     },
     {
@@ -162,8 +151,8 @@
       "event_total": 47,
       "last_rank": 11,
       "player_name": "brian lutaaya",
-      "rank": 10,
-      "rank_sort": 11,
+      "rank": 8,
+      "rank_sort": 10,
       "total": 173
     },
     {
@@ -173,19 +162,8 @@
       "event_total": 34,
       "last_rank": 6,
       "player_name": "JONATHAN KIBBS",
-      "rank": 10,
-      "rank_sort": 12,
-      "total": 173
-    },
-    {
-      "club_badge_src": null,
-      "entry": 3391361,
-      "entry_name": "Samskara#CQFU",
-      "event_total": 39,
-      "last_rank": 7,
-      "player_name": "Eric Ssekamwa",
-      "rank": 10,
-      "rank_sort": 13,
+      "rank": 8,
+      "rank_sort": 11,
       "total": 173
     },
     {
@@ -195,8 +173,8 @@
       "event_total": 47,
       "last_rank": 12,
       "player_name": "Dennis Batabazi",
-      "rank": 14,
-      "rank_sort": 14,
+      "rank": 12,
+      "rank_sort": 12,
       "total": 171
     },
     {
@@ -206,8 +184,8 @@
       "event_total": 47,
       "last_rank": 14,
       "player_name": "Ivan Milenkovic",
-      "rank": 15,
-      "rank_sort": 15,
+      "rank": 13,
+      "rank_sort": 13,
       "total": 170
     },
     {
@@ -217,8 +195,8 @@
       "event_total": 46,
       "last_rank": 15,
       "player_name": "Jan Smolka",
-      "rank": 16,
-      "rank_sort": 16,
+      "rank": 14,
+      "rank_sort": 14,
       "total": 166
     },
     {
@@ -228,8 +206,8 @@
       "event_total": 40,
       "last_rank": 16,
       "player_name": "Musa Abdulmajid",
-      "rank": 17,
-      "rank_sort": 17,
+      "rank": 15,
+      "rank_sort": 15,
       "total": 160
     },
     {
@@ -239,8 +217,8 @@
       "event_total": 55,
       "last_rank": 21,
       "player_name": "Stefan Kōji",
-      "rank": 18,
-      "rank_sort": 18,
+      "rank": 16,
+      "rank_sort": 16,
       "total": 159
     },
     {
@@ -250,8 +228,8 @@
       "event_total": 51,
       "last_rank": 18,
       "player_name": "HARUNA BOGGY",
-      "rank": 19,
-      "rank_sort": 19,
+      "rank": 17,
+      "rank_sort": 17,
       "total": 159
     },
     {
@@ -261,8 +239,8 @@
       "event_total": 53,
       "last_rank": 23,
       "player_name": "Arichia Fura",
-      "rank": 20,
-      "rank_sort": 20,
+      "rank": 18,
+      "rank_sort": 18,
       "total": 153
     },
     {
@@ -272,8 +250,8 @@
       "event_total": 33,
       "last_rank": 17,
       "player_name": "Denis Indani",
-      "rank": 21,
-      "rank_sort": 21,
+      "rank": 19,
+      "rank_sort": 19,
       "total": 150
     },
     {
@@ -283,8 +261,8 @@
       "event_total": 42,
       "last_rank": 20,
       "player_name": "KIGOZI FRANK",
-      "rank": 22,
-      "rank_sort": 22,
+      "rank": 20,
+      "rank_sort": 20,
       "total": 147
     },
     {
@@ -294,8 +272,8 @@
       "event_total": 56,
       "last_rank": 22,
       "player_name": "Opiyo Melville",
-      "rank": 23,
-      "rank_sort": 23,
+      "rank": 21,
+      "rank_sort": 21,
       "total": 125
     },
     {
@@ -305,8 +283,8 @@
       "event_total": 34,
       "last_rank": 0,
       "player_name": "Tumwesige Joseph",
-      "rank": 24,
-      "rank_sort": 24,
+      "rank": 22,
+      "rank_sort": 22,
       "total": 34
     }
   ],
