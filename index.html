@@ -852,11 +852,11 @@
         <h3>🔍 Filter Managers</h3>
         <div class="perf-filter-grid">
           <div class="field" style="margin-bottom:0;">
-            <label for="perfFilterTransfers">Transfers Used ≥ (this month)</label>
+            <label for="perfFilterTransfers" id="perfFilterTransfersLabel">Transfers Used ≥ (this month)</label>
             <input type="number" id="perfFilterTransfers" min="0" placeholder="Any">
           </div>
           <div class="field" style="margin-bottom:0;">
-            <label for="perfFilterChips">Chips Used ≥ (this month)</label>
+            <label for="perfFilterChips" id="perfFilterChipsLabel">Chips Used ≥ (this month)</label>
             <input type="number" id="perfFilterChips" min="0" placeholder="Any">
           </div>
           <div class="field" style="margin-bottom:0;">
@@ -1803,7 +1803,8 @@
 
     ctx.font = "600 14px " + FONT;
     ctx.fillStyle = "#cdb9d6";
-    ctx.fillText("Performance — " + selectedPerfMonth, 20, 62);
+    var perfPeriodLabel = selectedPerfMonth === PERF_ALL_MONTHS ? "All Months Combined" : selectedPerfMonth;
+    ctx.fillText("Performance — " + perfPeriodLabel, 20, 62);
 
     var y = headerH;
     ctx.fillStyle = "#3c1361";
@@ -1828,10 +1829,7 @@
 
     y += colHeadH;
     order.forEach(function (m, idx) {
-      ensurePerformanceFor(m.id);
-      var perf = state.performance[m.id];
-      var rec = perf.monthly[selectedPerfMonth];
-      var prevPos = prevMonthPosition(m.id, selectedPerfMonth);
+      var view = getPerfViewRecord(m.id);
 
       ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#faf7fd";
       ctx.fillRect(0, y, width, rowH);
@@ -1852,16 +1850,15 @@
       ctx.textAlign = "center";
       ctx.font = "400 13px " + FONT;
       ctx.fillStyle = "#374151";
-      ctx.fillText(rec.position === null || rec.position === undefined || rec.position === "" ? "–" : String(rec.position), cx + cols.pos / 2, y + rowH / 2);
+      ctx.fillText(view.position === null || view.position === undefined || view.position === "" ? "–" : String(view.position), cx + cols.pos / 2, y + rowH / 2);
       cx += cols.pos;
 
       ctx.font = "800 12px " + FONT;
       var changeText = "–";
       ctx.fillStyle = "#9ca3af";
-      if (rec.position !== null && rec.position !== "" && prevPos !== null) {
-        var delta = prevPos - Number(rec.position);
-        if (delta > 0) { changeText = "▲ " + delta; ctx.fillStyle = "#16a34a"; }
-        else if (delta < 0) { changeText = "▼ " + Math.abs(delta); ctx.fillStyle = "#e11d48"; }
+      if (view.changeDelta !== null) {
+        if (view.changeDelta > 0) { changeText = "▲ " + view.changeDelta; ctx.fillStyle = "#16a34a"; }
+        else if (view.changeDelta < 0) { changeText = "▼ " + Math.abs(view.changeDelta); ctx.fillStyle = "#e11d48"; }
         else { changeText = "No change"; ctx.fillStyle = "#9ca3af"; }
       }
       ctx.fillText(changeText, cx + cols.change / 2, y + rowH / 2);
@@ -1869,18 +1866,18 @@
 
       ctx.font = "400 13px " + FONT;
       ctx.fillStyle = "#374151";
-      ctx.fillText(String(rec.transfers || 0), cx + cols.transfers / 2, y + rowH / 2);
+      ctx.fillText(String(view.transfers || 0), cx + cols.transfers / 2, y + rowH / 2);
       cx += cols.transfers;
 
       ctx.font = "700 12px " + FONT;
       ctx.fillStyle = "#6d28d9";
-      var chipsText = (rec.chips && rec.chips.length) ? rec.chips.join(", ") : "—";
+      var chipsText = (view.chips && view.chips.length) ? view.chips.join(", ") : "—";
       ctx.fillText(truncateText(ctx, chipsText, cols.chips - 16), cx + cols.chips / 2, y + rowH / 2);
       cx += cols.chips;
 
       ctx.font = "400 13px " + FONT;
       ctx.fillStyle = "#374151";
-      ctx.fillText(String(perf.freeTransfers || 0), cx + cols.ft / 2, y + rowH / 2);
+      ctx.fillText(String(view.freeTransfers || 0), cx + cols.ft / 2, y + rowH / 2);
 
       y += rowH;
     });
@@ -1890,7 +1887,7 @@
     ctx.font = "600 10.5px " + FONT;
     ctx.fillStyle = "#9ca3af";
     ctx.textAlign = "center";
-    ctx.fillText("FPL Ledger Tracker — Performance (" + selectedPerfMonth + ")", width / 2, y + footerH / 2);
+    ctx.fillText("FPL Ledger Tracker — Performance (" + perfPeriodLabel + ")", width / 2, y + footerH / 2);
 
     downloadCanvasAsPng(canvas, "fpl-performance-" + selectedPerfMonth.toLowerCase() + ".png");
     toast("Screenshot saved as an image.");
@@ -2687,8 +2684,14 @@
   });
 
   /* ---------- performance page ---------- */
+  var PERF_ALL_MONTHS = "ALL";
+
   function populateMonthSelect(selectEl, selectedValue) {
     selectEl.innerHTML = "";
+    var allOpt = document.createElement("option");
+    allOpt.value = PERF_ALL_MONTHS;
+    allOpt.textContent = "All Months Combined";
+    selectEl.appendChild(allOpt);
     MONTHS.forEach(function (mo) {
       var opt = document.createElement("option");
       opt.value = mo;
@@ -2709,36 +2712,68 @@
     return null;
   }
 
-  function passesPerfFilters(managerId) {
+  function getPerfAggregateForManager(managerId) {
     ensurePerformanceFor(managerId);
     var perf = state.performance[managerId];
+    var totalTransfers = 0;
+    var chipsUnion = [];
+    var firstPos = null, lastPos = null;
+    MONTHS.forEach(function (mo) {
+      var rec = perf.monthly[mo];
+      totalTransfers += Number(rec.transfers) || 0;
+      (rec.chips || []).forEach(function (c) { if (chipsUnion.indexOf(c) === -1) chipsUnion.push(c); });
+      if (rec.position !== null && rec.position !== undefined && rec.position !== "") {
+        if (firstPos === null) firstPos = Number(rec.position);
+        lastPos = Number(rec.position);
+      }
+    });
+    return { transfers: totalTransfers, chips: chipsUnion, firstPosition: firstPos, latestPosition: lastPos, freeTransfers: perf.freeTransfers || 0 };
+  }
+
+  // Normalizes single-month vs "All Months Combined" into one shape so
+  // filtering, sorting, and rendering don't need separate code paths.
+  function getPerfViewRecord(managerId) {
+    ensurePerformanceFor(managerId);
+    var perf = state.performance[managerId];
+    if (selectedPerfMonth === PERF_ALL_MONTHS) {
+      var agg = getPerfAggregateForManager(managerId);
+      var changeDelta = (agg.firstPosition !== null && agg.latestPosition !== null) ? (agg.firstPosition - agg.latestPosition) : null;
+      return { position: agg.latestPosition, transfers: agg.transfers, chips: agg.chips, freeTransfers: agg.freeTransfers, changeDelta: changeDelta, changeLabel: "vs season start", editable: false };
+    }
     var rec = perf.monthly[selectedPerfMonth];
+    var prevPos = prevMonthPosition(managerId, selectedPerfMonth);
+    var changeDelta = (rec.position !== null && rec.position !== "" && prevPos !== null) ? (prevPos - Number(rec.position)) : null;
+    return { position: rec.position, transfers: rec.transfers, chips: rec.chips, freeTransfers: perf.freeTransfers, changeDelta: changeDelta, changeLabel: "vs previous month", editable: true };
+  }
+
+  function passesPerfFilters(managerId) {
+    var view = getPerfViewRecord(managerId);
     var minT = $("perfFilterTransfers").value;
     var minC = $("perfFilterChips").value;
     var minFT = $("perfFilterFT").value;
-    if (minT !== "" && (Number(rec.transfers) || 0) < Number(minT)) return false;
-    if (minC !== "" && (rec.chips ? rec.chips.length : 0) < Number(minC)) return false;
-    if (minFT !== "" && (Number(perf.freeTransfers) || 0) < Number(minFT)) return false;
+    if (minT !== "" && (Number(view.transfers) || 0) < Number(minT)) return false;
+    if (minC !== "" && (view.chips ? view.chips.length : 0) < Number(minC)) return false;
+    if (minFT !== "" && (Number(view.freeTransfers) || 0) < Number(minFT)) return false;
     return true;
   }
 
   function comparePerfRows(a, b) {
-    var perfA = state.performance[a.id].monthly[selectedPerfMonth];
-    var perfB = state.performance[b.id].monthly[selectedPerfMonth];
+    var viewA = getPerfViewRecord(a.id);
+    var viewB = getPerfViewRecord(b.id);
     var dir = perfSortDir === "desc" ? -1 : 1;
 
     if (perfSortKey === "position") {
-      var posA = (perfA.position === null || perfA.position === undefined || perfA.position === "") ? null : Number(perfA.position);
-      var posB = (perfB.position === null || perfB.position === undefined || perfB.position === "") ? null : Number(perfB.position);
+      var posA = (viewA.position === null || viewA.position === undefined || viewA.position === "") ? null : Number(viewA.position);
+      var posB = (viewB.position === null || viewB.position === undefined || viewB.position === "") ? null : Number(viewB.position);
       if (posA === null && posB === null) return 0;
       if (posA === null) return 1;
       if (posB === null) return -1;
       return (posA - posB) * dir;
     }
     if (perfSortKey === "chips") {
-      return (((perfA.chips || []).length) - ((perfB.chips || []).length)) * dir;
+      return (((viewA.chips || []).length) - ((viewB.chips || []).length)) * dir;
     }
-    return ((Number(perfA.transfers) || 0) - (Number(perfB.transfers) || 0)) * dir;
+    return ((Number(viewA.transfers) || 0) - (Number(viewB.transfers) || 0)) * dir;
   }
 
   function getPerfDisplayRows() {
@@ -2777,6 +2812,9 @@
     var tbody = $("performanceBody");
     if (!tbody) return;
     updatePerfSortButtons();
+    var isAll = selectedPerfMonth === PERF_ALL_MONTHS;
+    $("perfFilterTransfersLabel").textContent = "Transfers Used ≥ (" + (isAll ? "season total" : "this month") + ")";
+    $("perfFilterChipsLabel").textContent = "Chips Used ≥ (" + (isAll ? "season total" : "this month") + ")";
     if (state.managers.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
       return;
@@ -2787,29 +2825,44 @@
       return;
     }
     tbody.innerHTML = rows.map(function (m) {
-      ensurePerformanceFor(m.id);
-      var perf = state.performance[m.id];
-      var rec = perf.monthly[selectedPerfMonth];
-      var prevPos = prevMonthPosition(m.id, selectedPerfMonth);
+      var view = getPerfViewRecord(m.id);
       var changeHtml = '<span class="pos-change-none">–</span>';
-      if (rec.position !== null && rec.position !== "" && prevPos !== null) {
-        var delta = prevPos - Number(rec.position);
-        if (delta > 0) changeHtml = '<span class="pos-change-up">▲ ' + delta + '</span>';
-        else if (delta < 0) changeHtml = '<span class="pos-change-down">▼ ' + Math.abs(delta) + '</span>';
+      if (view.changeDelta !== null) {
+        if (view.changeDelta > 0) changeHtml = '<span class="pos-change-up">▲ ' + view.changeDelta + '</span>';
+        else if (view.changeDelta < 0) changeHtml = '<span class="pos-change-down">▼ ' + Math.abs(view.changeDelta) + '</span>';
         else changeHtml = '<span class="pos-change-none">— No Change</span>';
       }
-      var chipsHtml = '<div class="actions-cell">' + CHIPS.map(function (c) {
-        var active = rec.chips && rec.chips.indexOf(c.value) !== -1;
-        return '<button class="chip-pill' + (active ? " active" : "") + '" data-action="togglechip" data-id="' + m.id + '" data-chip="' + c.value + '" title="' + c.label + '">' + c.value + '</button>';
-      }).join("") + '</div>';
+
+      var positionCell = view.editable
+        ? '<td><input type="number" class="grade-input" min="1" data-field="position" data-id="' + m.id + '" value="' + (view.position === null || view.position === undefined ? "" : view.position) + '" placeholder="–"></td>'
+        : "<td>" + (view.position === null || view.position === undefined ? '<span class="text-muted">–</span>' : view.position) + "</td>";
+
+      var transfersCell = view.editable
+        ? '<td><input type="number" class="grade-input" min="0" data-field="transfers" data-id="' + m.id + '" value="' + (view.transfers || 0) + '"></td>'
+        : "<td>" + (view.transfers || 0) + "</td>";
+
+      var chipsHtml;
+      if (view.editable) {
+        chipsHtml = '<div class="actions-cell">' + CHIPS.map(function (c) {
+          var active = view.chips && view.chips.indexOf(c.value) !== -1;
+          return '<button class="chip-pill' + (active ? " active" : "") + '" data-action="togglechip" data-id="' + m.id + '" data-chip="' + c.value + '" title="' + c.label + '">' + c.value + '</button>';
+        }).join("") + '</div>';
+      } else {
+        chipsHtml = (view.chips && view.chips.length)
+          ? '<div class="actions-cell">' + view.chips.map(function (c) { return '<span class="chip-pill active" style="cursor:default;">' + escapeHtml(c) + '</span>'; }).join("") + '</div>'
+          : '<span class="text-muted">—</span>';
+      }
+
+      var ftCell = '<td><input type="number" class="grade-input" min="0" data-field="freeTransfers" data-id="' + m.id + '" value="' + (view.freeTransfers || 0) + '"></td>';
+
       return (
         "<tr>" +
           "<td><strong>" + escapeHtml(m.name) + "</strong></td>" +
-          '<td><input type="number" class="grade-input" min="1" data-field="position" data-id="' + m.id + '" value="' + (rec.position === null || rec.position === undefined ? "" : rec.position) + '" placeholder="–"></td>' +
+          positionCell +
           "<td>" + changeHtml + "</td>" +
-          '<td><input type="number" class="grade-input" min="0" data-field="transfers" data-id="' + m.id + '" value="' + (rec.transfers || 0) + '"></td>' +
+          transfersCell +
           "<td>" + chipsHtml + "</td>" +
-          '<td><input type="number" class="grade-input" min="0" data-field="freeTransfers" data-id="' + m.id + '" value="' + (perf.freeTransfers || 0) + '"></td>' +
+          ftCell +
         "</tr>"
       );
     }).join("");
