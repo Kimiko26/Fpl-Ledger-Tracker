@@ -875,6 +875,7 @@
               <th>Position (this month)</th>
               <th>Change vs Previous Month</th>
               <th>Transfers Used</th>
+              <th>Total Points</th>
               <th>Chips Used</th>
               <th>Free Transfers Available</th>
             </tr>
@@ -1140,7 +1141,7 @@
 
   function blankPerformanceMonthly() {
     var p = {};
-    MONTHS.forEach(function (mo) { p[mo] = { position: null, transfers: 0, chips: [] }; });
+    MONTHS.forEach(function (mo) { p[mo] = { position: null, transfers: 0, points: 0, chips: [] }; });
     return p;
   }
 
@@ -1245,7 +1246,8 @@
     var perf = state.performance[managerId];
     if (!perf.monthly) perf.monthly = blankPerformanceMonthly();
     MONTHS.forEach(function (mo) {
-      if (!perf.monthly[mo]) perf.monthly[mo] = { position: null, transfers: 0, chips: [] };
+      if (!perf.monthly[mo]) perf.monthly[mo] = { position: null, transfers: 0, points: 0, chips: [] };
+      if (perf.monthly[mo].points === undefined) perf.monthly[mo].points = 0;
     });
     if (perf.freeTransfers === undefined) perf.freeTransfers = 0;
   }
@@ -1768,8 +1770,8 @@
     var order = getPerfDisplayRows();
     if (order.length === 0) { toast("No managers match the current filters."); return; }
 
-    var cols = { rank: 40, manager: 180, pos: 82, change: 108, transfers: 100, chips: 140, ft: 140 };
-    var width = cols.rank + cols.manager + cols.pos + cols.change + cols.transfers + cols.chips + cols.ft;
+    var cols = { rank: 40, manager: 180, pos: 82, change: 108, transfers: 100, points: 90, chips: 140, ft: 140 };
+    var width = cols.rank + cols.manager + cols.pos + cols.change + cols.transfers + cols.points + cols.chips + cols.ft;
     var headerH = 84, colHeadH = 34, rowH = 34, footerH = 26;
     var height = headerH + colHeadH + (order.length * rowH) + footerH;
 
@@ -1824,6 +1826,7 @@
     headCell("POSITION", cols.pos, "center");
     headCell("CHANGE", cols.change, "center");
     headCell("TRANSFERS", cols.transfers, "center");
+    headCell("POINTS", cols.points, "center");
     headCell("CHIPS", cols.chips, "center");
     headCell("FREE TRANSFERS", cols.ft, "center");
 
@@ -1868,6 +1871,11 @@
       ctx.fillStyle = "#374151";
       ctx.fillText(String(view.transfers || 0), cx + cols.transfers / 2, y + rowH / 2);
       cx += cols.transfers;
+
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(String(view.points || 0), cx + cols.points / 2, y + rowH / 2);
+      cx += cols.points;
 
       ctx.font = "700 12px " + FONT;
       ctx.fillStyle = "#6d28d9";
@@ -2716,18 +2724,20 @@
     ensurePerformanceFor(managerId);
     var perf = state.performance[managerId];
     var totalTransfers = 0;
+    var totalPoints = 0;
     var chipsUnion = [];
     var firstPos = null, lastPos = null;
     MONTHS.forEach(function (mo) {
       var rec = perf.monthly[mo];
       totalTransfers += Number(rec.transfers) || 0;
+      totalPoints += Number(rec.points) || 0;
       (rec.chips || []).forEach(function (c) { if (chipsUnion.indexOf(c) === -1) chipsUnion.push(c); });
       if (rec.position !== null && rec.position !== undefined && rec.position !== "") {
         if (firstPos === null) firstPos = Number(rec.position);
         lastPos = Number(rec.position);
       }
     });
-    return { transfers: totalTransfers, chips: chipsUnion, firstPosition: firstPos, latestPosition: lastPos, freeTransfers: perf.freeTransfers || 0 };
+    return { transfers: totalTransfers, points: totalPoints, chips: chipsUnion, firstPosition: firstPos, latestPosition: lastPos, freeTransfers: perf.freeTransfers || 0 };
   }
 
   // Normalizes single-month vs "All Months Combined" into one shape so
@@ -2738,12 +2748,12 @@
     if (selectedPerfMonth === PERF_ALL_MONTHS) {
       var agg = getPerfAggregateForManager(managerId);
       var changeDelta = (agg.firstPosition !== null && agg.latestPosition !== null) ? (agg.firstPosition - agg.latestPosition) : null;
-      return { position: agg.latestPosition, transfers: agg.transfers, chips: agg.chips, freeTransfers: agg.freeTransfers, changeDelta: changeDelta, changeLabel: "vs season start", editable: false };
+      return { position: agg.latestPosition, transfers: agg.transfers, points: agg.points, chips: agg.chips, freeTransfers: agg.freeTransfers, changeDelta: changeDelta, changeLabel: "vs season start", editable: false };
     }
     var rec = perf.monthly[selectedPerfMonth];
     var prevPos = prevMonthPosition(managerId, selectedPerfMonth);
     var changeDelta = (rec.position !== null && rec.position !== "" && prevPos !== null) ? (prevPos - Number(rec.position)) : null;
-    return { position: rec.position, transfers: rec.transfers, chips: rec.chips, freeTransfers: perf.freeTransfers, changeDelta: changeDelta, changeLabel: "vs previous month", editable: true };
+    return { position: rec.position, transfers: rec.transfers, points: rec.points, chips: rec.chips, freeTransfers: perf.freeTransfers, changeDelta: changeDelta, changeLabel: "vs previous month", editable: true };
   }
 
   function passesPerfFilters(managerId) {
@@ -2816,12 +2826,12 @@
     $("perfFilterTransfersLabel").textContent = "Transfers Used ≥ (" + (isAll ? "season total" : "this month") + ")";
     $("perfFilterChipsLabel").textContent = "Chips Used ≥ (" + (isAll ? "season total" : "this month") + ")";
     if (state.managers.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
       return;
     }
     var rows = getPerfDisplayRows();
     if (rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers match the current filters.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-row">No managers match the current filters.</td></tr>';
       return;
     }
     tbody.innerHTML = rows.map(function (m) {
@@ -2840,6 +2850,10 @@
       var transfersCell = view.editable
         ? '<td><input type="number" class="grade-input" min="0" data-field="transfers" data-id="' + m.id + '" value="' + (view.transfers || 0) + '"></td>'
         : "<td>" + (view.transfers || 0) + "</td>";
+
+      var pointsCell = view.editable
+        ? '<td><input type="number" class="grade-input" data-field="points" data-id="' + m.id + '" value="' + (view.points || 0) + '"></td>'
+        : "<td>" + (view.points || 0) + "</td>";
 
       var chipsHtml;
       if (view.editable) {
@@ -2861,6 +2875,7 @@
           positionCell +
           "<td>" + changeHtml + "</td>" +
           transfersCell +
+          pointsCell +
           "<td>" + chipsHtml + "</td>" +
           ftCell +
         "</tr>"
@@ -2884,6 +2899,8 @@
       rec.position = e.target.value === "" ? null : Number(e.target.value);
     } else if (field === "transfers") {
       rec.transfers = Math.max(0, Number(e.target.value) || 0);
+    } else if (field === "points") {
+      rec.points = Number(e.target.value) || 0;
     } else if (field === "freeTransfers") {
       perf.freeTransfers = Math.max(0, Number(e.target.value) || 0);
     }
@@ -2918,7 +2935,7 @@
 
   $("exportPerfCsvBtn").addEventListener("click", function () {
     if (state.managers.length === 0) { toast("Add some managers first."); return; }
-    var rows = [["Manager", "Month", "Position", "Position Change", "Transfers Used", "Chips Used", "Free Transfers Available"]];
+    var rows = [["Manager", "Month", "Position", "Position Change", "Transfers Used", "Total Points", "Chips Used", "Free Transfers Available"]];
     state.managers.forEach(function (m) {
       ensurePerformanceFor(m.id);
       var perf = state.performance[m.id];
@@ -2935,6 +2952,7 @@
           rec.position === null || rec.position === undefined ? "" : rec.position,
           change,
           rec.transfers || 0,
+          rec.points || 0,
           (rec.chips || []).join("/"),
           perf.freeTransfers || 0
         ]);
@@ -3082,13 +3100,18 @@
     var perf = state.performance[m.id];
 
     var transfersByMonth = {};
+    var pointsByMonth = {};
     (hist.current || []).forEach(function (row) {
       var mo = gwMonthMap[row.event];
       if (!mo) return;
       transfersByMonth[mo] = (transfersByMonth[mo] || 0) + (row.event_transfers || 0);
+      pointsByMonth[mo] = (pointsByMonth[mo] || 0) + (row.points || 0);
     });
     Object.keys(transfersByMonth).forEach(function (mo) {
       perf.monthly[mo].transfers = transfersByMonth[mo];
+    });
+    Object.keys(pointsByMonth).forEach(function (mo) {
+      perf.monthly[mo].points = pointsByMonth[mo];
     });
 
     (hist.chips || []).forEach(function (chip) {
