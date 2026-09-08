@@ -407,6 +407,8 @@
   .pos-change-up { color: var(--green); font-weight: 800; }
   .pos-change-down { color: var(--pink-strong); font-weight: 800; }
   .pos-change-none { color: var(--text-muted); font-style: italic; }
+  .sort-btn { opacity: 0.72; }
+  .sort-btn.active { opacity: 1; box-shadow: 0 0 0 2px var(--cyan-dark) inset; }
 
   /* ---------------- FPL sync page ---------------- */
   .fpl-sync-warning {
@@ -839,7 +841,11 @@
           <label for="perfMonthSelect">Select Month</label>
           <select id="perfMonthSelect"></select>
         </div>
+        <button class="btn btn-darkpurple sort-btn" id="perfSortPositionBtn" type="button">🔀 Position</button>
+        <button class="btn btn-darkpurple sort-btn" id="perfSortTransfersBtn" type="button">🔀 Transfers Used</button>
+        <button class="btn btn-darkpurple sort-btn" id="perfSortChipsBtn" type="button">🔀 Chips Used</button>
         <button class="btn btn-green" id="exportPerfCsvBtn" type="button">⬇️ Export CSV (All Months)</button>
+        <button class="btn btn-teal" id="screenshotPerfBtn" type="button">📸 Screenshot</button>
       </div>
 
       <div class="panel perf-filter-panel no-print">
@@ -1102,6 +1108,8 @@
   var selectedSummaryGW = 1;
   var selectedGradingGW = 1;
   var selectedPerfMonth = MONTHS[0];
+  var perfSortKey = "position";
+  var perfSortDir = "asc";
   var gradingSortOrder = {};
   var lastFplStandings = [];
   var fplAutoSyncTimer = null;
@@ -1756,6 +1764,138 @@
     toast("Screenshot saved as an image.");
   }
 
+  function screenshotPerformanceTable() {
+    var order = getPerfDisplayRows();
+    if (order.length === 0) { toast("No managers match the current filters."); return; }
+
+    var cols = { rank: 40, manager: 180, pos: 82, change: 108, transfers: 100, chips: 140, ft: 140 };
+    var width = cols.rank + cols.manager + cols.pos + cols.change + cols.transfers + cols.chips + cols.ft;
+    var headerH = 84, colHeadH = 34, rowH = 34, footerH = 26;
+    var height = headerH + colHeadH + (order.length * rowH) + footerH;
+
+    var dpr = window.devicePixelRatio || 1;
+    var canvas = document.createElement("canvas");
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    var FONT = "-apple-system, Segoe UI, Roboto, Arial, sans-serif";
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    var grad = ctx.createLinearGradient(0, 0, width, headerH);
+    grad.addColorStop(0, "#2b0e2e");
+    grad.addColorStop(1, "#1a0a1f");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, headerH);
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(0, 0, width, 4);
+
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
+    ctx.font = "800 22px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("FPL ", 20, 38);
+    var fplWidth = ctx.measureText("FPL ").width;
+    ctx.fillStyle = "#22d3ee";
+    ctx.fillText("LEDGER TRACKER", 20 + fplWidth, 38);
+
+    ctx.font = "600 14px " + FONT;
+    ctx.fillStyle = "#cdb9d6";
+    ctx.fillText("Performance — " + selectedPerfMonth, 20, 62);
+
+    var y = headerH;
+    ctx.fillStyle = "#3c1361";
+    ctx.fillRect(0, y, width, colHeadH);
+    ctx.font = "800 11px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "middle";
+
+    var hx = 0;
+    function headCell(text, cw, align) {
+      ctx.textAlign = align;
+      ctx.fillText(text, align === "left" ? hx + 12 : hx + cw / 2, y + colHeadH / 2);
+      hx += cw;
+    }
+    headCell("#", cols.rank, "center");
+    headCell("MANAGER", cols.manager, "left");
+    headCell("POSITION", cols.pos, "center");
+    headCell("CHANGE", cols.change, "center");
+    headCell("TRANSFERS", cols.transfers, "center");
+    headCell("CHIPS", cols.chips, "center");
+    headCell("FREE TRANSFERS", cols.ft, "center");
+
+    y += colHeadH;
+    order.forEach(function (m, idx) {
+      ensurePerformanceFor(m.id);
+      var perf = state.performance[m.id];
+      var rec = perf.monthly[selectedPerfMonth];
+      var prevPos = prevMonthPosition(m.id, selectedPerfMonth);
+
+      ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#faf7fd";
+      ctx.fillRect(0, y, width, rowH);
+
+      var cx = 0;
+      ctx.textAlign = "center";
+      ctx.font = "800 13px " + FONT;
+      ctx.fillStyle = "#6d28d9";
+      ctx.fillText(String(idx + 1), cx + cols.rank / 2, y + rowH / 2);
+      cx += cols.rank;
+
+      ctx.textAlign = "left";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(truncateText(ctx, m.name, cols.manager - 20), cx + 12, y + rowH / 2);
+      cx += cols.manager;
+
+      ctx.textAlign = "center";
+      ctx.font = "400 13px " + FONT;
+      ctx.fillStyle = "#374151";
+      ctx.fillText(rec.position === null || rec.position === undefined || rec.position === "" ? "–" : String(rec.position), cx + cols.pos / 2, y + rowH / 2);
+      cx += cols.pos;
+
+      ctx.font = "800 12px " + FONT;
+      var changeText = "–";
+      ctx.fillStyle = "#9ca3af";
+      if (rec.position !== null && rec.position !== "" && prevPos !== null) {
+        var delta = prevPos - Number(rec.position);
+        if (delta > 0) { changeText = "▲ " + delta; ctx.fillStyle = "#16a34a"; }
+        else if (delta < 0) { changeText = "▼ " + Math.abs(delta); ctx.fillStyle = "#e11d48"; }
+        else { changeText = "No change"; ctx.fillStyle = "#9ca3af"; }
+      }
+      ctx.fillText(changeText, cx + cols.change / 2, y + rowH / 2);
+      cx += cols.change;
+
+      ctx.font = "400 13px " + FONT;
+      ctx.fillStyle = "#374151";
+      ctx.fillText(String(rec.transfers || 0), cx + cols.transfers / 2, y + rowH / 2);
+      cx += cols.transfers;
+
+      ctx.font = "700 12px " + FONT;
+      ctx.fillStyle = "#6d28d9";
+      var chipsText = (rec.chips && rec.chips.length) ? rec.chips.join(", ") : "—";
+      ctx.fillText(truncateText(ctx, chipsText, cols.chips - 16), cx + cols.chips / 2, y + rowH / 2);
+      cx += cols.chips;
+
+      ctx.font = "400 13px " + FONT;
+      ctx.fillStyle = "#374151";
+      ctx.fillText(String(perf.freeTransfers || 0), cx + cols.ft / 2, y + rowH / 2);
+
+      y += rowH;
+    });
+
+    ctx.fillStyle = "#f1f2f6";
+    ctx.fillRect(0, y, width, footerH);
+    ctx.font = "600 10.5px " + FONT;
+    ctx.fillStyle = "#9ca3af";
+    ctx.textAlign = "center";
+    ctx.fillText("FPL Ledger Tracker — Performance (" + selectedPerfMonth + ")", width / 2, y + footerH / 2);
+
+    downloadCanvasAsPng(canvas, "fpl-performance-" + selectedPerfMonth.toLowerCase() + ".png");
+    toast("Screenshot saved as an image.");
+  }
+
   function renderAll() {
     renderStats();
     renderLedgerMatrix();
@@ -2221,6 +2361,7 @@
   });
 
   $("screenshotGradingBtn").addEventListener("click", screenshotGradingTable);
+  $("screenshotPerfBtn").addEventListener("click", screenshotPerformanceTable);
 
   /* ---------- manager edit modal ---------- */
   var editingManagerId = null;
@@ -2581,14 +2722,66 @@
     return true;
   }
 
+  function comparePerfRows(a, b) {
+    var perfA = state.performance[a.id].monthly[selectedPerfMonth];
+    var perfB = state.performance[b.id].monthly[selectedPerfMonth];
+    var dir = perfSortDir === "desc" ? -1 : 1;
+
+    if (perfSortKey === "position") {
+      var posA = (perfA.position === null || perfA.position === undefined || perfA.position === "") ? null : Number(perfA.position);
+      var posB = (perfB.position === null || perfB.position === undefined || perfB.position === "") ? null : Number(perfB.position);
+      if (posA === null && posB === null) return 0;
+      if (posA === null) return 1;
+      if (posB === null) return -1;
+      return (posA - posB) * dir;
+    }
+    if (perfSortKey === "chips") {
+      return (((perfA.chips || []).length) - ((perfB.chips || []).length)) * dir;
+    }
+    return ((Number(perfA.transfers) || 0) - (Number(perfB.transfers) || 0)) * dir;
+  }
+
+  function getPerfDisplayRows() {
+    var rows = state.managers.filter(function (m) { ensurePerformanceFor(m.id); return passesPerfFilters(m.id); });
+    return rows.sort(comparePerfRows);
+  }
+
+  function updatePerfSortButtons() {
+    var labels = { position: "Position", transfers: "Transfers Used", chips: "Chips Used" };
+    var arrow = perfSortDir === "desc" ? " ▼" : " ▲";
+    ["position", "transfers", "chips"].forEach(function (key) {
+      var btn = $("perfSort" + key.charAt(0).toUpperCase() + key.slice(1) + "Btn");
+      if (!btn) return;
+      var isActive = perfSortKey === key;
+      btn.textContent = "🔀 " + labels[key] + (isActive ? arrow : "");
+      btn.classList.toggle("active", isActive);
+    });
+  }
+
+  function setPerfSort(key) {
+    if (perfSortKey === key) {
+      perfSortDir = perfSortDir === "asc" ? "desc" : "asc";
+    } else {
+      perfSortKey = key;
+      perfSortDir = key === "position" ? "asc" : "desc";
+    }
+    updatePerfSortButtons();
+    renderPerformanceTable();
+  }
+
+  $("perfSortPositionBtn").addEventListener("click", function () { setPerfSort("position"); });
+  $("perfSortTransfersBtn").addEventListener("click", function () { setPerfSort("transfers"); });
+  $("perfSortChipsBtn").addEventListener("click", function () { setPerfSort("chips"); });
+
   function renderPerformanceTable() {
     var tbody = $("performanceBody");
     if (!tbody) return;
+    updatePerfSortButtons();
     if (state.managers.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
       return;
     }
-    var rows = state.managers.filter(function (m) { return passesPerfFilters(m.id); });
+    var rows = getPerfDisplayRows();
     if (rows.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers match the current filters.</td></tr>';
       return;
