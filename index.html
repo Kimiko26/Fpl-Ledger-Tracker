@@ -883,7 +883,7 @@
           <tbody id="performanceBody"></tbody>
         </table>
       </div>
-      <p class="hint">Position = overall league rank at the end of the month (lower is better; the change column compares it to the most recent earlier month with a recorded position). Click a chip pill to toggle whether it was played that month. Free Transfers Available is a running total, not tied to a single month.</p>
+      <p class="hint">Position = overall league rank at the end of the month (lower is better; the change column compares it to the most recent earlier month with a recorded position). Click a chip pill to toggle whether it was played that month. Free Transfers Available is a running total, not tied to a single month. In All Months Combined, Total Points uses each manager's live season total from FPL Sync once they're linked and synced, rather than summing the months below.</p>
     </div>
   </div>
 
@@ -2737,6 +2737,17 @@
         lastPos = Number(rec.position);
       }
     });
+
+    // For the combined view, the live standings total (once synced) is the authoritative
+    // season figure — prefer it over summing the monthly buckets, which is only an estimate.
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (m && m.fplEntryId && lastFplStandings.length) {
+      var standingRow = lastFplStandings.filter(function (r) { return r.entry === m.fplEntryId; })[0];
+      if (standingRow && standingRow.total !== undefined && standingRow.total !== null) {
+        totalPoints = Number(standingRow.total);
+      }
+    }
+
     return { transfers: totalTransfers, points: totalPoints, chips: chipsUnion, firstPosition: firstPos, latestPosition: lastPos, freeTransfers: perf.freeTransfers || 0 };
   }
 
