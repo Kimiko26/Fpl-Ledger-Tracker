@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T20:31:15.456Z",
+  "generatedAt": "2026-09-10T22:57:53.301Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 3,
@@ -124,24 +124,13 @@
     },
     {
       "club_badge_src": null,
-      "entry": 3391361,
-      "entry_name": "Samskara#CQFU",
-      "event_total": 39,
-      "last_rank": 7,
-      "player_name": "Eric Ssekamwa",
+      "entry": 6661830,
+      "entry_name": "The blues#TZT2",
+      "event_total": 34,
+      "last_rank": 6,
+      "player_name": "JONATHAN KIBBS",
       "rank": 8,
       "rank_sort": 8,
-      "total": 173
-    },
-    {
-      "club_badge_src": null,
-      "entry": 784126,
-      "entry_name": "Masaka city#Q484",
-      "event_total": 60,
-      "last_rank": 19,
-      "player_name": "Nasasira Emmanuel",
-      "rank": 8,
-      "rank_sort": 9,
       "total": 173
     },
     {
@@ -152,16 +141,27 @@
       "last_rank": 11,
       "player_name": "brian lutaaya",
       "rank": 8,
+      "rank_sort": 9,
+      "total": 173
+    },
+    {
+      "club_badge_src": null,
+      "entry": 784126,
+      "entry_name": "Masaka city#Q484",
+      "event_total": 60,
+      "last_rank": 19,
+      "player_name": "Nasasira Emmanuel",
+      "rank": 8,
       "rank_sort": 10,
       "total": 173
     },
     {
       "club_badge_src": null,
-      "entry": 6661830,
-      "entry_name": "The blues#TZT2",
-      "event_total": 34,
-      "last_rank": 6,
-      "player_name": "JONATHAN KIBBS",
+      "entry": 3391361,
+      "entry_name": "Samskara#CQFU",
+      "event_total": 39,
+      "last_rank": 7,
+      "player_name": "Eric Ssekamwa",
       "rank": 8,
       "rank_sort": 11,
       "total": 173
