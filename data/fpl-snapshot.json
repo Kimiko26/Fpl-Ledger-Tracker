@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T16:02:28.173Z",
+  "generatedAt": "2026-09-11T20:37:25.194Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 3,
@@ -123,17 +123,6 @@
       "total": 183
     },
     {
-      "club_badge_src": null,
-      "entry": 6661830,
-      "entry_name": "The blues#TZT2",
-      "event_total": 34,
-      "last_rank": 6,
-      "player_name": "JONATHAN KIBBS",
-      "rank": 8,
-      "rank_sort": 8,
-      "total": 173
-    },
-    {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
       "entry": 6679148,
       "entry_name": "kk2#RYC6",
@@ -141,7 +130,7 @@
       "last_rank": 11,
       "player_name": "brian lutaaya",
       "rank": 8,
-      "rank_sort": 9,
+      "rank_sort": 8,
       "total": 173
     },
     {
@@ -152,7 +141,7 @@
       "last_rank": 7,
       "player_name": "Eric Ssekamwa",
       "rank": 8,
-      "rank_sort": 10,
+      "rank_sort": 9,
       "total": 173
     },
     {
@@ -162,6 +151,17 @@
       "event_total": 60,
       "last_rank": 19,
       "player_name": "Nasasira Emmanuel",
+      "rank": 8,
+      "rank_sort": 10,
+      "total": 173
+    },
+    {
+      "club_badge_src": null,
+      "entry": 6661830,
+      "entry_name": "The blues#TZT2",
+      "event_total": 34,
+      "last_rank": 6,
+      "player_name": "JONATHAN KIBBS",
       "rank": 8,
       "rank_sort": 11,
       "total": 173
