@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T03:31:15.964Z",
+  "generatedAt": "2026-09-11T10:46:36.240Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 3,
@@ -123,12 +123,12 @@
       "total": 183
     },
     {
-      "club_badge_src": null,
-      "entry": 784126,
-      "entry_name": "Masaka city#Q484",
-      "event_total": 60,
-      "last_rank": 19,
-      "player_name": "Nasasira Emmanuel",
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
+      "entry": 6679148,
+      "entry_name": "kk2#RYC6",
+      "event_total": 47,
+      "last_rank": 11,
+      "player_name": "brian lutaaya",
       "rank": 8,
       "rank_sort": 8,
       "total": 173
@@ -145,12 +145,12 @@
       "total": 173
     },
     {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
-      "entry": 6679148,
-      "entry_name": "kk2#RYC6",
-      "event_total": 47,
-      "last_rank": 11,
-      "player_name": "brian lutaaya",
+      "club_badge_src": null,
+      "entry": 784126,
+      "entry_name": "Masaka city#Q484",
+      "event_total": 60,
+      "last_rank": 19,
+      "player_name": "Nasasira Emmanuel",
       "rank": 8,
       "rank_sort": 10,
       "total": 173
