@@ -222,6 +222,34 @@
   }
   .btn-remove:hover { background: #fecaca; }
 
+  .btn-restore {
+    background: #e0f2f1; color: #0f766e; border: 1px solid #99e6df;
+    border-radius: 6px; padding: 6px 10px; font-size: 11.8px; cursor: pointer; font-weight: 700;
+  }
+  .btn-restore:hover { background: #ccebe7; }
+
+  .removed-tag {
+    font-size: 10px; font-weight: 800; color: #b45309; background: #fef3c7;
+    padding: 2px 7px; border-radius: 10px; white-space: nowrap;
+  }
+
+  .removed-managers-bar {
+    background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px;
+    padding: 10px 14px; margin-top: 14px; font-size: 12.3px; color: #7c2d12;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  }
+  .removed-bar-label { font-weight: 800; }
+  .removed-pill {
+    display: inline-flex; align-items: center; gap: 6px; background: #fff;
+    border: 1px solid #fed7aa; border-radius: 20px; padding: 4px 6px 4px 12px; font-size: 12px;
+  }
+  .removed-pill-gw { color: var(--text-muted); font-weight: 600; }
+  .removed-pill-restore {
+    background: var(--teal); color: #fff; border: none; border-radius: 14px;
+    padding: 4px 10px; font-size: 10.8px; font-weight: 800; cursor: pointer;
+  }
+  .removed-pill-restore:hover { filter: brightness(1.1); }
+
   .text-muted { color: var(--text-muted); font-style: italic; }
   .status-active { color: var(--green); font-weight: 800; }
   .status-none { color: var(--text-muted); font-style: italic; }
@@ -572,7 +600,7 @@
           <textarea id="bulkImportText" rows="4" placeholder="One name per line"></textarea>
         </div>
         <button class="btn btn-darkpurple btn-block" id="bulkImportBtn" type="button">⚡ Execute Bulk Realignment</button>
-        <p class="hint no-print">To remove a manager, use the 🗑 Remove button on their row in the Ledger Matrix panel.</p>
+        <p class="hint no-print">To remove a manager, use the 🗑 Remove button on their row in the Ledger Matrix panel. They'll keep every finished gameweek on their record — use ↩ Restore any time to bring them back.</p>
       </div>
 
       <div class="panel">
@@ -643,6 +671,8 @@
           <span><i class="dot dot-pink"></i> Unpaid (✕)</span>
           <span class="hint">Click a manager's status button to toggle Paid/Unpaid for the selected gameweek. Use the dropdown beside it to set the transaction format.</span>
         </div>
+
+        <div id="removedManagersBar" class="removed-managers-bar hidden"></div>
       </div>
 
       <div class="panel">
@@ -1120,7 +1150,7 @@
   function uid() { return "m_" + Math.random().toString(36).slice(2, 9); }
 
   function freshManager(name) {
-    return { id: uid(), name: name, team: "", phone: "", email: "", whatsapp: "", manualAdjustments: 0, advance: null, fplEntryId: null };
+    return { id: uid(), name: name, team: "", phone: "", email: "", whatsapp: "", manualAdjustments: 0, advance: null, fplEntryId: null, removedAtGw: null, removedAt: null };
   }
 
   function ensureManagerFields(m) {
@@ -1129,6 +1159,8 @@
     if (m.email === undefined) m.email = "";
     if (m.whatsapp === undefined) m.whatsapp = "";
     if (m.fplEntryId === undefined) m.fplEntryId = null;
+    if (m.removedAtGw === undefined) m.removedAtGw = null;
+    if (m.removedAt === undefined) m.removedAt = null;
     if (m.advance && m.advance.autoExpire === undefined) m.advance.autoExpire = false;
     return m;
   }
@@ -1369,6 +1401,44 @@
     return m ? m.name : "that manager";
   }
 
+  /* ---------- removed-manager visibility ----------
+     Removing a manager is a soft delete: their id, name and every gameweek/
+     month of history stay in state exactly as they were. We just stop
+     showing them from the gameweek they were removed at (removedAtGw)
+     onward. Any gameweek before that — already finished — keeps showing
+     them everywhere, unchanged. */
+  function activeManagerList() {
+    return state.managers.filter(function (m) { return !m.removedAtGw; });
+  }
+
+  function managerVisibleForGw(m, gw) {
+    if (!m.removedAtGw) return true;
+    return Number(gw) < Number(m.removedAtGw);
+  }
+
+  // Performance is tracked per month, not per gameweek, so there's no
+  // reliable gameweek→month boundary to reuse from the ledger/grading
+  // pages. Instead a month counts as "finished" for a removed manager if
+  // it already has recorded data; a month nobody has touched yet is
+  // treated as upcoming and hides the removed manager.
+  function managerHasPerfDataForMonth(managerId, month) {
+    var perf = state.performance && state.performance[managerId];
+    var rec = perf && perf.monthly && perf.monthly[month];
+    if (!rec) return false;
+    return (rec.position !== null && rec.position !== undefined && rec.position !== "") ||
+      (Number(rec.transfers) || 0) > 0 ||
+      (Number(rec.points) || 0) > 0 ||
+      !!(rec.chips && rec.chips.length);
+  }
+
+  function managerVisibleForPerf(m) {
+    if (!m.removedAtGw) return true;
+    if (selectedPerfMonth === PERF_ALL_MONTHS) {
+      return MONTHS.some(function (mo) { return managerHasPerfDataForMonth(m.id, mo); });
+    }
+    return managerHasPerfDataForMonth(m.id, selectedPerfMonth);
+  }
+
   function gwTotalFor(managerId, gw) {
     ensureGradingFor(managerId);
     var g = state.grading[managerId][gw];
@@ -1386,6 +1456,14 @@
     ordered.forEach(function (m) { seen[m.id] = true; });
     state.managers.forEach(function (m) { if (!seen[m.id]) ordered.push(m); });
     return ordered;
+  }
+
+  // Same order as above, minus managers who were removed before this
+  // gameweek. Used everywhere the grading table is actually displayed or
+  // exported; getGradingDisplayOrder itself stays unfiltered since the
+  // sort button needs the full roster to compute a stable order.
+  function getVisibleGradingOrder(gw) {
+    return getGradingDisplayOrder(gw).filter(function (m) { return managerVisibleForGw(m, gw); });
   }
 
   /* ---------- render ---------- */
@@ -1414,18 +1492,24 @@
 
   function renderStats() {
     $("statCollectedPool").textContent = formatUSh(totalCollectedPool());
-    $("statActiveManagers").textContent = state.managers.length;
+    $("statActiveManagers").textContent = activeManagerList().length;
     $("statWeeklyFee").textContent = formatUSh(state.params.weeklyFee);
     $("statAdvanceReserves").textContent = formatUSh(totalAdvanceReserves());
   }
 
   function renderLedgerMatrix() {
+    renderRemovedManagersBar();
     var tbody = $("ledgerBody");
     if (state.managers.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No managers yet. Add one from the panel on the left to get started.</td></tr>';
       return;
     }
-    tbody.innerHTML = state.managers.map(function (m) {
+    var visible = state.managers.filter(function (m) { return managerVisibleForGw(m, selectedLedgerGW); });
+    if (visible.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">No managers on the roster for this gameweek.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = visible.map(function (m) {
       ensurePaymentsFor(m.id);
       var p = state.payments[m.id][selectedLedgerGW];
       var paidCount = paidCountFor(m);
@@ -1433,11 +1517,19 @@
       var methodOptions = METHODS.map(function (opt) {
         return '<option value="' + opt.value + '"' + (opt.value === p.method ? " selected" : "") + ">" + opt.label + "</option>";
       }).join("");
+      var removed = !!m.removedAtGw;
+      var quickAddBtn = removed ? "" :
+        '<button class="pill-add no-print" data-action="quickadd" data-id="' + m.id + '" title="Add manual increment">+' + state.params.incrementStack.toLocaleString() + "</button>";
+      var removedTag = removed ? ' <span class="removed-tag">Removed from GW' + m.removedAtGw + '</span>' : '';
+      var actionsHtml = removed ?
+        ('<button class="btn-edit" data-action="editmgr" data-id="' + m.id + '">✏️ Edit</button>' +
+         '<button class="btn-restore" data-action="restore" data-id="' + m.id + '">↩ Restore</button>') :
+        ('<button class="btn-edit" data-action="editmgr" data-id="' + m.id + '">✏️ Edit</button>' +
+         '<button class="btn-remove" data-action="remove" data-id="' + m.id + '">🗑 Remove</button>');
       return (
         "<tr>" +
           "<td>" +
-            '<div class="mgr-name-row"><strong>' + escapeHtml(m.name) + '</strong>' +
-              '<button class="pill-add no-print" data-action="quickadd" data-id="' + m.id + '" title="Add manual increment">+' + state.params.incrementStack.toLocaleString() + "</button>" +
+            '<div class="mgr-name-row"><strong>' + escapeHtml(m.name) + '</strong>' + removedTag + quickAddBtn +
             "</div>" +
             '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
             '<span class="progress-label">' + paidCount + "/" + GW_COUNT + " GWs paid</span>" +
@@ -1451,23 +1543,42 @@
           "<td>" +
             '<select class="method-select" data-action="method" data-id="' + m.id + '">' + methodOptions + "</select>" +
           "</td>" +
-          '<td class="no-print"><div class="actions-cell">' +
-            '<button class="btn-edit" data-action="editmgr" data-id="' + m.id + '">✏️ Edit</button>' +
-            '<button class="btn-remove" data-action="remove" data-id="' + m.id + '">🗑 Remove</button>' +
-          '</div></td>' +
+          '<td class="no-print"><div class="actions-cell">' + actionsHtml + '</div></td>' +
         "</tr>"
       );
     }).join("");
   }
 
+  // Removed managers can fall out of every visible gameweek row (e.g. if
+  // they were removed at GW1), so this bar is the one place they're always
+  // reachable for a restore, no matter which gameweek is selected above.
+  function renderRemovedManagersBar() {
+    var bar = $("removedManagersBar");
+    if (!bar) return;
+    var removed = state.managers.filter(function (m) { return !!m.removedAtGw; });
+    if (removed.length === 0) {
+      bar.classList.add("hidden");
+      bar.innerHTML = "";
+      return;
+    }
+    bar.classList.remove("hidden");
+    bar.innerHTML = '<span class="removed-bar-label">🚫 Removed managers:</span>' +
+      removed.map(function (m) {
+        return '<span class="removed-pill">' + escapeHtml(m.name) +
+          ' <span class="removed-pill-gw">from GW' + m.removedAtGw + '</span>' +
+          ' <button class="removed-pill-restore no-print" data-action="restore" data-id="' + m.id + '" title="Restore ' + escapeHtml(m.name) + '">↩ Restore</button></span>';
+      }).join("");
+  }
+
   function screenshotLedgerMatrix() {
     var gw = selectedLedgerGW;
-    if (state.managers.length === 0) { toast("Add some managers first."); return; }
+    var rosterForGw = state.managers.filter(function (m) { return managerVisibleForGw(m, gw); });
+    if (rosterForGw.length === 0) { toast("No managers to show for this gameweek."); return; }
 
     var cols = { manager: 240, cumulative: 150, status: 130, method: 200 };
     var width = cols.manager + cols.cumulative + cols.status + cols.method;
     var headerH = 84, colHeadH = 34, rowH = 34, footerH = 26;
-    var height = headerH + colHeadH + (state.managers.length * rowH) + footerH;
+    var height = headerH + colHeadH + (rosterForGw.length * rowH) + footerH;
 
     var dpr = window.devicePixelRatio || 1;
     var canvas = document.createElement("canvas");
@@ -1520,7 +1631,7 @@
     headCell("METHOD", cols.method, "center");
 
     y += colHeadH;
-    state.managers.forEach(function (m, idx) {
+    rosterForGw.forEach(function (m, idx) {
       ensurePaymentsFor(m.id);
       var p = state.payments[m.id][gw];
 
@@ -1625,19 +1736,22 @@
   function renderGradingTable() {
     var tbody = $("gradingBody");
     if (!tbody) return;
-    var order = getGradingDisplayOrder(selectedGradingGW);
+    var order = getVisibleGradingOrder(selectedGradingGW);
     if (order.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">No managers yet. Add one from the Ledger Tracker page first.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">' +
+        (state.managers.length === 0 ? "No managers yet. Add one from the Ledger Tracker page first." : "No managers on the roster for this gameweek.") +
+        "</td></tr>";
       return;
     }
     tbody.innerHTML = order.map(function (m, idx) {
       ensureGradingFor(m.id);
       var g = state.grading[m.id][selectedGradingGW];
       var total = gwTotalFor(m.id, selectedGradingGW);
+      var removedTag = m.removedAtGw ? ' <span class="removed-tag">Removed from GW' + m.removedAtGw + '</span>' : '';
       return (
         "<tr>" +
           '<td class="cell-pos">' + (idx + 1) + "</td>" +
-          "<td><strong>" + escapeHtml(m.name) + "</strong></td>" +
+          "<td><strong>" + escapeHtml(m.name) + "</strong>" + removedTag + "</td>" +
           '<td><input type="number" class="grade-input" data-field="points" data-id="' + m.id + '" value="' + (g.points === null ? "" : g.points) + '" placeholder="–"></td>' +
           '<td><input type="number" class="grade-input" min="0" data-field="transferCost" data-id="' + m.id + '" value="' + (g.transferCost || 0) + '"></td>' +
           '<td class="cell-amount">' + (total === null ? "–" : total) + "</td>" +
@@ -1652,8 +1766,8 @@
 
   function screenshotGradingTable() {
     var gw = selectedGradingGW;
-    var order = getGradingDisplayOrder(gw);
-    if (order.length === 0) { toast("Add some managers first."); return; }
+    var order = getVisibleGradingOrder(gw);
+    if (order.length === 0) { toast("No managers to show for this gameweek."); return; }
 
     var cols = { pos: 56, manager: 210, pts: 90, transfers: 104, total: 96, prize: 164 };
     var width = cols.pos + cols.manager + cols.pts + cols.transfers + cols.total + cols.prize;
@@ -1927,6 +2041,7 @@
     if (action === "toggle") togglePaid(id);
     else if (action === "quickadd") quickAddIncrement(id);
     else if (action === "remove") removeManager(id);
+    else if (action === "restore") restoreManager(id);
     else if (action === "editmgr") openManagerEditModal(id);
   });
 
@@ -1934,6 +2049,12 @@
     if (e.target && e.target.getAttribute("data-action") === "method") {
       setMethod(e.target.getAttribute("data-id"), e.target.value);
     }
+  });
+
+  $("removedManagersBar").addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn || btn.getAttribute("data-action") !== "restore") return;
+    restoreManager(btn.getAttribute("data-id"));
   });
 
   function togglePaid(managerId) {
@@ -1970,14 +2091,30 @@
   function removeManager(managerId) {
     var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
     if (!m) return;
-    if (!confirm("Remove " + m.name + " from the ledger? This deletes their entire payment and grading history and can't be undone.")) return;
-    state.managers = state.managers.filter(function (x) { return x.id !== managerId; });
-    delete state.payments[managerId];
-    delete state.grading[managerId];
-    if (state.performance) delete state.performance[managerId];
+    if (m.removedAtGw) { toast(m.name + " is already removed."); return; }
+    var cgw = Number(state.params.currentGw) || 1;
+    var confirmed = confirm(
+      "Remove " + m.name + " from the ledger?\n\n" +
+      "They'll disappear from the Ledger and Grading pages from GW" + cgw + " onward, and from Performance " +
+      "months that haven't been filled in yet. Every gameweek before GW" + cgw + " and every month that already " +
+      "has recorded data stays exactly as it is on every page. You can restore " + m.name + " at any time."
+    );
+    if (!confirmed) return;
+    m.removedAtGw = cgw;
+    m.removedAt = new Date().toISOString();
     persist();
     renderAll();
-    toast(m.name + " was removed from the ledger.");
+    toast(m.name + " removed from GW" + cgw + " onward — past data is untouched, and you can restore them anytime.");
+  }
+
+  function restoreManager(managerId) {
+    var m = state.managers.filter(function (x) { return x.id === managerId; })[0];
+    if (!m || !m.removedAtGw) return;
+    m.removedAtGw = null;
+    m.removedAt = null;
+    persist();
+    renderAll();
+    toast(m.name + " is back on the active roster.");
   }
 
   /* ---------- add manager ---------- */
@@ -1985,8 +2122,11 @@
     var input = $("newManagerName");
     var name = input.value.trim();
     if (!name) { toast("Enter a name first."); return; }
-    if (state.managers.some(function (m) { return m.name.toLowerCase() === name.toLowerCase(); })) {
-      toast(name + " is already on the roster.");
+    var match = state.managers.filter(function (m) { return m.name.toLowerCase() === name.toLowerCase(); })[0];
+    if (match) {
+      toast(match.removedAtGw
+        ? name + " was removed earlier — use ↩ Restore on their pill above the ledger instead of adding them again."
+        : name + " is already on the roster.");
       return;
     }
     var m = freshManager(name);
@@ -2344,8 +2484,8 @@
 
   $("exportGradingCsvBtn").addEventListener("click", function () {
     var gw = selectedGradingGW;
-    var order = getGradingDisplayOrder(gw);
-    if (order.length === 0) { toast("Add some managers first."); return; }
+    var order = getVisibleGradingOrder(gw);
+    if (order.length === 0) { toast("No managers to export for this gameweek."); return; }
     var rows = [["POS", "Manager", "GW Points", "Transfer Cost", "GW Total", "Prize (USh)"]];
     order.forEach(function (m, idx) {
       ensureGradingFor(m.id);
@@ -2798,7 +2938,10 @@
   }
 
   function getPerfDisplayRows() {
-    var rows = state.managers.filter(function (m) { ensurePerformanceFor(m.id); return passesPerfFilters(m.id); });
+    var rows = state.managers.filter(function (m) {
+      ensurePerformanceFor(m.id);
+      return passesPerfFilters(m.id) && managerVisibleForPerf(m);
+    });
     return rows.sort(comparePerfRows);
   }
 
@@ -2880,9 +3023,11 @@
 
       var ftCell = '<td><input type="number" class="grade-input" min="0" data-field="freeTransfers" data-id="' + m.id + '" value="' + (view.freeTransfers || 0) + '"></td>';
 
+      var removedTag = m.removedAtGw ? ' <span class="removed-tag">Removed from GW' + m.removedAtGw + '</span>' : '';
+
       return (
         "<tr>" +
-          "<td><strong>" + escapeHtml(m.name) + "</strong></td>" +
+          "<td><strong>" + escapeHtml(m.name) + "</strong>" + removedTag + "</td>" +
           positionCell +
           "<td>" + changeHtml + "</td>" +
           transfersCell +
