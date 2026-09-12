@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-12T10:15:36.044Z",
+  "generatedAt": "2026-09-12T15:10:25.365Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
-  "currentEventId": 3,
+  "currentEventId": 4,
   "currentMonth": "Sep",
   "gwMonthMap": {
     "1": "Aug",
@@ -49,243 +49,243 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/3013611/fbbb1918-fea4-423b-a4d3-45dcdb985a55.png",
       "entry": 3360020,
       "entry_name": "PlatynysMafia #Z94H",
-      "event_total": 60,
-      "last_rank": 2,
+      "event_total": 20,
+      "last_rank": 1,
       "player_name": "Pavel Laton",
       "rank": 1,
       "rank_sort": 1,
-      "total": 244
+      "total": 264
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6826187/e3bdd078-753b-44b4-b813-1a13dd999217.png",
       "entry": 2818022,
       "entry_name": "ABCDE  FC",
-      "event_total": 48,
-      "last_rank": 1,
+      "event_total": 15,
+      "last_rank": 2,
       "player_name": "Za ke",
       "rank": 2,
       "rank_sort": 2,
-      "total": 239
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
-      "entry": 228783,
-      "entry_name": "666",
-      "event_total": 61,
-      "last_rank": 5,
-      "player_name": "Stefan Jovanovic",
-      "rank": 3,
-      "rank_sort": 3,
-      "total": 204
+      "total": 246
     },
     {
       "club_badge_src": null,
       "entry": 804897,
       "entry_name": "Kingdom Animalia",
-      "event_total": 45,
-      "last_rank": 3,
+      "event_total": 18,
+      "last_rank": 4,
       "player_name": "K R",
-      "rank": 4,
-      "rank_sort": 4,
-      "total": 200
+      "rank": 3,
+      "rank_sort": 3,
+      "total": 218
     },
     {
-      "club_badge_src": null,
-      "entry": 6738254,
-      "entry_name": "A’mad World",
-      "event_total": 67,
-      "last_rank": 8,
-      "player_name": "Francis Drasta",
-      "rank": 5,
-      "rank_sort": 5,
-      "total": 198
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
+      "entry": 228783,
+      "entry_name": "666",
+      "event_total": 8,
+      "last_rank": 3,
+      "player_name": "Stefan Jovanovic",
+      "rank": 4,
+      "rank_sort": 4,
+      "total": 212
     },
     {
       "club_badge_src": null,
       "entry": 4021691,
       "entry_name": "Jeff256#GWHU",
-      "event_total": 67,
-      "last_rank": 9,
+      "event_total": 13,
+      "last_rank": 6,
       "player_name": "Mugume Jephason",
+      "rank": 5,
+      "rank_sort": 5,
+      "total": 209
+    },
+    {
+      "club_badge_src": null,
+      "entry": 6738254,
+      "entry_name": "A’mad World",
+      "event_total": 7,
+      "last_rank": 5,
+      "player_name": "Francis Drasta",
       "rank": 6,
       "rank_sort": 6,
-      "total": 196
+      "total": 201
     },
     {
       "club_badge_src": null,
       "entry": 6773598,
       "entry_name": "Radnički Niš",
-      "event_total": 39,
-      "last_rank": 4,
+      "event_total": 17,
+      "last_rank": 8,
       "player_name": "Milan Losic",
       "rank": 7,
       "rank_sort": 7,
-      "total": 183
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
-      "entry": 6679148,
-      "entry_name": "kk2#RYC6",
-      "event_total": 47,
-      "last_rank": 11,
-      "player_name": "brian lutaaya",
-      "rank": 8,
-      "rank_sort": 8,
-      "total": 173
+      "total": 200
     },
     {
       "club_badge_src": null,
       "entry": 784126,
       "entry_name": "Masaka city#Q484",
-      "event_total": 60,
-      "last_rank": 19,
+      "event_total": 17,
+      "last_rank": 10,
       "player_name": "Nasasira Emmanuel",
       "rank": 8,
-      "rank_sort": 9,
-      "total": 173
-    },
-    {
-      "club_badge_src": null,
-      "entry": 6661830,
-      "entry_name": "The blues#TZT2",
-      "event_total": 34,
-      "last_rank": 6,
-      "player_name": "JONATHAN KIBBS",
-      "rank": 8,
-      "rank_sort": 10,
-      "total": 173
+      "rank_sort": 8,
+      "total": 190
     },
     {
       "club_badge_src": null,
       "entry": 3391361,
       "entry_name": "Samskara#CQFU",
-      "event_total": 39,
-      "last_rank": 7,
+      "event_total": 16,
+      "last_rank": 10,
       "player_name": "Eric Ssekamwa",
-      "rank": 8,
+      "rank": 9,
+      "rank_sort": 9,
+      "total": 189
+    },
+    {
+      "club_badge_src": null,
+      "entry": 6661830,
+      "entry_name": "The blues#TZT2",
+      "event_total": 9,
+      "last_rank": 10,
+      "player_name": "JONATHAN KIBBS",
+      "rank": 10,
+      "rank_sort": 10,
+      "total": 182
+    },
+    {
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
+      "entry": 6629671,
+      "entry_name": "Felicity#28QY",
+      "event_total": 29,
+      "last_rank": 21,
+      "player_name": "Denis Indani",
+      "rank": 11,
       "rank_sort": 11,
-      "total": 173
+      "total": 179
+    },
+    {
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
+      "entry": 6679148,
+      "entry_name": "kk2#RYC6",
+      "event_total": 5,
+      "last_rank": 10,
+      "player_name": "brian lutaaya",
+      "rank": 12,
+      "rank_sort": 12,
+      "total": 178
     },
     {
       "club_badge_src": null,
       "entry": 5278796,
       "entry_name": "Datu256",
-      "event_total": 47,
-      "last_rank": 12,
+      "event_total": 7,
+      "last_rank": 14,
       "player_name": "Dennis Batabazi",
       "rank": 12,
-      "rank_sort": 12,
-      "total": 171
+      "rank_sort": 13,
+      "total": 178
     },
     {
       "club_badge_src": null,
       "entry": 7971410,
       "entry_name": "OldGlen #GAT4",
-      "event_total": 47,
-      "last_rank": 14,
+      "event_total": 5,
+      "last_rank": 15,
       "player_name": "Ivan Milenkovic",
-      "rank": 13,
-      "rank_sort": 13,
-      "total": 170
+      "rank": 14,
+      "rank_sort": 14,
+      "total": 175
     },
     {
       "club_badge_src": null,
       "entry": 6643792,
       "entry_name": "S. beans#MAKY",
-      "event_total": 46,
-      "last_rank": 15,
+      "event_total": 8,
+      "last_rank": 16,
       "player_name": "Jan Smolka",
-      "rank": 14,
-      "rank_sort": 14,
+      "rank": 15,
+      "rank_sort": 15,
+      "total": 174
+    },
+    {
+      "club_badge_src": null,
+      "entry": 7794335,
+      "entry_name": "bogy.com",
+      "event_total": 7,
+      "last_rank": 19,
+      "player_name": "HARUNA BOGGY",
+      "rank": 16,
+      "rank_sort": 16,
       "total": 166
     },
     {
       "club_badge_src": null,
       "entry": 6762882,
       "entry_name": "6XCORE�",
-      "event_total": 40,
-      "last_rank": 16,
+      "event_total": 3,
+      "last_rank": 17,
       "player_name": "Musa Abdulmajid",
-      "rank": 15,
-      "rank_sort": 15,
-      "total": 160
+      "rank": 17,
+      "rank_sort": 17,
+      "total": 163
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
-      "event_total": 55,
-      "last_rank": 21,
+      "event_total": 3,
+      "last_rank": 18,
       "player_name": "Stefan Kōji",
-      "rank": 16,
-      "rank_sort": 16,
-      "total": 159
+      "rank": 18,
+      "rank_sort": 18,
+      "total": 162
     },
     {
-      "club_badge_src": null,
-      "entry": 7794335,
-      "entry_name": "bogy.com",
-      "event_total": 51,
-      "last_rank": 18,
-      "player_name": "HARUNA BOGGY",
-      "rank": 17,
-      "rank_sort": 17,
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
+      "entry": 6594959,
+      "entry_name": "kigozi #9LVB",
+      "event_total": 12,
+      "last_rank": 22,
+      "player_name": "KIGOZI FRANK",
+      "rank": 19,
+      "rank_sort": 19,
       "total": 159
     },
     {
       "club_badge_src": null,
       "entry": 6561110,
       "entry_name": "muruD7WK",
-      "event_total": 53,
-      "last_rank": 23,
-      "player_name": "Arichia Fura",
-      "rank": 18,
-      "rank_sort": 18,
-      "total": 153
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
-      "entry": 6629671,
-      "entry_name": "Felicity#28QY",
-      "event_total": 33,
-      "last_rank": 17,
-      "player_name": "Denis Indani",
-      "rank": 19,
-      "rank_sort": 19,
-      "total": 150
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
-      "entry": 6594959,
-      "entry_name": "kigozi #9LVB",
-      "event_total": 42,
+      "event_total": 2,
       "last_rank": 20,
-      "player_name": "KIGOZI FRANK",
+      "player_name": "Arichia Fura",
       "rank": 20,
       "rank_sort": 20,
-      "total": 147
+      "total": 151
     },
     {
       "club_badge_src": null,
       "entry": 8014708,
       "entry_name": "Red devils",
-      "event_total": 56,
-      "last_rank": 22,
+      "event_total": 7,
+      "last_rank": 23,
       "player_name": "Opiyo Melville",
       "rank": 21,
       "rank_sort": 21,
-      "total": 125
+      "total": 132
     },
     {
       "club_badge_src": null,
       "entry": 9936722,
       "entry_name": "BIGBOY",
-      "event_total": 34,
-      "last_rank": 0,
+      "event_total": 16,
+      "last_rank": 24,
       "player_name": "Tumwesige Joseph",
       "rank": 22,
       "rank_sort": 22,
-      "total": 34
+      "total": 50
     }
   ],
   "managers": {
@@ -335,6 +335,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 6
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 204,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 1907805,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 13,
+          "value": 1007,
+          "event_transfers": 1,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -391,9 +406,30 @@
           "event_transfers": 2,
           "event_transfers_cost": 0,
           "points_on_bench": 8
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 173,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5754968,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 2,
+          "value": 1005,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
-      "chips": []
+      "chips": [
+        {
+          "name": "wildcard",
+          "time": "2026-09-06T20:16:12.155874Z",
+          "event": 4
+        }
+      ]
     },
     "804897": {
       "current": [
@@ -441,6 +477,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 22
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 200,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 2291554,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 1,
+          "value": 1008,
+          "event_transfers": 2,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -497,6 +548,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 9
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 239,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 105666,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 2,
+          "value": 1009,
+          "event_transfers": 3,
+          "event_transfers_cost": 8,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -553,6 +619,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 12
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 244,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 55350,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 7,
+          "value": 1002,
+          "event_transfers": 2,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -614,9 +695,30 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 8
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 173,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5754968,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 0,
+          "value": 999,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
-      "chips": []
+      "chips": [
+        {
+          "name": "freehit",
+          "time": "2026-09-11T14:52:15.378359Z",
+          "event": 4
+        }
+      ]
     },
     "4021691": {
       "current": [
@@ -664,9 +766,30 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 0
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 196,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 2872002,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 4,
+          "value": 1005,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
-      "chips": []
+      "chips": [
+        {
+          "name": "freehit",
+          "time": "2026-09-11T13:22:19.387148Z",
+          "event": 4
+        }
+      ]
     },
     "4662332": {
       "current": [
@@ -714,6 +837,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 12
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 159,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 7194971,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 3,
+          "value": 1008,
+          "event_transfers": 1,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -770,6 +908,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 7
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 171,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5989676,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 39,
+          "value": 1002,
+          "event_transfers": 1,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -826,6 +979,21 @@
           "event_transfers": 2,
           "event_transfers_cost": 0,
           "points_on_bench": 6
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 153,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 7688443,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 2,
+          "value": 991,
+          "event_transfers": 2,
+          "event_transfers_cost": 4,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -876,6 +1044,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 5
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 147,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 8080681,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 10,
+          "value": 998,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -932,6 +1115,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 10
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 150,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 7888024,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 25,
+          "value": 994,
+          "event_transfers": 2,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -988,6 +1186,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 6
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 166,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 6488676,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 5,
+          "value": 997,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1038,6 +1251,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 9
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 173,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5754968,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 12,
+          "value": 998,
+          "event_transfers": 1,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1088,6 +1316,21 @@
           "event_transfers": 1,
           "event_transfers_cost": 0,
           "points_on_bench": 9
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 173,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5754968,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 23,
+          "value": 999,
+          "event_transfers": 1,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -1144,6 +1387,21 @@
           "event_transfers": 2,
           "event_transfers_cost": 0,
           "points_on_bench": 3
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 198,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 2580351,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 2,
+          "value": 1000,
+          "event_transfers": 2,
+          "event_transfers_cost": 4,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1194,6 +1452,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 5
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 160,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 7105953,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 0,
+          "value": 1004,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
@@ -1250,6 +1523,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 3
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 183,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 4437409,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 65,
+          "value": 1004,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1300,6 +1588,21 @@
           "event_transfers": 3,
           "event_transfers_cost": 8,
           "points_on_bench": 6
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 177,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 5329797,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 2,
+          "value": 1011,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1350,6 +1653,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 3
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 191,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 3394125,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 0,
+          "value": 1000,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1400,9 +1718,30 @@
           "event_transfers": 3,
           "event_transfers_cost": 8,
           "points_on_bench": 16
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 159,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 7243451,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 1,
+          "value": 1007,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
-      "chips": []
+      "chips": [
+        {
+          "name": "wildcard",
+          "time": "2026-09-07T04:32:28.992330Z",
+          "event": 4
+        }
+      ]
     },
     "7971410": {
       "current": [
@@ -1450,6 +1789,21 @@
           "event_transfers": 0,
           "event_transfers_cost": 0,
           "points_on_bench": 7
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 170,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 6049699,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 0,
+          "value": 997,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": []
@@ -1500,6 +1854,21 @@
           "event_transfers": 10,
           "event_transfers_cost": 32,
           "points_on_bench": 9
+        },
+        {
+          "event": 4,
+          "points": 0,
+          "total_points": 125,
+          "rank": null,
+          "rank_sort": null,
+          "overall_rank": 9099211,
+          "percentile_rank": null,
+          "overall_rank_percentage": null,
+          "bank": 4,
+          "value": 996,
+          "event_transfers": 0,
+          "event_transfers_cost": 0,
+          "points_on_bench": 0
         }
       ],
       "chips": [
