@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T03:40:52.288Z",
+  "generatedAt": "2026-09-18T10:44:06.359Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 4,
@@ -201,24 +201,13 @@
     },
     {
       "club_badge_src": null,
-      "entry": 6643792,
-      "entry_name": "S. beans#MAKY",
-      "event_total": 64,
-      "last_rank": 16,
-      "player_name": "Jan Smolka",
-      "rank": 15,
-      "rank_sort": 15,
-      "total": 230
-    },
-    {
-      "club_badge_src": null,
       "entry": 5278796,
       "entry_name": "Datu256",
       "event_total": 55,
       "last_rank": 14,
       "player_name": "Dennis Batabazi",
-      "rank": 16,
-      "rank_sort": 16,
+      "rank": 15,
+      "rank_sort": 15,
       "total": 226
     },
     {
@@ -228,8 +217,8 @@
       "event_total": 67,
       "last_rank": 19,
       "player_name": "HARUNA BOGGY",
-      "rank": 17,
-      "rank_sort": 17,
+      "rank": 16,
+      "rank_sort": 16,
       "total": 226
     },
     {
@@ -239,8 +228,8 @@
       "event_total": 55,
       "last_rank": 17,
       "player_name": "Musa Abdulmajid",
-      "rank": 18,
-      "rank_sort": 18,
+      "rank": 17,
+      "rank_sort": 17,
       "total": 215
     },
     {
@@ -250,8 +239,8 @@
       "event_total": 58,
       "last_rank": 22,
       "player_name": "KIGOZI FRANK",
-      "rank": 19,
-      "rank_sort": 19,
+      "rank": 18,
+      "rank_sort": 18,
       "total": 205
     },
     {
@@ -261,8 +250,8 @@
       "event_total": 46,
       "last_rank": 20,
       "player_name": "Arichia Fura",
-      "rank": 20,
-      "rank_sort": 20,
+      "rank": 19,
+      "rank_sort": 19,
       "total": 195
     },
     {
@@ -272,20 +261,9 @@
       "event_total": 61,
       "last_rank": 23,
       "player_name": "Opiyo Melville",
-      "rank": 21,
-      "rank_sort": 21,
+      "rank": 20,
+      "rank_sort": 20,
       "total": 186
-    },
-    {
-      "club_badge_src": null,
-      "entry": 9936722,
-      "entry_name": "BIGBOY",
-      "event_total": 74,
-      "last_rank": 24,
-      "player_name": "Tumwesige Joseph",
-      "rank": 22,
-      "rank_sort": 22,
-      "total": 108
     }
   ],
   "managers": {
