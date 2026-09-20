@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-20T03:53:45.534Z",
+  "generatedAt": "2026-09-20T10:49:42.619Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 5,
@@ -189,26 +189,26 @@
       "total": 251
     },
     {
-      "club_badge_src": null,
-      "entry": 3391361,
-      "entry_name": "Samskara#CQFU",
-      "event_total": 6,
-      "last_rank": 13,
-      "player_name": "Eric Ssekamwa",
-      "rank": 14,
-      "rank_sort": 14,
-      "total": 238
-    },
-    {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
       "event_total": 11,
       "last_rank": 14,
       "player_name": "Stefan Kōji",
+      "rank": 14,
+      "rank_sort": 14,
+      "total": 238
+    },
+    {
+      "club_badge_src": null,
+      "entry": 3391361,
+      "entry_name": "Samskara#CQFU",
+      "event_total": 5,
+      "last_rank": 13,
+      "player_name": "Eric Ssekamwa",
       "rank": 15,
       "rank_sort": 15,
-      "total": 238
+      "total": 237
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
