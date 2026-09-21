@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T12:14:24.639Z",
+  "generatedAt": "2026-09-21T19:53:32.529Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 5,
@@ -178,23 +178,23 @@
       "total": 275
     },
     {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
-      "entry": 4662332,
-      "entry_name": "D'Nevile Wears Prada",
-      "event_total": 41,
-      "last_rank": 14,
-      "player_name": "Stefan Kōji",
-      "rank": 13,
-      "rank_sort": 13,
-      "total": 268
-    },
-    {
       "club_badge_src": null,
       "entry": 5278796,
       "entry_name": "Datu256",
       "event_total": 42,
       "last_rank": 16,
       "player_name": "Dennis Batabazi",
+      "rank": 13,
+      "rank_sort": 13,
+      "total": 268
+    },
+    {
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
+      "entry": 4662332,
+      "entry_name": "D'Nevile Wears Prada",
+      "event_total": 41,
+      "last_rank": 14,
+      "player_name": "Stefan Kōji",
       "rank": 13,
       "rank_sort": 14,
       "total": 268
