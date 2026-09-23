@@ -1492,11 +1492,11 @@
     return Number(gw) < Number(m.removedAtGw);
   }
 
-  // Performance is tracked per month, not per gameweek, so there's no
-  // reliable gameweek→month boundary to reuse from the ledger/grading
-  // pages. Instead a month counts as "finished" for a removed manager if
-  // it already has recorded data; a month nobody has touched yet is
-  // treated as upcoming and hides the removed manager.
+  // A manager removed from the ledger is fully removed from the Performance
+  // page too — as soon as removedAtGw is set they stop appearing there,
+  // in every month view, in the on-page table, and in the screenshot
+  // export. Nothing is deleted from state.performance itself, so if the
+  // manager is restored later their full history reappears untouched.
   function managerHasPerfDataForMonth(managerId, month) {
     var perf = state.performance && state.performance[managerId];
     var rec = perf && perf.monthly && perf.monthly[month];
@@ -1508,11 +1508,7 @@
   }
 
   function managerVisibleForPerf(m) {
-    if (!m.removedAtGw) return true;
-    if (selectedPerfMonth === PERF_ALL_MONTHS) {
-      return MONTHS.some(function (mo) { return managerHasPerfDataForMonth(m.id, mo); });
-    }
-    return managerHasPerfDataForMonth(m.id, selectedPerfMonth);
+    return !m.removedAtGw;
   }
 
   function gwTotalFor(managerId, gw) {
@@ -2171,9 +2167,9 @@
     var cgw = Number(state.params.currentGw) || 1;
     var confirmed = confirm(
       "Remove " + m.name + " from the ledger?\n\n" +
-      "They'll disappear from the Ledger and Grading pages from GW" + cgw + " onward, and from Performance " +
-      "months that haven't been filled in yet. Every gameweek before GW" + cgw + " and every month that already " +
-      "has recorded data stays exactly as it is on every page. You can restore " + m.name + " at any time."
+      "They'll disappear from the Ledger and Grading pages from GW" + cgw + " onward, and from the Performance " +
+      "page entirely. Every gameweek before GW" + cgw + " stays exactly as it is on the Ledger and Grading pages, " +
+      "and their Performance data is kept (not deleted) — it all reappears the moment you restore " + m.name + "."
     );
     if (!confirmed) return;
     m.removedAtGw = cgw;
