@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T21:17:12.323Z",
+  "generatedAt": "2026-10-11T04:34:56.002Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 6,
@@ -159,23 +159,23 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
-      "event_total": 44,
+      "event_total": 46,
       "last_rank": 13,
       "player_name": "Stefan Kōji",
       "rank": 11,
       "rank_sort": 11,
-      "total": 312
+      "total": 314
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
       "entry": 6629671,
       "entry_name": "Felicity#28QY",
-      "event_total": 49,
+      "event_total": 51,
       "last_rank": 17,
       "player_name": "Denis Indani",
       "rank": 12,
       "rank_sort": 12,
-      "total": 308
+      "total": 310
     },
     {
       "club_badge_src": null,
@@ -184,7 +184,7 @@
       "event_total": 29,
       "last_rank": 9,
       "player_name": "JONATHAN KIBBS",
-      "rank": 12,
+      "rank": 13,
       "rank_sort": 13,
       "total": 308
     },
