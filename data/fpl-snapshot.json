@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T22:50:10.789Z",
+  "generatedAt": "2026-10-19T03:41:26.658Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 7,
@@ -225,12 +225,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
       "entry": 6629671,
       "entry_name": "Felicity#28QY",
-      "event_total": 35,
+      "event_total": 37,
       "last_rank": 15,
       "player_name": "Denis Indani",
       "rank": 17,
       "rank_sort": 17,
-      "total": 349
+      "total": 351
     },
     {
       "club_badge_src": null,
