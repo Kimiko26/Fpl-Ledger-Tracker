@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T12:25:53.018Z",
+  "generatedAt": "2026-10-19T20:24:32.978Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 7,
@@ -49,12 +49,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/3013611/fbbb1918-fea4-423b-a4d3-45dcdb985a55.png",
       "entry": 3360020,
       "entry_name": "PlatynysMafia #Z94H",
-      "event_total": 63,
+      "event_total": 65,
       "last_rank": 1,
       "player_name": "Pavel Laton",
       "rank": 1,
       "rank_sort": 1,
-      "total": 483
+      "total": 485
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
@@ -93,12 +93,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
       "entry": 6679148,
       "entry_name": "kk2#RYC6",
-      "event_total": 67,
+      "event_total": 69,
       "last_rank": 5,
       "player_name": "brian lutaaya",
       "rank": 5,
       "rank_sort": 5,
-      "total": 445
+      "total": 447
     },
     {
       "club_badge_src": null,
@@ -115,12 +115,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
-      "event_total": 73,
+      "event_total": 75,
       "last_rank": 9,
       "player_name": "Stefan Kōji",
       "rank": 7,
       "rank_sort": 7,
-      "total": 420
+      "total": 422
     },
     {
       "club_badge_src": null,
@@ -192,23 +192,23 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
       "entry": 6594959,
       "entry_name": "kigozi #9LVB",
-      "event_total": 67,
+      "event_total": 68,
       "last_rank": 19,
       "player_name": "KIGOZI FRANK",
       "rank": 14,
       "rank_sort": 14,
-      "total": 357
+      "total": 358
     },
     {
       "club_badge_src": null,
       "entry": 6561110,
       "entry_name": "muruD7WK",
-      "event_total": 60,
+      "event_total": 61,
       "last_rank": 18,
       "player_name": "Arichia Fura",
       "rank": 15,
       "rank_sort": 15,
-      "total": 357
+      "total": 358
     },
     {
       "club_badge_src": null,
@@ -225,12 +225,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
       "entry": 6629671,
       "entry_name": "Felicity#28QY",
-      "event_total": 37,
+      "event_total": 39,
       "last_rank": 15,
       "player_name": "Denis Indani",
       "rank": 17,
       "rank_sort": 17,
-      "total": 351
+      "total": 353
     },
     {
       "club_badge_src": null,
@@ -258,12 +258,12 @@
       "club_badge_src": null,
       "entry": 8014708,
       "entry_name": "Red devils",
-      "event_total": 53,
+      "event_total": 55,
       "last_rank": 20,
       "player_name": "Opiyo Melville",
       "rank": 20,
       "rank_sort": 20,
-      "total": 312
+      "total": 314
     }
   ],
   "managers": {
