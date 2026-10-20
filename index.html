@@ -761,6 +761,14 @@
           <ul id="reservesList"></ul>
         </div>
 
+        <div id="runningAdvancesBreakdown" class="reserves-breakdown hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+            <h4 style="margin:0;">Running Advance Payments Breakdown</h4>
+            <button class="btn btn-teal no-print" id="screenshotRunningAdvBtn" type="button">📸 Screenshot</button>
+          </div>
+          <ul id="runningAdvList"></ul>
+        </div>
+
         <div class="advance-grid">
           <div class="advance-form no-print">
             <h3>📌 Input New Advance Prepayment</h3>
@@ -1805,6 +1813,151 @@
     }).join("");
   }
 
+  function runningAdvances() {
+    return state.managers.filter(function (m) { return !!m.advance && !isAdvanceExpired(m); });
+  }
+
+  function runningAdvanceDetails(m) {
+    var from = Number(m.advance.from), to = Number(m.advance.to);
+    var cur = Number(state.params.currentGw) || 1;
+    var total = Math.max(0, to - from + 1);
+    var elapsed = cur < from ? 0 : Math.min(total, cur - from + 1);
+    var remaining = Math.max(0, total - elapsed);
+    var phase = cur < from ? "Starts GW" + from : (cur > to ? "Range completed" : "In progress (GW" + cur + ")");
+    return {
+      range: "GW" + from + "–GW" + to, total: total, elapsed: elapsed, remaining: remaining,
+      phase: phase, auto: m.advance.autoExpire ? "Auto-expires after GW" + to : "No auto-expiry"
+    };
+  }
+
+  function renderRunningAdvances() {
+    var list = $("runningAdvList");
+    if (!list) return;
+    var running = runningAdvances();
+    if (running.length === 0) {
+      list.innerHTML = "<li>No advance payments currently running.</li>";
+      return;
+    }
+    var total = 0;
+    var items = running.map(function (m) {
+      var d = runningAdvanceDetails(m);
+      total += Number(m.advance.amount) || 0;
+      return "<li>" + escapeHtml(m.name) + ": " + formatUSh(m.advance.amount) +
+        " (" + d.range + ", " + escapeHtml(m.advance.method) + ") — " + d.total + " GWs covered, " +
+        d.elapsed + " used, " + d.remaining + " remaining · " + d.phase + " · " + d.auto + "</li>";
+    });
+    items.push("<li><strong>Total running: " + formatUSh(total) + " across " + running.length +
+      " advance" + (running.length === 1 ? "" : "s") + "</strong></li>");
+    list.innerHTML = items.join("");
+  }
+
+  function screenshotRunningAdvances() {
+    var running = runningAdvances();
+    if (running.length === 0) { toast("No running advance payments to capture."); return; }
+
+    var cols = { manager: 200, amount: 130, range: 120, method: 110, used: 90, remaining: 100, phase: 190 };
+    var width = 0; for (var k in cols) width += cols[k];
+    var headerH = 84, colHeadH = 34, rowH = 34, totalH = 38, footerH = 26;
+    var height = headerH + colHeadH + running.length * rowH + totalH + footerH;
+
+    var dpr = window.devicePixelRatio || 1;
+    var canvas = document.createElement("canvas");
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    var FONT = "-apple-system, Segoe UI, Roboto, Arial, sans-serif";
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+    var grad = ctx.createLinearGradient(0, 0, width, headerH);
+    grad.addColorStop(0, "#2b0e2e");
+    grad.addColorStop(1, "#1a0a1f");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, headerH);
+    ctx.fillStyle = "#dc2626";
+    ctx.fillRect(0, 0, width, 4);
+
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
+    ctx.font = "800 22px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("FPL ", 20, 38);
+    var fplWidth = ctx.measureText("FPL ").width;
+    ctx.fillStyle = "#22d3ee";
+    ctx.fillText("LEDGER TRACKER", 20 + fplWidth, 38);
+    ctx.font = "600 14px " + FONT;
+    ctx.fillStyle = "#cdb9d6";
+    ctx.fillText("Running Advance Payments — Current GW " + (Number(state.params.currentGw) || 1), 20, 62);
+
+    var y = headerH;
+    ctx.fillStyle = "#3c1361";
+    ctx.fillRect(0, y, width, colHeadH);
+    ctx.font = "800 11px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    ctx.textBaseline = "middle";
+    var hx = 0;
+    function headCell(text, cw, align) {
+      ctx.textAlign = align;
+      ctx.fillText(text, align === "left" ? hx + 12 : hx + cw / 2, y + colHeadH / 2);
+      hx += cw;
+    }
+    headCell("MANAGER", cols.manager, "left");
+    headCell("AMOUNT", cols.amount, "center");
+    headCell("RANGE", cols.range, "center");
+    headCell("METHOD", cols.method, "center");
+    headCell("GWs USED", cols.used, "center");
+    headCell("REMAINING", cols.remaining, "center");
+    headCell("PHASE", cols.phase, "center");
+
+    y += colHeadH;
+    var total = 0;
+    running.forEach(function (m, idx) {
+      var d = runningAdvanceDetails(m);
+      total += Number(m.advance.amount) || 0;
+      ctx.fillStyle = idx % 2 === 0 ? "#ffffff" : "#faf7fd";
+      ctx.fillRect(0, y, width, rowH);
+      var cx = 0, my = y + rowH / 2;
+      ctx.textAlign = "left";
+      ctx.font = "700 13px " + FONT;
+      ctx.fillStyle = "#16121a";
+      ctx.fillText(truncateText(ctx, m.name, cols.manager - 20), cx + 12, my);
+      cx += cols.manager;
+      function cell(text, cw, font, color) {
+        ctx.textAlign = "center"; ctx.font = font; ctx.fillStyle = color;
+        ctx.fillText(text, cx + cw / 2, my); cx += cw;
+      }
+      cell(formatUSh(m.advance.amount), cols.amount, "700 13px " + FONT, "#16121a");
+      cell(d.range, cols.range, "400 12.5px " + FONT, "#374151");
+      cell(String(m.advance.method), cols.method, "400 12.5px " + FONT, "#374151");
+      cell(d.elapsed + " / " + d.total, cols.used, "400 12.5px " + FONT, "#374151");
+      cell(d.remaining + " GW" + (d.remaining === 1 ? "" : "s"), cols.remaining, "400 12.5px " + FONT, "#374151");
+      cell(truncateText(ctx, d.phase, cols.phase - 16), cols.phase, "800 12px " + FONT, "#16a34a");
+      y += rowH;
+    });
+
+    ctx.fillStyle = "#f5f1fb";
+    ctx.fillRect(0, y, width, totalH);
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.font = "800 13px " + FONT;
+    ctx.fillStyle = "#3c1361";
+    ctx.fillText("TOTAL RUNNING (" + running.length + ")", 12, y + totalH / 2);
+    ctx.textAlign = "center";
+    ctx.fillText(formatUSh(total), cols.manager + cols.amount / 2, y + totalH / 2);
+    y += totalH;
+
+    ctx.fillStyle = "#f1f2f6";
+    ctx.fillRect(0, y, width, footerH);
+    ctx.font = "600 10.5px " + FONT;
+    ctx.fillStyle = "#9ca3af";
+    ctx.textAlign = "center";
+    ctx.fillText("FPL Ledger Tracker — Running Advance Payments", width / 2, y + footerH / 2);
+
+    downloadCanvasAsPng(canvas, "fpl-running-advances.png");
+    toast("Screenshot saved as an image.");
+  }
+
   function renderGradingTable() {
     var tbody = $("gradingBody");
     if (!tbody) return;
@@ -2093,6 +2246,7 @@
     renderGwSummary();
     renderAdvanceTable();
     renderReservesBreakdown();
+    renderRunningAdvances();
     renderGradingTable();
     renderPerformanceTable();
     renderNotifications();
@@ -2295,7 +2449,10 @@
 
   $("vaultReservesBtn").addEventListener("click", function () {
     $("reservesBreakdown").classList.toggle("hidden");
+    $("runningAdvancesBreakdown").classList.toggle("hidden");
   });
+
+  $("screenshotRunningAdvBtn").addEventListener("click", screenshotRunningAdvances);
 
   $("advanceBody").addEventListener("click", function (e) {
     var btn = e.target.closest("button");
