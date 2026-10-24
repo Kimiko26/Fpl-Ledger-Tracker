@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T15:32:32.471Z",
+  "generatedAt": "2026-10-24T20:23:30.530Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 8,
@@ -49,89 +49,89 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/3013611/fbbb1918-fea4-423b-a4d3-45dcdb985a55.png",
       "entry": 3360020,
       "entry_name": "PlatynysMafia #Z94H",
-      "event_total": 26,
+      "event_total": 35,
       "last_rank": 1,
       "player_name": "Pavel Laton",
       "rank": 1,
       "rank_sort": 1,
-      "total": 513
+      "total": 522
     },
     {
       "club_badge_src": null,
       "entry": 804897,
       "entry_name": "Kingdom Animalia",
-      "event_total": 27,
+      "event_total": 29,
       "last_rank": 3,
       "player_name": "K R",
       "rank": 2,
       "rank_sort": 2,
-      "total": 499
+      "total": 501
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6526405/81affdb3-26d1-486f-a79e-69e3a67f8c72.png",
       "entry": 6679148,
       "entry_name": "kk2#RYC6",
-      "event_total": 42,
+      "event_total": 51,
       "last_rank": 5,
       "player_name": "brian lutaaya",
       "rank": 3,
       "rank_sort": 3,
-      "total": 491
+      "total": 500
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6826187/e3bdd078-753b-44b4-b813-1a13dd999217.png",
       "entry": 2818022,
       "entry_name": "ABCDE  FC",
-      "event_total": 29,
+      "event_total": 30,
       "last_rank": 4,
       "player_name": "Za ke",
       "rank": 4,
       "rank_sort": 4,
-      "total": 486
+      "total": 487
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/228783/51496858-c1d9-4897-be60-67b548146647.png",
       "entry": 228783,
       "entry_name": "666",
-      "event_total": 10,
+      "event_total": 13,
       "last_rank": 2,
       "player_name": "Stefan Jovanovic",
       "rank": 5,
       "rank_sort": 5,
-      "total": 483
+      "total": 486
     },
     {
       "club_badge_src": null,
       "entry": 4021691,
       "entry_name": "Jeff256#GWHU",
-      "event_total": 41,
+      "event_total": 44,
       "last_rank": 6,
       "player_name": "Mugume Jephason",
       "rank": 6,
       "rank_sort": 6,
-      "total": 472
+      "total": 475
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
-      "event_total": 21,
+      "event_total": 28,
       "last_rank": 7,
       "player_name": "Stefan Kōji",
       "rank": 7,
       "rank_sort": 7,
-      "total": 448
+      "total": 455
     },
     {
       "club_badge_src": null,
       "entry": 7971410,
       "entry_name": "OldGlen #GAT4",
-      "event_total": 17,
+      "event_total": 28,
       "last_rank": 8,
       "player_name": "Ivan Milenkovic",
       "rank": 8,
       "rank_sort": 8,
-      "total": 428
+      "total": 439
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6738254/52be225c-6119-41d0-bdbe-ea3bdf0758f2.png",
@@ -148,34 +148,45 @@
       "club_badge_src": null,
       "entry": 6762882,
       "entry_name": "6XCORE�",
-      "event_total": 25,
+      "event_total": 26,
       "last_rank": 10,
       "player_name": "Musa Abdulmajid",
       "rank": 10,
       "rank_sort": 10,
-      "total": 412
+      "total": 413
+    },
+    {
+      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
+      "entry": 6629671,
+      "entry_name": "Felicity#28QY",
+      "event_total": 35,
+      "last_rank": 14,
+      "player_name": "Denis Indani",
+      "rank": 11,
+      "rank_sort": 11,
+      "total": 397
     },
     {
       "club_badge_src": null,
       "entry": 784126,
       "entry_name": "Masaka city#Q484",
-      "event_total": 23,
+      "event_total": 25,
       "last_rank": 11,
       "player_name": "Nasasira Emmanuel",
-      "rank": 11,
-      "rank_sort": 11,
-      "total": 394
+      "rank": 12,
+      "rank_sort": 12,
+      "total": 396
     },
     {
       "club_badge_src": null,
       "entry": 6561110,
       "entry_name": "muruD7WK",
-      "event_total": 27,
+      "event_total": 28,
       "last_rank": 13,
       "player_name": "Arichia Fura",
-      "rank": 12,
-      "rank_sort": 12,
-      "total": 390
+      "rank": 13,
+      "rank_sort": 13,
+      "total": 391
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
@@ -184,53 +195,42 @@
       "event_total": 29,
       "last_rank": 16,
       "player_name": "KIGOZI FRANK",
-      "rank": 13,
-      "rank_sort": 13,
-      "total": 389
-    },
-    {
-      "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
-      "entry": 6629671,
-      "entry_name": "Felicity#28QY",
-      "event_total": 25,
-      "last_rank": 14,
-      "player_name": "Denis Indani",
       "rank": 14,
       "rank_sort": 14,
-      "total": 387
+      "total": 389
     },
     {
       "club_badge_src": null,
       "entry": 6661830,
       "entry_name": "The blues#TZT2",
-      "event_total": 27,
+      "event_total": 29,
       "last_rank": 17,
       "player_name": "JONATHAN KIBBS",
       "rank": 15,
       "rank_sort": 15,
-      "total": 385
+      "total": 387
     },
     {
       "club_badge_src": null,
       "entry": 3391361,
       "entry_name": "Samskara#CQFU",
-      "event_total": 23,
+      "event_total": 24,
       "last_rank": 12,
       "player_name": "Eric Ssekamwa",
       "rank": 16,
       "rank_sort": 16,
-      "total": 383
+      "total": 384
     },
     {
       "club_badge_src": null,
       "entry": 6773598,
       "entry_name": "Radnički Niš",
-      "event_total": 6,
+      "event_total": 5,
       "last_rank": 15,
       "player_name": "Milan Losic",
       "rank": 17,
       "rank_sort": 17,
-      "total": 366
+      "total": 365
     },
     {
       "club_badge_src": null,
@@ -247,12 +247,12 @@
       "club_badge_src": null,
       "entry": 8014708,
       "entry_name": "Red devils",
-      "event_total": 33,
+      "event_total": 39,
       "last_rank": 20,
       "player_name": "Opiyo Melville",
       "rank": 19,
       "rank_sort": 19,
-      "total": 348
+      "total": 354
     },
     {
       "club_badge_src": null,
@@ -376,18 +376,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 473,
-          "rank": 8199913,
-          "rank_sort": 8252782,
-          "overall_rank": 1330770,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "12",
+          "points": 13,
+          "total_points": 486,
+          "rank": 9829574,
+          "rank_sort": 9830265,
+          "overall_rank": 2155527,
+          "percentile_rank": 90,
+          "overall_rank_percentage": "19",
           "bank": 16,
           "value": 1029,
           "event_transfers": 1,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 1
         }
       ],
       "chips": [
@@ -512,18 +512,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 371,
-          "rank": 9740637,
-          "rank_sort": 9827024,
-          "overall_rank": 7429011,
-          "percentile_rank": 90,
-          "overall_rank_percentage": "67",
+          "points": 25,
+          "total_points": 396,
+          "rank": 6421169,
+          "rank_sort": 6426767,
+          "overall_rank": 7370963,
+          "percentile_rank": 60,
+          "overall_rank_percentage": "66",
           "bank": 7,
           "value": 1020,
           "event_transfers": 2,
           "event_transfers_cost": 4,
-          "points_on_bench": 0
+          "points_on_bench": 10
         }
       ],
       "chips": [
@@ -643,18 +643,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 472,
-          "rank": 8199913,
-          "rank_sort": 8382444,
-          "overall_rank": 1359445,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "12",
+          "points": 29,
+          "total_points": 501,
+          "rank": 4534812,
+          "rank_sort": 4542793,
+          "overall_rank": 1399615,
+          "percentile_rank": 45,
+          "overall_rank_percentage": "13",
           "bank": 19,
           "value": 1027,
           "event_transfers": 1,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 2
         }
       ],
       "chips": [
@@ -779,13 +779,13 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 457,
-          "rank": 8199913,
-          "rank_sort": 8771498,
-          "overall_rank": 2168468,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "20",
+          "points": 30,
+          "total_points": 487,
+          "rank": 4208198,
+          "rank_sort": 4230111,
+          "overall_rank": 2127773,
+          "percentile_rank": 40,
+          "overall_rank_percentage": "19",
           "bank": 8,
           "value": 1019,
           "event_transfers": 1,
@@ -920,13 +920,13 @@
         },
         {
           "event": 8,
-          "points": 1,
-          "total_points": 488,
-          "rank": 2563677,
-          "rank_sort": 2630782,
-          "overall_rank": 739307,
+          "points": 35,
+          "total_points": 522,
+          "rank": 2529939,
+          "rank_sort": 2574471,
+          "overall_rank": 642167,
           "percentile_rank": 25,
-          "overall_rank_percentage": "7",
+          "overall_rank_percentage": "6",
           "bank": 10,
           "value": 1011,
           "event_transfers": 0,
@@ -1061,18 +1061,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 360,
-          "rank": 9740637,
-          "rank_sort": 10073985,
-          "overall_rank": 7925499,
-          "percentile_rank": 90,
+          "points": 24,
+          "total_points": 384,
+          "rank": 6836198,
+          "rank_sort": 6852619,
+          "overall_rank": 7879804,
+          "percentile_rank": 65,
           "overall_rank_percentage": "71",
           "bank": 8,
           "value": 992,
           "event_transfers": 2,
           "event_transfers_cost": 4,
-          "points_on_bench": 1
+          "points_on_bench": 2
         }
       ],
       "chips": [
@@ -1192,18 +1192,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 431,
-          "rank": 8199913,
-          "rank_sort": 8978205,
-          "overall_rank": 3744423,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "34",
+          "points": 44,
+          "total_points": 475,
+          "rank": 823174,
+          "rank_sort": 837064,
+          "overall_rank": 2778005,
+          "percentile_rank": 10,
+          "overall_rank_percentage": "25",
           "bank": 6,
           "value": 1003,
           "event_transfers": 1,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 1
         }
       ],
       "chips": [
@@ -1328,13 +1328,13 @@
         },
         {
           "event": 8,
-          "points": 4,
-          "total_points": 431,
-          "rank": 895640,
-          "rank_sort": 926808,
-          "overall_rank": 3744423,
-          "percentile_rank": 10,
-          "overall_rank_percentage": "34",
+          "points": 28,
+          "total_points": 455,
+          "rank": 4665133,
+          "rank_sort": 4752187,
+          "overall_rank": 4002377,
+          "percentile_rank": 45,
+          "overall_rank_percentage": "36",
           "bank": 8,
           "value": 1023,
           "event_transfers": 0,
@@ -1464,13 +1464,13 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 350,
-          "rank": 8199913,
-          "rank_sort": 9182495,
-          "overall_rank": 8319694,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "75",
+          "points": 9,
+          "total_points": 359,
+          "rank": 10515069,
+          "rank_sort": 10528226,
+          "overall_rank": 8729226,
+          "percentile_rank": 95,
+          "overall_rank_percentage": "79",
           "bank": 77,
           "value": 999,
           "event_transfers": 1,
@@ -1595,13 +1595,13 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 363,
-          "rank": 3097279,
-          "rank_sort": 5643258,
-          "overall_rank": 7791261,
-          "percentile_rank": 30,
-          "overall_rank_percentage": "70",
+          "points": 28,
+          "total_points": 391,
+          "rank": 4665133,
+          "rank_sort": 4793520,
+          "overall_rank": 7584917,
+          "percentile_rank": 45,
+          "overall_rank_percentage": "68",
           "bank": 2,
           "value": 996,
           "event_transfers": 0,
@@ -1726,18 +1726,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 360,
-          "rank": 10853385,
-          "rank_sort": 10922992,
-          "overall_rank": 7918076,
-          "percentile_rank": 100,
-          "overall_rank_percentage": "71",
+          "points": 29,
+          "total_points": 389,
+          "rank": 4654028,
+          "rank_sort": 4657071,
+          "overall_rank": 7666890,
+          "percentile_rank": 45,
+          "overall_rank_percentage": "69",
           "bank": 10,
           "value": 1000,
           "event_transfers": 4,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 10
         }
       ],
       "chips": [
@@ -1867,18 +1867,18 @@
         },
         {
           "event": 8,
-          "points": 1,
-          "total_points": 363,
-          "rank": 2563677,
-          "rank_sort": 2728512,
-          "overall_rank": 7784485,
+          "points": 35,
+          "total_points": 397,
+          "rank": 2529939,
+          "rank_sort": 2618633,
+          "overall_rank": 7307671,
           "percentile_rank": 25,
-          "overall_rank_percentage": "70",
+          "overall_rank_percentage": "66",
           "bank": 9,
           "value": 989,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 7
+          "points_on_bench": 8
         }
       ],
       "chips": [
@@ -1998,18 +1998,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 393,
-          "rank": 3097279,
-          "rank_sort": 5680704,
-          "overall_rank": 6179028,
-          "percentile_rank": 30,
-          "overall_rank_percentage": "56",
+          "points": 31,
+          "total_points": 424,
+          "rank": 3737137,
+          "rank_sort": 3832214,
+          "overall_rank": 5868736,
+          "percentile_rank": 35,
+          "overall_rank_percentage": "53",
           "bank": 5,
           "value": 992,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 3
         }
       ],
       "chips": []
@@ -2123,13 +2123,13 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 358,
-          "rank": 3097279,
-          "rank_sort": 5688984,
-          "overall_rank": 7998825,
-          "percentile_rank": 30,
-          "overall_rank_percentage": "72",
+          "points": 29,
+          "total_points": 387,
+          "rank": 4319444,
+          "rank_sort": 4431476,
+          "overall_rank": 7747623,
+          "percentile_rank": 40,
+          "overall_rank_percentage": "70",
           "bank": 11,
           "value": 994,
           "event_transfers": 0,
@@ -2248,13 +2248,13 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 449,
-          "rank": 8199913,
-          "rank_sort": 9380084,
-          "overall_rank": 2617721,
-          "percentile_rank": 75,
-          "overall_rank_percentage": "24",
+          "points": 51,
+          "total_points": 500,
+          "rank": 236851,
+          "rank_sort": 242727,
+          "overall_rank": 1471337,
+          "percentile_rank": 5,
+          "overall_rank_percentage": "13",
           "bank": 19,
           "value": 1006,
           "event_transfers": 1,
@@ -2379,18 +2379,18 @@
         },
         {
           "event": 8,
-          "points": 8,
-          "total_points": 410,
-          "rank": 265361,
-          "rank_sort": 403897,
-          "overall_rank": 5145024,
-          "percentile_rank": 5,
-          "overall_rank_percentage": "46",
+          "points": 21,
+          "total_points": 423,
+          "rank": 7522138,
+          "rank_sort": 7633089,
+          "overall_rank": 5962932,
+          "percentile_rank": 70,
+          "overall_rank_percentage": "54",
           "bank": 31,
           "value": 1010,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 2
+          "points_on_bench": 17
         }
       ],
       "chips": [
@@ -2510,12 +2510,12 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 387,
-          "rank": 8199913,
-          "rank_sort": 9390575,
-          "overall_rank": 6557808,
-          "percentile_rank": 75,
+          "points": 26,
+          "total_points": 413,
+          "rank": 5840902,
+          "rank_sort": 5920540,
+          "overall_rank": 6506859,
+          "percentile_rank": 55,
           "overall_rank_percentage": "59",
           "bank": 43,
           "value": 1009,
@@ -2646,18 +2646,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 360,
-          "rank": 3097279,
-          "rank_sort": 5741041,
-          "overall_rank": 7896956,
-          "percentile_rank": 30,
-          "overall_rank_percentage": "71",
+          "points": 5,
+          "total_points": 365,
+          "rank": 10814369,
+          "rank_sort": 10838957,
+          "overall_rank": 8529374,
+          "percentile_rank": 100,
+          "overall_rank_percentage": "77",
           "bank": 65,
           "value": 1001,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 1
         }
       ],
       "chips": []
@@ -2771,18 +2771,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 442,
-          "rank": 3097279,
-          "rank_sort": 5762984,
-          "overall_rank": 3035327,
-          "percentile_rank": 30,
-          "overall_rank_percentage": "27",
+          "points": 26,
+          "total_points": 468,
+          "rank": 5533934,
+          "rank_sort": 5691265,
+          "overall_rank": 3196979,
+          "percentile_rank": 50,
+          "overall_rank_percentage": "29",
           "bank": 2,
           "value": 1023,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 3
         }
       ],
       "chips": []
@@ -2896,18 +2896,18 @@
         },
         {
           "event": 8,
-          "points": 7,
-          "total_points": 440,
-          "rank": 624613,
-          "rank_sort": 731707,
-          "overall_rank": 3134810,
-          "percentile_rank": 10,
-          "overall_rank_percentage": "28",
+          "points": 31,
+          "total_points": 464,
+          "rank": 3737137,
+          "rank_sort": 3836296,
+          "overall_rank": 3415731,
+          "percentile_rank": 35,
+          "overall_rank_percentage": "31",
           "bank": 0,
           "value": 1002,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 3
         }
       ],
       "chips": []
@@ -3021,18 +3021,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 331,
-          "rank": 10553748,
-          "rank_sort": 10785402,
-          "overall_rank": 8924853,
-          "percentile_rank": 95,
-          "overall_rank_percentage": "80",
+          "points": 8,
+          "total_points": 339,
+          "rank": 10659008,
+          "rank_sort": 10661140,
+          "overall_rank": 9230058,
+          "percentile_rank": 100,
+          "overall_rank_percentage": "83",
           "bank": 44,
           "value": 1010,
           "event_transfers": 3,
           "event_transfers_cost": 8,
-          "points_on_bench": 0
+          "points_on_bench": 3
         }
       ],
       "chips": [
@@ -3157,18 +3157,18 @@
         },
         {
           "event": 8,
-          "points": 0,
-          "total_points": 411,
-          "rank": 10969993,
-          "rank_sort": 11009087,
-          "overall_rank": 5060780,
-          "percentile_rank": 100,
-          "overall_rank_percentage": "46",
+          "points": 28,
+          "total_points": 439,
+          "rank": 5073985,
+          "rank_sort": 5076093,
+          "overall_rank": 4990942,
+          "percentile_rank": 50,
+          "overall_rank_percentage": "45",
           "bank": 50,
           "value": 996,
           "event_transfers": 5,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 4
         }
       ],
       "chips": []
@@ -3282,18 +3282,18 @@
         },
         {
           "event": 8,
-          "points": 7,
-          "total_points": 322,
-          "rank": 624613,
-          "rank_sort": 753861,
-          "overall_rank": 9148908,
-          "percentile_rank": 10,
-          "overall_rank_percentage": "82",
+          "points": 39,
+          "total_points": 354,
+          "rank": 1708948,
+          "rank_sort": 1799566,
+          "overall_rank": 8869716,
+          "percentile_rank": 20,
+          "overall_rank_percentage": "80",
           "bank": 4,
           "value": 992,
           "event_transfers": 0,
           "event_transfers_cost": 0,
-          "points_on_bench": 0
+          "points_on_bench": 3
         }
       ],
       "chips": [
