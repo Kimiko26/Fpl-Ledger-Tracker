@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T00:22:07.800Z",
+  "generatedAt": "2026-11-02T10:39:24.636Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 9,
@@ -49,23 +49,23 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/3013611/fbbb1918-fea4-423b-a4d3-45dcdb985a55.png",
       "entry": 3360020,
       "entry_name": "PlatynysMafia #Z94H",
-      "event_total": 58,
+      "event_total": 56,
       "last_rank": 1,
       "player_name": "Pavel Laton",
       "rank": 1,
       "rank_sort": 1,
-      "total": 593
+      "total": 591
     },
     {
       "club_badge_src": null,
       "entry": 804897,
       "entry_name": "Kingdom Animalia",
-      "event_total": 53,
+      "event_total": 51,
       "last_rank": 3,
       "player_name": "K R",
       "rank": 2,
       "rank_sort": 2,
-      "total": 563
+      "total": 561
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6826187/e3bdd078-753b-44b4-b813-1a13dd999217.png",
@@ -115,23 +115,23 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5514559/9b2c6eca-7613-4e16-9ca9-c3624d0ffef0.png",
       "entry": 4662332,
       "entry_name": "D'Nevile Wears Prada",
-      "event_total": 56,
+      "event_total": 54,
       "last_rank": 7,
       "player_name": "Stefan Kōji",
       "rank": 7,
       "rank_sort": 7,
-      "total": 527
+      "total": 525
     },
     {
       "club_badge_src": null,
       "entry": 7971410,
       "entry_name": "OldGlen #GAT4",
-      "event_total": 34,
+      "event_total": 32,
       "last_rank": 8,
       "player_name": "Ivan Milenkovic",
       "rank": 8,
       "rank_sort": 8,
-      "total": 489
+      "total": 487
     },
     {
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6738254/52be225c-6119-41d0-bdbe-ea3bdf0758f2.png",
@@ -159,12 +159,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/5012967/578e1448-c40b-40d2-87c7-c9bf81611b13.png",
       "entry": 6594959,
       "entry_name": "kigozi #9LVB",
-      "event_total": 51,
+      "event_total": 49,
       "last_rank": 12,
       "player_name": "KIGOZI FRANK",
       "rank": 11,
       "rank_sort": 11,
-      "total": 465
+      "total": 463
     },
     {
       "club_badge_src": null,
@@ -181,12 +181,12 @@
       "club_badge_src": null,
       "entry": 6762882,
       "entry_name": "6XCORE�",
-      "event_total": 33,
+      "event_total": 31,
       "last_rank": 10,
       "player_name": "Musa Abdulmajid",
       "rank": 13,
       "rank_sort": 13,
-      "total": 452
+      "total": 450
     },
     {
       "club_badge_src": null,
@@ -201,25 +201,25 @@
     },
     {
       "club_badge_src": null,
-      "entry": 3391361,
-      "entry_name": "Samskara#CQFU",
-      "event_total": 40,
-      "last_rank": 17,
-      "player_name": "Eric Ssekamwa",
+      "entry": 6661830,
+      "entry_name": "The blues#TZT2",
+      "event_total": 38,
+      "last_rank": 15,
+      "player_name": "JONATHAN KIBBS",
       "rank": 15,
       "rank_sort": 15,
       "total": 431
     },
     {
       "club_badge_src": null,
-      "entry": 6661830,
-      "entry_name": "The blues#TZT2",
+      "entry": 3391361,
+      "entry_name": "Samskara#CQFU",
       "event_total": 38,
-      "last_rank": 15,
-      "player_name": "JONATHAN KIBBS",
+      "last_rank": 17,
+      "player_name": "Eric Ssekamwa",
       "rank": 16,
       "rank_sort": 16,
-      "total": 431
+      "total": 429
     },
     {
       "club_badge_src": null,
@@ -236,12 +236,12 @@
       "club_badge_src": null,
       "entry": 6773598,
       "entry_name": "Radnički Niš",
-      "event_total": 37,
+      "event_total": 35,
       "last_rank": 19,
       "player_name": "Milan Losic",
       "rank": 18,
       "rank_sort": 18,
-      "total": 417
+      "total": 415
     },
     {
       "club_badge_src": null,
