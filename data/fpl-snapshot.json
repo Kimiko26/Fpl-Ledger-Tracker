@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T18:22:09.741Z",
+  "generatedAt": "2026-11-08T19:22:38.413Z",
   "leagueId": "1459370",
   "leagueName": "Kabanana Season 4 - 2026/27",
   "currentEventId": 10,
@@ -159,12 +159,12 @@
       "club_badge_src": "https://fantasy.premierleague.com/gcs/plfpl-production-adobe-approved/plfpl-production/6629671/70226134-e22c-4a50-9f84-f4abce791367.png",
       "entry": 6629671,
       "entry_name": "Felicity#28QY",
-      "event_total": 40,
+      "event_total": 43,
       "last_rank": 10,
       "player_name": "Denis Indani",
       "rank": 11,
       "rank_sort": 11,
-      "total": 514
+      "total": 517
     },
     {
       "club_badge_src": null,
@@ -258,12 +258,12 @@
       "club_badge_src": null,
       "entry": 8014708,
       "entry_name": "Red devils",
-      "event_total": 35,
+      "event_total": 37,
       "last_rank": 20,
       "player_name": "Opiyo Melville",
       "rank": 20,
       "rank_sort": 20,
-      "total": 420
+      "total": 422
     }
   ],
   "managers": {
